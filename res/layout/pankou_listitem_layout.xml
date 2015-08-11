@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/listitem_text1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        android:text="卖五（元/手）"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/listitem_text2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        android:text="5.81"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/listitem_text3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="3139"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <cn.chinat2t.stockgod.views.ItemView
+        android:id="@+id/listitem_image4"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_weight="1.5"/>
+
+</LinearLayout>

@@ -1,0 +1,61 @@
+package cn.chinat2t.stockgod.activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.ViewFlipper;
+import cn.chinat2t.stockgod.MainActivity;
+import cn.chinat2t.stockgod.R;
+import cn.chinat2t.stockgod.framework.BaseGroup;
+
+public class CompetitiveGroup extends BaseGroup{
+
+	public static CompetitiveGroup group = null;
+	private int actIndex;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.group_main);
+		
+		group = this;
+		actIndex = getIntent().getIntExtra(MainActivity.TAB_INDEX, MainActivity.TAB_STOCK_INDEX);
+		
+		initViews();
+	}
+	
+	private void initViews(){
+		containerFlipper = (ViewFlipper) findViewById(R.id.group_content);
+		Intent intent = new Intent();
+		switch (actIndex) {
+		case MainActivity.TAB_STOCK_INDEX:
+			intent.setClass(this, CompetitiveActivity.class);
+			switchActivity("CompetitiveActivity", intent, -1, -1);
+			break;
+
+		case MainActivity.TAB_HELP_INDEX:
+			intent.setClass(this, HelpActivity.class);
+			switchActivity("HelpActivity", intent, -1, -1);
+			break;
+			
+		case MainActivity.TAB_FRIEND_INDEX:
+			intent.setClass(this, FriendActivity.class);
+			switchActivity("FriendActivity", intent, -1, -1);
+			break;
+			
+		case MainActivity.TAB_RANK_INDEX:
+			intent.setClass(this, RankActivity.class);
+			switchActivity("RankActivity", intent, -1, -1);
+			break;
+			
+		case MainActivity.TAB_NEWS_INDEX:
+			intent.setClass(this, NewsActivity.class);
+			switchActivity("NewsActivity", intent, -1, -1);
+			break;
+		}
+		
+	}
+	
+	public static CompetitiveGroup getInstance(){
+		return group;
+	}
+}

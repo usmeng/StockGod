@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="2dp"
+    android:layout_marginRight="2dp"
+    android:background="@drawable/main_circle_bg"
+    android:orientation="vertical"
+    android:padding="0dp" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp" >
+
+        <ImageView
+            android:id="@+id/zhuye_imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/user_men" />
+
+        <TextView
+            android:id="@+id/zhuye_textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/zhuye_textView1"
+            android:layout_below="@+id/zhuye_textView1"
+            android:text="等级：%s"
+            android:textColor="#6a3837"
+            />
+
+        <TextView
+            android:id="@+id/zhuye_textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/zhuye_textView2"
+            android:layout_below="@+id/zhuye_textView2"
+            android:text="资金：%s"
+            android:textColor="#6a3837"
+            />
+
+        <TextView
+            android:id="@+id/zhuye_textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/zhuye_textView1"
+            android:layout_alignBottom="@+id/zhuye_textView1"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="40dp"
+            android:text="VIP等级：%s"
+            android:textColor="#6a3837"
+            />
+
+        <TextView
+            android:id="@+id/zhuye_textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/zhuye_textView2"
+            android:layout_alignBottom="@+id/zhuye_textView2"
+            android:layout_alignLeft="@+id/zhuye_textView4"
+            android:text="经验：%s"
+            android:textColor="#6a3837"
+            />
+
+        <TextView
+            android:id="@+id/zhuye_textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/zhuye_imageView1"
+            android:text="用户名：%s"
+            android:textColor="#6a3837" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line1" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp" >
+
+        <TextView
+            android:id="@+id/zhuye_textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="模拟股票总收益率：%s"
+            android:textColor="#6a3837"
+            />
+
+        <TextView
+            android:id="@+id/zhuye_textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/zhuye_textView6"
+            android:text="当前资产：%s"
+            android:textColor="#6a3837"
+            />
+
+        <TextView
+            android:id="@+id/zhuye_textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/zhuye_textView7"
+            android:text="所持股票：%s"
+            android:textColor="#6a3837"
+            />
+
+        <TextView
+            android:id="@+id/zhuye_textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/zhuye_textView7"
+            android:layout_alignBottom="@+id/zhuye_textView7"
+            android:layout_alignRight="@+id/zhuye_textView9"
+            android:text="股票市值：%s"
+            android:textColor="#6a3837"
+            />
+
+        <TextView
+            android:id="@+id/zhuye_textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/zhuye_textView10"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="模拟股票排行榜排名：%s"
+            android:textColor="#6a3837"
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/titlt_middle"
+        android:orientation="horizontal"
+        android:padding="5dp" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="名称"
+            android:textColor="#6a3837" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="代码"
+            android:textColor="#6a3837" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="数量"
+            android:textColor="#6a3837" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="价格"
+            android:textColor="#6a3837" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="涨跌"
+            android:textColor="#6a3837" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="市值"
+            android:textColor="#6a3837" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="查看"
+            android:textColor="#6a3837" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/zhuye_listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="1dp"
+        android:layout_marginRight="1dp"
+        android:background="@color/white"
+        android:cacheColorHint="#00000000"
+        android:divider="@drawable/line3" >
+    </ListView>
+
+</LinearLayout>

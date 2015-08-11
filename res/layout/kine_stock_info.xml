@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" >
+
+        <TextView
+            android:id="@+id/kline_stock_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/black" />
+
+        <!-- <TextView
+            android:id="@+id/kline_stock_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/kline_stock_name"
+            android:singleLine="true"
+            android:gravity="center"
+            android:text="600320"
+            android:textColor="@color/black" /> -->
+
+        <TextView
+            android:id="@+id/kline_stock_cur"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/kline_stock_name"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/red"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/kline_stock_cur"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/kline_stock_data1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/kline_stock_data2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/black" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingLeft="10dp" >
+
+        <TextView
+            android:id="@+id/kline_stock_today1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="今开:"
+            android:textColor="#6a3837" />
+
+        <TextView
+            android:id="@+id/kline_stock_today2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/kline_stock_today1"
+            android:text=""
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/kline_stock_top1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/kline_stock_today1"
+            android:layout_marginTop="3dp"
+            android:text="最高:"
+            android:textColor="#6a3837" />
+
+        <TextView
+            android:id="@+id/kline_stock_top2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/kline_stock_today1"
+            android:layout_marginTop="3dp"
+            android:layout_toRightOf="@id/kline_stock_top1"
+            android:text=""
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/kline_stock_total1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/kline_stock_top1"
+            android:layout_marginTop="3dp"
+            android:text="总量:"
+            android:textColor="#6a3837" />
+
+        <TextView
+            android:id="@+id/kline_stock_total2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/kline_stock_top1"
+            android:layout_marginTop="3dp"
+            android:layout_toRightOf="@id/kline_stock_total1"
+            android:text=""
+            android:textColor="@color/black" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingLeft="10dp" >
+
+        <TextView
+            android:id="@+id/kline_stock_yesterday1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="昨收:"
+            android:textColor="#6a3837" />
+
+        <TextView
+            android:id="@+id/kline_stock_yesterday2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/kline_stock_yesterday1"
+            android:text=""
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/kline_stock_lowest1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/kline_stock_yesterday1"
+            android:layout_marginTop="3dp"
+            android:text="最低:"
+            android:textColor="#6a3837" />
+
+        <TextView
+            android:id="@+id/kline_stock_lowest2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/kline_stock_yesterday1"
+            android:layout_marginTop="3dp"
+            android:layout_toRightOf="@id/kline_stock_lowest1"
+            android:text=""
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/kline_stock_sum1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/kline_stock_lowest1"
+            android:layout_marginTop="3dp"
+            android:text="总额:"
+            android:textColor="#6a3837" />
+
+        <TextView
+            android:id="@+id/kline_stock_sum2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/kline_stock_lowest1"
+            android:layout_marginTop="3dp"
+            android:layout_toRightOf="@id/kline_stock_sum1"
+            android:text=""
+            android:textColor="@color/black" />
+    </RelativeLayout>
+
+</LinearLayout>

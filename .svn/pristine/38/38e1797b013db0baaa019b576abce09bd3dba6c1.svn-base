@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/head_news_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/red_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="1dp"
+        android:paddingTop="1dp" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/born" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="牛人冠军“江苏人” 两月收益超过80%"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/head_news_layout"
+        android:background="@drawable/line1" />
+
+    <RelativeLayout
+        android:id="@+id/head_info_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/head_news_layout"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" >
+
+        <ImageView
+            android:id="@+id/head_info_vip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="6dp"
+            android:src="@drawable/vip11" />
+
+        <TextView
+            android:id="@+id/head_info_name"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_toRightOf="@id/head_info_vip"
+            android:text="股神用户"
+            android:textColor="#6c3938" />
+
+        <RelativeLayout
+            android:id="@+id/head_info_jingdu"
+            android:layout_width="80dp"
+            android:layout_height="20dp"
+            android:layout_below="@id/head_info_name"
+            android:layout_marginTop="3dp"
+            android:layout_toRightOf="@id/head_info_vip" >
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@drawable/article" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@drawable/article2" />
+
+            <TextView
+                android:id="@+id/head_info_jingdu_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="30/100"
+                android:textColor="@color/white"
+                android:textSize="10sp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/head_info_zj"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_toRightOf="@id/head_info_name"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/zj_btn" />
+
+            <TextView
+                android:id="@+id/head_info_zj_value"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="1000000"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/head_info_jb"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/head_info_zj"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/head_info_name"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/jb_btn" />
+
+            <TextView
+                android:id="@+id/head_info_jb_value"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="10000"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/head_info_jq"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/head_info_jb"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/head_info_name"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/jq_btn" />
+
+            <TextView
+                android:id="@+id/head_info_jq_value"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="10000"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="50dp"
+            android:layout_toRightOf="@id/head_info_zj"
+            android:background="@drawable/line4" />
+
+        <ImageView
+            android:id="@+id/head_info_huodong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/head_info_zj"
+            android:src="@drawable/hdicon" />
+
+        <TextView
+            android:id="@+id/head_info_jiangjin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_toRightOf="@id/head_info_huodong"
+            android:singleLine="true"
+            android:text="奖励奖金:100"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/head_info_jiangjin"
+            android:src="@drawable/hdyj" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/head_info_layout"
+        android:background="@drawable/line1" />
+
+</RelativeLayout>

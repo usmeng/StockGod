@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:id="@+id/kline_stock_menu"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" >
+
+        <Button
+            android:id="@+id/kline_day_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg1"
+            android:text="日K"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/kline_week_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg1"
+            android:text="周K"
+            android:textColor="#6a3837" />
+
+        <Button
+            android:id="@+id/kline_month_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg1"
+            android:text="月K"
+            android:textColor="#6a3837" />
+
+        <Button
+            android:id="@+id/kline_five_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg1"
+            android:text="5分"
+            android:textColor="#6a3837" />
+
+        <Button
+            android:id="@+id/kline_30_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg1"
+            android:text="30分"
+            android:textColor="#6a3837" />
+
+        <Button
+            android:id="@+id/kline_60_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg1"
+            android:text="60分"
+            android:textColor="#6a3837" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/kline_stock_menu"
+        android:background="@drawable/line3" />
+
+    <cn.chinat2t.stockgod.views.MACandleStickChart
+        android:id="@+id/kline_stock_tu1"
+        android:layout_width="fill_parent"
+        android:layout_height="150dp"
+        android:layout_below="@id/kline_stock_menu" >
+    </cn.chinat2t.stockgod.views.MACandleStickChart>
+
+    <LinearLayout
+        android:id="@+id/ma_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/kline_stock_tu1"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/ma_5"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="MA5=5.21"
+            android:textColor="@color/white"
+            android:gravity="center" />
+        
+        <TextView
+            android:id="@+id/ma_10"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="MA5=8.0"
+            android:textColor="@color/yello"
+            android:gravity="center" />
+        
+        <TextView
+            android:id="@+id/ma_20"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="MA5=6.11"
+            android:textColor="@color/blue"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <cn.chinat2t.stockgod.views.StickChart
+        android:id="@+id/kline_stock_tu2"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/ma_layout" >
+    </cn.chinat2t.stockgod.views.StickChart>
+
+</RelativeLayout>

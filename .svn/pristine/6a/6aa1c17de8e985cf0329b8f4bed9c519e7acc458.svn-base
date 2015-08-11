@@ -1,0 +1,52 @@
+package cn.chinat2t.stockgod.utils;
+
+public class StringUtil {
+	
+	public static final String format(String str, Object...objects){
+		for (int i = 0; i < objects.length; i++) {
+			str.replace("?", (String)objects[i]);
+		}
+		return str;
+	}
+	
+	public static int paraseString(String str){
+		if(str != null && str.length() > 0 && str.matches("^[0-9.]+$")){
+			return Integer.parseInt(str);
+		}
+		return 0;
+	}
+	
+	public static String formatTime(int time){
+		int fen = time / 60;
+		int miao = time % 60;
+		return time(fen)+ ":" + time(miao);
+	}
+	
+	public static String time(int time){
+		if(time >= 0 && time < 10){
+			return "0"+time;
+		}
+		return ""+time;
+	}
+
+	public static boolean isNegUserName(String name){
+		if(name.matches("^[0-9a-zA-Z_]{4,10}$")){
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean isNegPass(String name){
+		if(name.matches("^[0-9a-zA-Z_]{6,10}$")){
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean isNegEmail(String name){
+		if(name.matches("^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\\.[a-zA-Z0-9_-]{2,3}){1,2})$")){
+			return true;
+		}
+		return false;
+	}
+}

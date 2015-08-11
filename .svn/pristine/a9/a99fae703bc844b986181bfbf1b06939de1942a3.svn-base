@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="5dp" >
+
+        <ImageView
+            android:id="@+id/myinfo_image_imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/user_men" />
+
+        <TextView
+            android:id="@+id/myinfo_image_textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_toRightOf="@+id/myinfo_image_imageView1"
+            android:text="形象名称："
+            android:textColor="#8C3A30" />
+
+        <TextView
+            android:id="@+id/myinfo_image_textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/myinfo_image_imageView1"
+            android:layout_alignRight="@+id/myinfo_image_textView1"
+            android:text="形象描述："
+            android:textColor="#8C3A30" />
+
+        <TextView
+            android:id="@+id/myinfo_image_textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/myinfo_image_textView1"
+            android:layout_alignBottom="@+id/myinfo_image_textView1"
+            android:layout_toRightOf="@+id/myinfo_image_textView1"
+            android:text="大富翁"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/myinfo_image_textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/myinfo_image_textView2"
+            android:layout_alignBottom="@+id/myinfo_image_textView2"
+            android:layout_alignLeft="@+id/myinfo_image_textView3"
+            android:text="123456" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/myinfo_image_listView1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:cacheColorHint="#00000000"
+        android:divider="@drawable/line3"
+        android:paddingLeft="1dp"
+        android:paddingRight="1dp" >
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/myinfo_confirm_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_blue_selector"
+            android:text="确定" />
+
+        <Button
+            android:id="@+id/myinfo_shangcheng_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_yellow_selector"
+            android:text="商城" />
+    </LinearLayout>
+
+</LinearLayout>

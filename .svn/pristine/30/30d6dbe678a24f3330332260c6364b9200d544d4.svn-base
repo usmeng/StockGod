@@ -1,0 +1,336 @@
+package cn.chinat2t.stockgod.activity;
+
+import java.util.ArrayList;
+
+import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import cn.chinat2t.stockgod.MainActivity;
+import cn.chinat2t.stockgod.R;
+import cn.chinat2t.stockgod.bean.DJBean;
+/**
+ * 商城界面
+ * @author Administrator
+ *
+ */
+public class MallActivity extends Activity implements OnCheckedChangeListener, OnClickListener{
+	private RadioGroup radioGroup;
+	private LinearLayout content;
+	
+	private static final int MALL_DAOJU = 0;
+	private static final int MALL_VIP = 1;
+	private static final int MALL_DUIHUAN = 2;
+	private static final int MALL_CHONGZHI = 3;
+	private int index;
+	private int flag;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.mall_layout);
+		flag = getIntent().getIntExtra("flag", 0);
+		
+		initView();
+		if(flag == 1){
+			((RadioButton)findViewById(R.id.radiobtn4)).setChecked(true);
+		} else if(flag == 2){
+			((RadioButton)findViewById(R.id.radiobtn3)).setChecked(true);
+		}else{
+			((RadioButton)findViewById(R.id.radiobtn1)).setChecked(true);
+			onCheckedChanged(radioGroup, R.id.radiobtn1);
+		}
+		
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MainActivity.setTitleName("商城");
+	};
+	
+	public void initView(){
+		radioGroup = (RadioGroup)findViewById(R.id.mall_tabs_radiogroup);
+		radioGroup.setOnCheckedChangeListener(this);
+		content = (LinearLayout)findViewById(R.id.content);
+	}
+
+	@Override
+	public void onCheckedChanged(RadioGroup group, int checkedId) {
+		switch(checkedId){
+		case R.id.radiobtn1:
+			createDJView();
+			index = MALL_DAOJU;
+			break;
+		case R.id.radiobtn2:
+			createVipView();
+			index = MALL_VIP;
+			break;
+		case R.id.radiobtn3:
+			createDhView();
+			index = MALL_DUIHUAN;
+			break;
+		case R.id.radiobtn4:
+			createChZView();
+			index = MALL_CHONGZHI;
+			break;
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.button2:
+			if(content == null) return;
+			content.removeAllViews();
+			View view = new ChongZhiView(this, flag);
+			content.addView(view, new LinearLayout.LayoutParams(-1, -1));
+			break;
+		default:
+			break;
+		}
+		
+	}
+	
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			CompetitiveGroup.getInstance().onKeyDown(keyCode, event);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
+	/**
+	 * 创建道具View
+	 */
+	private void createDJView(){
+		if(content == null) return;
+		content.removeAllViews();
+		View view = View.inflate(this, R.layout.daoju_list, null);
+		ListView listView = (ListView)view.findViewById(R.id.daoju_list);
+		//创建道具卡列表
+		DJBean dj1 = new DJBean(null, "牛人追踪卡", "可以查看牛人的详细交易情况", "300", "购买");
+		DJBean dj2 = new DJBean(null, "牛人追踪卡", "可以查看牛人的详细交易情况", "300", "购买");
+		DJBean dj3 = new DJBean(null, "牛人追踪卡", "可以查看牛人的详细交易情况", "300", "购买");
+		DJBean dj4 = new DJBean(null, "牛人追踪卡", "可以查看牛人的详细交易情况", "300", "购买");
+		ArrayList<DJBean> djs = new ArrayList<DJBean>();
+		djs.add(dj1);
+		djs.add(dj2);
+		djs.add(dj3);
+		djs.add(dj4);
+		DJListItemAdapter djAdapter = new DJListItemAdapter(this, djs);
+		listView.setAdapter(djAdapter);
+			
+		content.addView(view, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
+	}
+	
+	/**
+	 * 创建充值View
+	 */
+	private void createChZView(){
+		if(content == null) return;
+		content.removeAllViews();
+		LinearLayout view = (LinearLayout) View.inflate(this, R.layout.recharge_page, null);
+		content.addView(view, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
+		view.findViewById(R.id.button2).setOnClickListener(this);
+		
+		View view2 = View.inflate(this, R.layout.daoju_list, null);
+		ListView listView = (ListView)view2.findViewById(R.id.daoju_list);
+		//创建道具卡列表
+		DJBean dj1 = new DJBean(null, "股神金币30个", "赠送30个金币+200经验", "", "30");
+		DJBean dj2 = new DJBean(null, "股神金币50个", "赠送30个金币+200经验", "", "50");
+		DJBean dj3 = new DJBean(null, "股神金币100个", "赠送30个金币+200经验", "", "100");
+		DJBean dj4 = new DJBean(null, "股神金币300个", "赠送30个金币+200经验", "", "250");
+		ArrayList<DJBean> djs = new ArrayList<DJBean>();
+		djs.add(dj1);
+		djs.add(dj2);
+		djs.add(dj3);
+		djs.add(dj4);
+		DJListItemAdapter djAdapter = new DJListItemAdapter(this, djs);
+		listView.setAdapter(djAdapter);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				if(content == null) return;
+				content.removeAllViews();
+				View view2 = new ChongZhiView(MallActivity.this, flag);
+				content.addView(view2, new LinearLayout.LayoutParams(-1, -1));
+			}
+		});
+		view.addView(view2, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
+	}
+	
+	private void createVipView(){
+		if(content == null) return;
+		content.removeAllViews();
+		View view = View.inflate(this, R.layout.daoju_list, null);
+		ListView listView = (ListView)view.findViewById(R.id.daoju_list);
+		//创建道具卡列表
+		DJBean dj1 = new DJBean(null, "VIP卡", "尊享VIP特权", "300", "购买");
+		DJBean dj2 = new DJBean(null, "VIP卡", "尊享VIP特权", "300", "购买");
+		DJBean dj3 = new DJBean(null, "VIP卡", "尊享VIP特权", "300", "购买");
+		DJBean dj4 = new DJBean(null, "VIP卡", "尊享VIP特权", "300", "购买");
+		ArrayList<DJBean> djs = new ArrayList<DJBean>();
+		djs.add(dj1);
+		djs.add(dj2);
+		djs.add(dj3);
+		djs.add(dj4);
+		DJListItemAdapter djAdapter = new DJListItemAdapter(this, djs);
+		listView.setAdapter(djAdapter);
+		
+		content.addView(view, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
+	}
+	
+	private void createDhView(){
+		if(content == null) return;
+		content.removeAllViews();
+		View view = View.inflate(this, R.layout.daoju_list, null);
+		ListView listView = (ListView)view.findViewById(R.id.daoju_list);
+		//创建道具卡列表
+		DJBean dj1 = new DJBean(null, "牛人追踪卡", "可以查看牛人的详细交易情况", "300", "兑换");
+		DJBean dj2 = new DJBean(null, "VIP卡", "尊享VIP特权", "300", "兑换");
+		DJBean dj3 = new DJBean(null, "天眼卡", "查看特权", "300", "兑换");
+		DJBean dj4 = new DJBean(null, "侮辱卡", "打击对手", "300", "兑换");
+		ArrayList<DJBean> djs = new ArrayList<DJBean>();
+		djs.add(dj1);
+		djs.add(dj2);
+		djs.add(dj3);
+		djs.add(dj4);
+		DJListItemAdapter djAdapter = new DJListItemAdapter(this, djs);
+		listView.setAdapter(djAdapter);
+		
+		content.addView(view, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
+	}
+	
+	public class DJListItemAdapter extends BaseAdapter {
+		ArrayList<DJBean> djs = new ArrayList<DJBean>();
+		Context con;
+		
+		public DJListItemAdapter(Context con, ArrayList<DJBean> djs){
+			this.con = con;
+			this.djs = djs;
+		}
+		
+		public void setValues(ArrayList<DJBean> djs){
+			this.djs = djs;
+		}
+		
+		@Override
+		public int getCount() {
+			return djs.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return djs.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			ViewHolder holder = null;
+			if(convertView == null){
+				convertView = View.inflate(con, R.layout.daoju_list_item, null);
+				holder = new ViewHolder();
+				holder.cardName = (TextView) convertView.findViewById(R.id.card_name);
+				holder.cardDesc = (TextView) convertView.findViewById(R.id.card_desc);
+				holder.price = (TextView) convertView.findViewById(R.id.price_tv);
+				holder.button = (Button) convertView.findViewById(R.id.mall_daoju_action);
+				convertView.setTag(holder);
+			} else {
+				holder = (ViewHolder) convertView.getTag();
+			}
+			setItemBgColor(position, convertView);
+			DJBean djBean = djs.get(position);
+			holder.cardName.setText(djBean.cardName);
+			holder.cardDesc.setText(djBean.cardDesc);
+			if("".equals(djBean.price)){
+				convertView.findViewById(R.id.linearLayout2).setVisibility(View.GONE);
+			}else{
+				convertView.findViewById(R.id.linearLayout2).setVisibility(View.VISIBLE);
+				holder.price.setText(djBean.price);
+			}
+			if(djBean.caozuo!= null && djBean.caozuo.matches("^[0-9.]+$")){
+				holder.button.setBackgroundColor(getResources().getColor(R.color.transparent));
+				holder.button.setOnClickListener(null);
+				holder.button.setText(djBean.caozuo + "元");
+			}else{
+				holder.button.setText(djBean.caozuo);
+				holder.button.setBackgroundResource(R.drawable.btn_blue_selector);
+				holder.button.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						switch (index) {
+						case MALL_DAOJU:
+							if(content == null) return;
+							content.removeAllViews();
+							View view2 = new BuyDaoJustView(MallActivity.this);
+							content.addView(view2, new LinearLayout.LayoutParams(-1, -1));
+							break;
+						case MALL_DUIHUAN:
+							if(content == null) return;
+							content.removeAllViews();
+							View view3 = new DuiHuanView(MallActivity.this);
+							content.addView(view3, new LinearLayout.LayoutParams(-1, -1));
+							break;
+						case MALL_VIP:
+							if(content == null) return;
+							content.removeAllViews();
+							View view4 = new BuyDaoJustView(MallActivity.this);
+							content.addView(view4, new LinearLayout.LayoutParams(-1, -1));
+							break;
+						}
+						
+					}
+				});
+			}
+			return convertView;
+		}
+
+		private void setItemBgColor(int position, View convertView) {
+			if(index == MALL_CHONGZHI){
+				if(position % 2 == 1) convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor0));
+				else convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor1));
+			}else{
+				if(position != 0){
+					if(position % 2 == 0) convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor0));
+					else convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor1));
+				}
+			}
+		}
+		
+		class ViewHolder{
+			RelativeLayout image;
+			ImageView mark;
+			TextView cardName;
+			TextView cardDesc;
+			TextView price;
+			Button button;
+		}
+		
+	}
+
+}

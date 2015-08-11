@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RadioGroup
+        android:id="@+id/news_radiogroup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="5dp" >
+
+        <RadioButton
+            android:id="@+id/news_private"
+            style="@style/main_tab_bottom"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/check_btn_bg"
+            android:checked="true"
+            android:paddingBottom="1dp"
+            android:paddingTop="1dp"
+            android:text="个人消息"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/news_public"
+            style="@style/main_tab_bottom"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/check_btn_bg"
+            android:paddingBottom="1dp"
+            android:paddingTop="1dp"
+            android:text="公告消息"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+    </RadioGroup>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:background="@drawable/main_circle_bg"
+        android:paddingLeft="1dp"
+        android:paddingRight="1dp" >
+
+        <RelativeLayout
+            android:id="@+id/news_list_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            android:visibility="visible" >
+
+            <CheckBox
+                android:id="@+id/news_check_all_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="-10dp"
+                android:layout_margin="5dp"
+                android:padding="0dp"
+                android:text="全选"
+                android:textColor="@color/black" />
+
+            <ListView
+                android:id="@+id/news_listView1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/news_button2"
+                android:background="#E5D7BA"
+                android:layout_margin="0dp"
+                android:padding="0dp"
+                android:divider="@null" >
+            </ListView>
+
+            <Button
+                android:id="@+id/news_button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/news_check_all_select"
+                android:layout_alignBottom="@+id/news_check_all_select"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/btn_blue_selector"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="标记为已读"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/news_button1"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/news_button2"
+                android:layout_alignBottom="@+id/news_button2"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/news_button2"
+                android:background="@drawable/btn_red_selector"
+                android:text="删除"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/news_text_layout"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="5dp"
+            android:visibility="gone" >
+
+            <TextView
+                android:id="@+id/news_textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:padding="5dp"
+                android:text="标题："
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/news_textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/news_textView1"
+                android:padding="5dp"
+                android:text="时间："
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/news_textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/news_textView1"
+                android:padding="5dp"
+                android:text="您猜涨跌**"
+                android:textColor="#B9413A" />
+
+            <TextView
+                android:id="@+id/news_textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/news_textView3"
+                android:layout_below="@+id/news_textView3"
+                android:padding="5dp"
+                android:text="2013-7-15"
+                android:textColor="#B9413A" />
+
+            <View
+                android:id="@+id/news_textView5"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/news_textView2"
+                android:background="@drawable/line1" />
+
+            <TextView
+                android:id="@+id/news_textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/news_textView5"
+                android:padding="5dp"
+                android:singleLine="false"
+                android:text="【活动时间】：/n【活动流程】/\n1./\n2./\n3./\n4./n【其他说明】"
+                android:textColor="@color/black" />
+        </RelativeLayout>
+    </FrameLayout>
+
+</LinearLayout>

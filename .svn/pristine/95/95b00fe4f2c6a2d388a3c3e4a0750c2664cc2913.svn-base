@@ -1,0 +1,720 @@
+package cn.chinat2t.stockgod.views;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.Context;
+import android.graphics.Color;
+import android.os.Handler;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import cn.chinat2t.stockgod.R;
+import cn.chinat2t.stockgod.bean.KLineBean;
+import cn.chinat2t.stockgod.bean.KlineData;
+import cn.chinat2t.stockgod.bean.LineEntity;
+import cn.chinat2t.stockgod.bean.OHLCEntity;
+import cn.chinat2t.stockgod.bean.PanKou;
+import cn.chinat2t.stockgod.bean.PanKouBean;
+import cn.chinat2t.stockgod.bean.StickEntity;
+import cn.chinat2t.stockgod.bean.StockInfoBean;
+import cn.chinat2t.stockgod.http.CommunicationManager;
+import cn.chinat2t.stockgod.http.CommunicationResultListener;
+import cn.chinat2t.stockgod.utils.DataUtil;
+
+public class FenShiView extends LinearLayout {
+
+	private View timeView;
+	private LinearLayout timeLineLayout;
+	private LayoutInflater mInflater;
+	private Button upBtn;
+
+	private ListView pankouListView;
+	private ListView mingxiListView;
+	private ListView fenjiaListView;
+	private ListView zijinListView;
+	private TextView waipan;
+	private TextView neipan;
+	private TextView weibi;
+	private TextView weicha;
+
+	private PanKouAdapter pankouAdapter;
+	private MingXiAdapter mingxiAdapter;
+	
+	private StickChart stickchart;
+	private MACandleStickChart macandlestickchart;
+	
+	private List<OHLCEntity> ohlc = new ArrayList<OHLCEntity>();
+	private List<StickEntity> vol = new ArrayList<StickEntity>();
+	private List<KlineData> lineList = new ArrayList<KlineData>();
+	private StockInfoBean stock;
+
+	public FenShiView(StockInfoBean stock, Context context) {
+		super(context);
+		this.stock = stock;
+		mInflater = LayoutInflater.from(context);
+		timeView = mInflater.inflate(R.layout.kline_time_layout, null);
+		addView(timeView);
+		
+		timeLineLayout = (LinearLayout) timeView.findViewById(R.id.time_line_layout);
+		timeView.findViewById(R.id.kline_time_btn1).setOnClickListener(onClickListener);
+		timeView.findViewById(R.id.kline_time_btn2).setOnClickListener(onClickListener);
+		timeView.findViewById(R.id.kline_time_btn3).setOnClickListener(onClickListener);
+		timeView.findViewById(R.id.kline_time_btn4).setOnClickListener(onClickListener);
+		timeView.findViewById(R.id.kline_time_btn5).setOnClickListener(onClickListener);
+		timeView.findViewById(R.id.kline_time_btn6).setOnClickListener(onClickListener);
+		onClickListener.onClick(timeView.findViewById(R.id.kline_time_btn1));
+	}
+
+	private void refreshStickChart() {
+		initMACandleStickChart();
+		initStickChart();
+		macandlestickchart.addNotify(stickchart);
+	}
+	
+	private void initStickChart() {
+		stickchart.setAxisXColor(Color.LTGRAY);
+		stickchart.setAxisYColor(Color.LTGRAY);
+		stickchart.setLatitudeColor(Color.GRAY);
+		stickchart.setLongitudeColor(Color.GRAY);
+		stickchart.setBorderColor(Color.LTGRAY);
+		stickchart.setLongtitudeFontColor(Color.GRAY);
+		stickchart.setLatitudeFontColor(Color.GRAY);
+		stickchart.setStickFillColor(Color.RED);
+		stickchart.setAxisMarginTop(5);
+		stickchart.setAxisMarginRight(1);
+		stickchart.setAxisMarginBottom(0);
+
+		stickchart.setDisplayAxisXTitle(true);
+		stickchart.setDisplayAxisYTitle(true);
+		stickchart.setDisplayLatitude(true);
+		stickchart.setDisplayLongitude(false);
+		stickchart.setBackgroudColor(Color.TRANSPARENT);
+		stickchart.setDisplayBorder(false);
+		stickchart.setDisplayAxisXTitle(false);
+	}
+	
+	private void initMACandleStickChart() {
+		macandlestickchart.setAxisXColor(Color.LTGRAY);
+		macandlestickchart.setAxisYColor(Color.LTGRAY);
+		macandlestickchart.setLatitudeColor(Color.GRAY);
+		macandlestickchart.setLongitudeColor(Color.GRAY);
+		macandlestickchart.setBorderColor(Color.LTGRAY);
+		macandlestickchart.setLongtitudeFontColor(Color.RED);
+		macandlestickchart.setLatitudeFontColor(Color.RED);
+		macandlestickchart.setPositiveStickBorderColor(Color.rgb(211, 76, 29));
+		macandlestickchart.setNegativeStickFillColor(Color.rgb(211, 76, 29));
+		macandlestickchart.setNegativeStickBorderColor(Color.rgb(52, 129, 1));
+		macandlestickchart.setNegativeStickFillColor(Color.rgb(52, 129, 1));
+		macandlestickchart.setAxisMarginRight(1);
+		macandlestickchart.setDisplayBorder(false);
+
+		macandlestickchart.setDisplayAxisXTitle(false);
+		macandlestickchart.setDisplayAxisYTitle(true);
+		macandlestickchart.setDisplayLatitude(true);
+		macandlestickchart.setDisplayLongitude(false);
+		macandlestickchart.setShowCandleSticks(false);
+		macandlestickchart.setBackgroudColor(Color.TRANSPARENT);
+	}
+	
+	private List<LineEntity> getLineEntityList2() {
+		List<LineEntity> lines = new ArrayList<LineEntity>();
+
+		LineEntity nowPrice = new LineEntity();
+		nowPrice.setTitle("现价线");
+		nowPrice.setLineColor(Color.BLUE);
+		nowPrice.setLineData(DataUtil.initFenShi(0, lineList));
+		lines.add(nowPrice);
+
+		LineEntity averPrice = new LineEntity();
+		averPrice.setTitle("均价线");
+		averPrice.setLineColor(Color.RED);
+		averPrice.setLineData(DataUtil.initFenShi(1, lineList));
+		lines.add(averPrice);
+		return lines;
+	}
+	
+	private List<LineEntity> getLineEntityList() {
+		List<LineEntity> lines = new ArrayList<LineEntity>();
+
+		// 计算5日均线
+		LineEntity MA5 = new LineEntity();
+		MA5.setTitle("MA5");
+		MA5.setLineColor(Color.rgb(222, 63, 209));
+		MA5.setLineData(DataUtil.initMA(5, ohlc));
+		lines.add(MA5);
+
+		// 计算10日均线
+		LineEntity MA10 = new LineEntity();
+		MA10.setTitle("MA10");
+		MA10.setLineColor(Color.RED);
+		MA10.setLineData(DataUtil.initMA(10, ohlc));
+		lines.add(MA10);
+
+		// 计算25日均线
+		LineEntity MA25 = new LineEntity();
+		MA25.setTitle("MA25");
+		MA25.setLineColor(Color.rgb(52, 129, 1));
+		MA25.setLineData(DataUtil.initMA(25, ohlc));
+		lines.add(MA25);
+		return lines;
+	}
+	
+	private CommunicationResultListener listener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			switch (result) {
+			case CommunicationManager.FAIL:
+				break;
+				
+			case CommunicationManager.SUCCEED:
+				break;
+			}
+			if(token > 0){
+				Message msg = mHandler.obtainMessage();
+				msg.arg1 = 0;
+				msg.obj = resultData;
+				mHandler.sendMessage(msg);
+			}
+		};
+	};
+	
+	private CommunicationResultListener pankouListener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			if(result == CommunicationManager.SUCCEED && token > 0){
+				Message message = mHandler.obtainMessage();
+				message.arg1 = 1;
+				message.obj = resultData;
+				mHandler.sendMessage(message);
+			}
+		};
+	};
+	
+	private CommunicationResultListener mingxiListener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			if(result == CommunicationManager.SUCCEED && token > 0){
+				Message message = mHandler.obtainMessage();
+				message.arg1 = 2;
+				message.obj = resultData;
+				mHandler.sendMessage(message);
+			}
+		};
+	};
+	
+	Handler mHandler = new Handler(){
+		
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.arg1) {
+			case 0:
+				KLineBean kLine = (KLineBean) msg.obj;
+				lineList = kLine.kline;
+				if(lineList == null) return;
+				ohlc.clear();
+				vol.clear();
+				for(KlineData data : lineList){
+					OHLCEntity oh = new OHLCEntity(data.open, data.high, data.low, data.close, data.yearm);
+					ohlc.add(oh);
+					StickEntity stick = new StickEntity(data.shou, 0, data.yearm);
+					vol.add(stick);
+				}
+				int length = ohlc.size() > 20 ? 20 : ohlc.size();
+				macandlestickchart.setMaxCandleSticksNum(length);
+				macandlestickchart.setLatitudeNum(5);
+				// 为chart2增加均线
+//				macandlestickchart.setMaxPrice(10);
+				macandlestickchart.setLineData(getLineEntityList2());   //  设置MA均线
+				macandlestickchart.setOHLCData(ohlc);    // 蜡烛图样的数值
+				macandlestickchart.invalidate();  // 更新视图
+				
+				length = vol.size() > 20 ? 20 : vol.size();
+				stickchart.setMaxStickDataNum(20);
+				stickchart.setLatitudeNum(2);
+				stickchart.setStickData(vol);
+				stickchart.invalidate();
+				break;
+
+			case 1:
+				PanKou pankou = (PanKou) msg.obj;
+				StockInfoBean stock = pankou.stock;
+				waipan.setText(stock.sellvol + "万");
+				neipan.setText(stock.buyvol + "万");
+				weibi.setText(stock.weibi + "%");
+				weicha.setText(String.valueOf(stock.weicha));
+				pankouAdapter.setData(pankou.pankouList);
+				pankouAdapter.notifyDataSetInvalidated();
+				break;
+				
+			case 2:
+				PanKou mingxi = (PanKou) msg.obj;
+				mingxiAdapter.setData(mingxi.mingxiList);
+				mingxiAdapter.notifyDataSetInvalidated();
+				break;
+			}
+		};
+	};
+	
+	OnClickListener onClickListener = new OnClickListener() {
+
+		private CircleMapView circle;
+
+		@Override
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.kline_time_btn1:
+				changeUpButton(v);
+				if (timeLineLayout != null)
+					timeLineLayout.removeAllViews();
+
+				View view = mInflater.inflate(R.layout.candle_stick_chart, null);
+				macandlestickchart = (MACandleStickChart) view.findViewById(R.id.kline_stock_tu1);
+				stickchart = (StickChart) view.findViewById(R.id.kline_stock_tu2);
+				timeLineLayout.addView(view);
+				refreshStickChart();
+				CommunicationManager.getInstance().getFenShiLine(stock, listener);
+				break;
+			case R.id.kline_time_btn2:
+				changeUpButton(v);
+				if (timeLineLayout != null)
+					timeLineLayout.removeAllViews();
+				View pankouView = mInflater.inflate(R.layout.kline_time_pankou_view, null);
+				timeLineLayout.addView(pankouView);
+				waipan = (TextView) pankouView.findViewById(R.id.pankou_wai_pan_value);
+				neipan = (TextView) pankouView.findViewById(R.id.pankou_nei_pan_value);
+				weibi = (TextView) pankouView.findViewById(R.id.pankou_wei_bi_value);
+				weicha = (TextView) pankouView.findViewById(R.id.pankou_wei_cha_value);
+				pankouListView = (ListView) pankouView.findViewById(R.id.pankou_list);
+				pankouAdapter = new PanKouAdapter();
+				pankouListView.setAdapter(pankouAdapter);
+				
+				CommunicationManager.getInstance().getPanKouLine(stock, pankouListener);
+				break;
+			case R.id.kline_time_btn3:
+			case R.id.kline_time_btn5:
+				changeUpButton(v);
+				if (timeLineLayout != null)
+					timeLineLayout.removeAllViews();
+				View mingxiView = mInflater.inflate(R.layout.system_list_view, null);
+				timeLineLayout.addView(mingxiView);
+				mingxiListView = (ListView) mingxiView.findViewById(R.id.list);
+				mingxiListView.addHeaderView(mInflater.inflate(R.layout.mingxi_listitem_layout, null));
+				mingxiAdapter = new MingXiAdapter();
+				mingxiListView.setAdapter(mingxiAdapter);
+				
+				CommunicationManager.getInstance().getPanKouLine(stock, mingxiListener);
+				break;
+			case R.id.kline_time_btn4:
+				changeUpButton(v);
+				if (timeLineLayout != null)
+					timeLineLayout.removeAllViews();
+				View fenjiaView = mInflater.inflate(R.layout.system_list_view, null);
+				timeLineLayout.addView(fenjiaView);
+				fenjiaListView = (ListView) fenjiaView.findViewById(R.id.list);
+				List<FenJiaBean> fenjiaList = new ArrayList<FenJiaBean>();
+				fenjiaList.add(new FenJiaBean(2.28, 1999, 33.23, 23.25, 20));
+				fenjiaList.add(new FenJiaBean(2.28, 1999, 33.23, 23.25, 20));
+				fenjiaList.add(new FenJiaBean(2.28, 1999, 33.23, 23.25, 20));
+				fenjiaList.add(new FenJiaBean(2.28, 1999, 33.23, 23.25, 20));
+				fenjiaList.add(new FenJiaBean(2.28, 1999, 33.23, 23.25, 20));
+				fenjiaList.add(new FenJiaBean(2.28, 1999, 33.23, 23.25, 20));
+				FenJiaAdapter fenjiaAdapter = new FenJiaAdapter(fenjiaList);
+				fenjiaListView.addHeaderView(mInflater.inflate(R.layout.fenjia_listitem_layout, null));
+				fenjiaListView.setAdapter(fenjiaAdapter);
+				break;
+			case R.id.kline_time_btn6:
+				changeUpButton(v);
+				if (timeLineLayout != null)
+					timeLineLayout.removeAllViews();
+				View zijinView = mInflater.inflate(R.layout.zijin_time_layout, null);
+				timeLineLayout.addView(zijinView);
+				zijinListView = (ListView) zijinView.findViewById(R.id.list);
+				circle = (CircleMapView) zijinView.findViewById(R.id.zijin_tu);
+				circle.invalidate();
+				List<ZiJinBean> zijinList = new ArrayList<ZiJinBean>();
+				zijinList.add(new ZiJinBean("主力", 135, 33.23, 450.5, 20));
+				ZiJinAdapter zijinAdapter = new ZiJinAdapter(zijinList);
+				zijinListView.addHeaderView(mInflater.inflate(R.layout.zijin_listitem_layout, null));
+				zijinListView.setAdapter(zijinAdapter);
+				break;
+			}
+		}
+
+	};
+	
+	private void changeUpButton(View v) {
+		if(upBtn != null){
+			upBtn.setBackgroundResource(R.drawable.main_tag_default);
+			upBtn.setTextColor(getResources().getColorStateList(R.color.textcolor1));
+		}
+		upBtn = (Button) v;
+		upBtn.setBackgroundResource(R.drawable.main_tag_active);
+		upBtn.setTextColor(getResources().getColorStateList(R.color.white));
+	}
+
+	class PanKouAdapter extends BaseAdapter{
+		
+        List<PanKouBean> mList = new ArrayList<PanKouBean>();
+        
+        public PanKouAdapter() {
+		}
+        
+        public void setData(List<PanKouBean> mList){
+        	this.mList = mList;
+        }
+        
+		@Override
+		public int getCount() {
+			return mList.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return position;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			MarketHolder holder = null;
+			if(convertView == null){
+				convertView = mInflater.inflate(R.layout.pankou_listitem_layout, null);
+				holder = new MarketHolder();
+				holder.tv1 = (TextView) convertView.findViewById(R.id.listitem_text1);
+				holder.tv2 = (TextView) convertView.findViewById(R.id.listitem_text2);
+				holder.tv3 = (TextView) convertView.findViewById(R.id.listitem_text3);
+				holder.tv4 = (ItemView) convertView.findViewById(R.id.listitem_image4);
+				holder.tv4.setVisibility(View.VISIBLE);
+				convertView.setTag(holder);
+			} else {
+				holder = (MarketHolder) convertView.getTag();
+			}
+			if(position != 0){
+				if(position % 2 == 0) convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor0));
+				else convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor1));
+			}
+			PanKouBean panKouBean = mList.get(position);
+			holder.tv1.setText("卖"+(5 - panKouBean.type) + "(元/手)");
+			holder.tv2.setText(String.valueOf(panKouBean.sprice));
+			holder.tv3.setText(String.valueOf(panKouBean.slang));
+			holder.tv4.setLength(panKouBean.bilv);
+			if(panKouBean.oldprice - panKouBean.sprice > 0){
+				holder.tv4.setColor(getResources().getColor(R.color.red));
+			}else{
+				holder.tv4.setColor(getResources().getColor(R.color.green));
+			}
+			holder.tv4.invalidate();
+			return convertView;
+		}
+		
+	}
+	
+	class MingXiAdapter extends BaseAdapter{
+		
+		List<PanKouBean> mList = new ArrayList<PanKouBean>();
+        
+        public MingXiAdapter() {
+		}
+        
+        public void setData(List<PanKouBean> mList){
+        	this.mList = mList;
+        }
+        
+		@Override
+		public int getCount() {
+			return mList.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return position;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			MingXiHolder holder = null;
+			if(convertView == null){
+				convertView = mInflater.inflate(R.layout.mingxi_listitem_layout, null);
+				holder = new MingXiHolder();
+				holder.tv1 = (TextView) convertView.findViewById(R.id.listitem_text1);
+				holder.tv2 = (TextView) convertView.findViewById(R.id.listitem_text2);
+				holder.tv3 = (TextView) convertView.findViewById(R.id.listitem_text3);
+				holder.tv4 = (TextView) convertView.findViewById(R.id.listitem_text4);
+				holder.tv5 = (TextView) convertView.findViewById(R.id.listitem_text5);
+				convertView.setTag(holder);
+			} else {
+				holder = (MingXiHolder) convertView.getTag();
+			}
+			if(position != 0){
+				if(position % 2 == 0) convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor0));
+				else convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor1));
+			}
+			PanKouBean bean = mList.get(position);
+			holder.tv1.setText(bean.uptime);
+			holder.tv2.setText(String.valueOf(bean.sprice));
+			holder.tv3.setText(String.valueOf(bean.slang));
+			holder.tv4.setText(String.format("%.2f", bean.sprice + bean.slang));
+			String str = "";
+			if(bean.xingzhi == 1){
+				str = "买盘";
+			}else if(bean.xingzhi == 2){
+				str = "卖盘";
+			}else if(bean.xingzhi == 3){
+				str = "买入";
+			}else if(bean.xingzhi == 4){
+				str = "卖出";
+			}
+			holder.tv5.setText(str);
+			return convertView;
+		}
+		
+	}
+	
+	class FenJiaAdapter extends BaseAdapter{
+		
+        List<FenJiaBean> mList;
+        
+        public FenJiaAdapter(List<FenJiaBean> mList) {
+        	this.mList = mList;
+		}
+        
+		@Override
+		public int getCount() {
+			return mList.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return position;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			FenJiaHolder holder = null;
+			if(convertView == null){
+				convertView = mInflater.inflate(R.layout.fenjia_listitem_layout, null);
+				holder = new FenJiaHolder();
+				holder.tv1 = (TextView) convertView.findViewById(R.id.listitem_text1);
+				holder.tv2 = (TextView) convertView.findViewById(R.id.listitem_text2);
+				holder.tv3 = (TextView) convertView.findViewById(R.id.listitem_text3);
+				holder.tv4 = (TextView) convertView.findViewById(R.id.listitem_text4);
+				holder.img5 = (ItemView) convertView.findViewById(R.id.listitem_image5);
+				convertView.setTag(holder);
+			} else {
+				holder = (FenJiaHolder) convertView.getTag();
+			}
+			if(position != 0){
+				if(position % 2 == 0) convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor0));
+				else convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor1));
+			}
+			FenJiaBean fenJiaBean = mList.get(position);
+			holder.tv1.setText(String.valueOf(fenJiaBean.price));
+			holder.tv2.setText(String.valueOf(fenJiaBean.liang));
+			holder.tv3.setText(String.valueOf(fenJiaBean.maipan));
+			holder.tv4.setText(String.valueOf(fenJiaBean.chengjiao));
+			holder.img5.setLength((int) fenJiaBean.chengjiao);
+			holder.img5.invalidate();
+			return convertView;
+		}
+		
+	}
+	
+	class ZiJinAdapter extends BaseAdapter{
+		
+        List<ZiJinBean> mList;
+        
+        public ZiJinAdapter(List<ZiJinBean> mList) {
+        	this.mList = mList;
+		}
+        
+		@Override
+		public int getCount() {
+			return mList.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return position;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			MingXiHolder holder = null;
+			if(convertView == null){  
+				convertView = mInflater.inflate(R.layout.mingxi_listitem_layout, null);
+				holder = new MingXiHolder();
+				holder.tv1 = (TextView) convertView.findViewById(R.id.listitem_text1);
+				holder.tv2 = (TextView) convertView.findViewById(R.id.listitem_text2);
+				holder.tv3 = (TextView) convertView.findViewById(R.id.listitem_text3);
+				holder.tv4 = (TextView) convertView.findViewById(R.id.listitem_text4);
+				holder.tv5 = (TextView) convertView.findViewById(R.id.listitem_text5);
+				convertView.setTag(holder);
+			} else {
+				holder = (MingXiHolder) convertView.getTag();
+			}
+			if(position != 0){
+				if(position % 2 == 0) convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor0));
+				else convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor1));
+			}
+			ZiJinBean zijinBean = mList.get(position);
+			holder.tv1.setText(zijinBean.leixing);
+			holder.tv2.setText(String.valueOf(zijinBean.liuru));
+			holder.tv3.setText(String.valueOf(zijinBean.bilieru));
+			holder.tv4.setText(String.valueOf(zijinBean.liuchu));
+			holder.tv5.setText(String.valueOf(zijinBean.biliechu));
+			return convertView;
+		}
+		
+	}
+	
+	class StockAdapter extends BaseAdapter{
+		
+        List<StockBean> mList;
+        
+        public StockAdapter(List<StockBean> mList) {
+        	this.mList = mList;
+		}
+        
+		@Override
+		public int getCount() {
+			return mList.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return position;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			MingXiHolder holder = null;
+			if(convertView == null){
+				convertView = mInflater.inflate(R.layout.mingxi_listitem_layout, null);
+				holder = new MingXiHolder();
+				holder.tv1 = (TextView) convertView.findViewById(R.id.listitem_text1);
+				holder.tv2 = (TextView) convertView.findViewById(R.id.listitem_text2);
+				holder.tv3 = (TextView) convertView.findViewById(R.id.listitem_text3);
+				holder.tv4 = (TextView) convertView.findViewById(R.id.listitem_text4);
+				holder.tv5 = (TextView) convertView.findViewById(R.id.listitem_text5);
+				convertView.setTag(holder);
+			} else {
+				holder = (MingXiHolder) convertView.getTag();
+			}
+
+			StockBean zijinBean = mList.get(position);
+			holder.tv1.setText(zijinBean.name);
+			holder.tv2.setText(String.valueOf(zijinBean.value1));
+			holder.tv3.setText(String.valueOf(zijinBean.value2));
+			holder.tv4.setText(String.valueOf(zijinBean.value3));
+			holder.tv5.setVisibility(View.GONE);
+			return convertView;
+		}
+		
+	}
+	
+	class MarketHolder{
+		TextView tv1;
+		TextView tv2;
+		TextView tv3;
+		ItemView tv4;
+	}
+	
+	class MingXiHolder{
+		TextView tv1;
+		TextView tv2;
+		TextView tv3;
+		TextView tv4;
+		TextView tv5;
+	}
+	
+	class FenJiaHolder{
+		TextView tv1;
+		TextView tv2;
+		TextView tv3;
+		TextView tv4;
+		ItemView img5;
+	}
+	
+	class FenJiaBean{
+		double price;
+		int liang;
+		double maipan;
+		double chengjiao;
+		int length;
+		
+		public FenJiaBean(double price, int liang, double maipan,
+				double chengjiao, int length) {
+			super();
+			this.price = price;
+			this.liang = liang;
+			this.maipan = maipan;
+			this.chengjiao = chengjiao;
+			this.length = length;
+		}
+
+	}
+	
+	class ZiJinBean{
+		String leixing;
+		int liuru;
+		double bilieru;
+		double liuchu;
+		int biliechu;
+		public ZiJinBean(String leixing, int liuru, double bilieru,
+				double liuchu, int biliechu) {
+			super();
+			this.leixing = leixing;
+			this.liuru = liuru;
+			this.bilieru = bilieru;
+			this.liuchu = liuchu;
+			this.biliechu = biliechu;
+		}
+		
+	}
+	
+	class StockBean{
+		String name;
+		int value1;
+		double value2;
+		int value3;
+		
+		public StockBean(String name, int value1, double value2, int value3) {
+			super();
+			this.name = name;
+			this.value1 = value1;
+			this.value2 = value2;
+			this.value3 = value3;
+		}
+		
+	}
+}

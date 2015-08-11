@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/news_item_layout"
+    android:padding="5dp"
+    android:layout_margin="5dp">
+
+    <CheckBox
+        android:id="@+id/news_item_checkBox1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="10dp"
+        android:focusable="false"
+   		android:focusableInTouchMode="false"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:id="@+id/news_item_textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/news_item_textView1"
+        android:layout_below="@+id/news_item_textView1"
+        android:text="2013-07-02"
+        android:layout_marginTop="2dp"
+        android:textColor="#6B5227" />
+
+    <TextView
+        android:id="@+id/news_item_textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/news_item_checkBox1"
+        android:text="国庆大酬宾***"
+        android:layout_marginTop="3dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#A70606" />
+
+</RelativeLayout>

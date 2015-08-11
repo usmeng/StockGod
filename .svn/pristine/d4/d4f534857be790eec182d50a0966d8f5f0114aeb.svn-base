@@ -1,0 +1,142 @@
+package cn.chinat2t.stockgod.activity;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+import cn.chinat2t.stockgod.MainActivity;
+import cn.chinat2t.stockgod.R;
+import cn.chinat2t.stockgod.bean.UserBean;
+import cn.chinat2t.stockgod.http.CommunicationManager;
+import cn.chinat2t.stockgod.http.CommunicationResultListener;
+import cn.chinat2t.stockgod.utils.HttpUtil;
+
+public class LaunchActivity extends Activity implements OnClickListener{
+	
+	private static final int DIALOG = 0;
+	private Button login;
+	private Button reg;
+	private Button quickLogin;
+	private Dialog dialog;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.lauch_layout);
+		
+		if(HttpUtil.isConnection(this)){
+			mHandler.postDelayed(runnable, 1000);
+		}else{
+			showDialog(DIALOG);
+		}
+//		mHandler.postDelayed(runnable, 1000);
+		login = (Button) findViewById(R.id.lauch_button2);
+		reg = (Button) findViewById(R.id.lauch_button3);
+		quickLogin = (Button) findViewById(R.id.lauch_button1);
+		
+		login.setOnClickListener(this);
+		reg.setOnClickListener(this);
+		quickLogin.setOnClickListener(this);
+//		onClick(quickLogin);
+	}
+	
+	@Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+        case DIALOG:
+   			View view = LayoutInflater.from(this).inflate(R.layout.guess_dialog_munu, null);
+   			TextView tx1 = (TextView) view.findViewById(R.id.textView2);
+   			TextView tx2 = (TextView) view.findViewById(R.id.textView3);
+   			Button button = (Button) view.findViewById(R.id.guess_confirm);
+   			tx1.setText("网络连接不可用，请设置后重新登录！");
+   			tx2.setVisibility(View.GONE);
+   			button.setText("设置");
+   			button.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					dialog.cancel();
+				}
+			});
+   			
+            dialog = new Dialog(this, R.style.selectorDialog);
+            dialog.setContentView(view);
+            dialog.show();
+            break;
+        }
+        return dialog;
+    }
+
+	private Handler mHandler = new Handler();
+	private Runnable runnable = new Runnable() {
+		
+		@Override
+		public void run() {
+			reg.setVisibility(View.VISIBLE);
+			login.setVisibility(View.VISIBLE);
+			quickLogin.setVisibility(View.VISIBLE);
+		}
+	};
+
+	@Override
+	public void onClick(View v) {
+		Intent intent = new Intent();
+		switch (v.getId()) {
+		case R.id.lauch_button3:
+			intent.setClass(this, RegActivity.class);
+			startActivity(intent);
+			break;
+
+		case R.id.lauch_button2:
+			intent.setClass(this, LoginActivity.class);
+			startActivity(intent);
+			break;
+			
+		case R.id.lauch_button1:
+			CommunicationManager.getInstance().fastLogin("123456", "123456", loginListener);
+			break;
+		}
+		
+	}
+	
+	private CommunicationResultListener loginListener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			if(result == CommunicationManager.SUCCEED && token > 0){
+				Message message = handler.obtainMessage();
+				message.arg1 = 0;
+				message.obj = resultData;
+				handler.sendMessage(message);
+			}
+		};
+	};
+	
+	Handler handler = new Handler(){
+		
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.arg1) {
+			case 0:
+				UserBean user = (UserBean) msg.obj;
+				UserBean.setUser(user);
+				if(user.responsecode == 1){
+					Intent intent = new Intent(LaunchActivity.this, MainActivity.class);
+					intent.putExtra(UserBean.USER_OBJECT, user);
+					startActivity(intent);
+					finish();
+				}else{
+					Toast.makeText(LaunchActivity.this, user.msg, 0).show();
+				}
+				break;
+			}
+		};
+	};
+	
+}

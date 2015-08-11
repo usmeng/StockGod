@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/choose_jine_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/choose_main_check"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="25dp"
+        android:text="参赛金额"
+        android:textColor="#6c3938"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:id="@+id/choose_btn_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/choose_main_check"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@id/choose_jine_text"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/guess_set_button1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_grey_selector"
+            android:gravity="center"
+            android:text="1万资金"
+            android:textColor="#6c3938" />
+
+        <Button
+            android:id="@+id/guess_set_button2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_grey_selector"
+            android:gravity="center"
+            android:text="2万资金"
+            android:textColor="#6c3938" />
+
+        <Button
+            android:id="@+id/guess_set_button3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_grey_selector"
+            android:gravity="center"
+            android:text="3万资金"
+            android:textColor="#6c3938" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/guess_set_auto_value"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/choose_btn_layout"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="15dp"
+        android:layout_toRightOf="@id/choose_jine_text"
+        android:background="@drawable/edit_bg"
+        android:gravity="center_vertical"
+        android:hint="手动输入"
+        android:textColor="#6c3938" />
+
+    <Button
+        android:id="@+id/guess_set_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/guess_set_auto_value"
+        android:layout_alignRight="@+id/guess_set_auto_value"
+        android:layout_below="@id/guess_set_auto_value"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_yellow_selector"
+        android:gravity="center"
+        android:text="确定参赛"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
+</RelativeLayout>

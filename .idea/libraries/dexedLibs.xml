@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="dexedLibs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/pinyin4j-2.5.0-946e2b8255e295c0bdb757ea67313d3e.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/annotations-bafda81664bd1292d0444f41867c1153.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/android-support-v4-cd5b9ebb6fe78145d8aa2f6ab5d6bbf4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

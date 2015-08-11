@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="5dp" >
+
+        <ImageView
+            android:id="@+id/myinfo_image_imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/photo_men" />
+
+        <TextView
+            android:id="@+id/myinfo_image_textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/myinfo_image_textView1"
+            android:layout_alignBottom="@+id/myinfo_image_textView1"
+            android:layout_toRightOf="@+id/myinfo_image_textView1"
+            android:text=""
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/myinfo_image_textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/myinfo_image_textView2"
+            android:layout_alignBottom="@+id/myinfo_image_textView2"
+            android:layout_alignLeft="@+id/myinfo_image_textView3"
+            android:text=""
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/myinfo_image_textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/myinfo_image_imageView1"
+            android:layout_toRightOf="@+id/myinfo_image_imageView1"
+            android:text="账    号："
+            android:textColor="#8C3A30" />
+
+        <TextView
+            android:id="@+id/myinfo_image_textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/myinfo_image_textView1"
+            android:layout_toRightOf="@+id/myinfo_image_imageView1"
+            android:text="昵    称："
+            android:textColor="#8C3A30" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/myinfo_image_textView2"
+            android:layout_toRightOf="@+id/myinfo_image_imageView1"
+            android:text="等    级："
+            android:textColor="#8C3A30" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView5"
+            android:layout_toRightOf="@+id/myinfo_image_imageView1"
+            android:text="VIP等级："
+            android:textColor="#8C3A30" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView1"
+            android:layout_alignBottom="@+id/textView1"
+            android:layout_toRightOf="@+id/textView3"
+            android:text=""
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textView7"
+            android:layout_below="@+id/textView3"
+            android:singleLine="true"
+            android:text="升一级还需经验："
+            android:textColor="#8C3A30" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView7"
+            android:layout_alignBottom="@+id/textView7"
+            android:layout_toRightOf="@+id/textView7"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/textView5"
+            android:layout_toRightOf="@+id/textView3"
+            android:text=""
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/textView7"
+            android:gravity="center"
+            android:text="加速："
+            android:textColor="#8C3A30" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/textView7"
+            android:layout_toRightOf="@+id/textView5"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/infor_change_button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/textView7"
+            android:layout_alignRight="@+id/textView9"
+            android:background="@drawable/btn_yellow_selector"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="改变"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView9"
+            android:layout_alignBottom="@+id/textView9"
+            android:layout_toRightOf="@+id/textView9"
+            android:text="0天"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView11"
+            android:layout_alignBottom="@+id/textView11"
+            android:layout_toRightOf="@+id/textView11"
+            android:textColor="@color/black" 
+            android:text="0" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView16"
+            android:layout_alignBottom="@+id/textView16"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/black" 
+            android:text="0" />
+
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView17"
+            android:layout_alignBottom="@+id/textView17"
+            android:layout_toLeftOf="@+id/textView17"
+            android:text="VIP有效期："
+            android:textColor="#8C3A30" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView10"
+            android:layout_alignBottom="@+id/textView10"
+            android:layout_toLeftOf="@+id/textView6"
+            android:text="牛人最终有效期："
+            android:textColor="#8C3A30" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView1"
+            android:layout_toLeftOf="@+id/myinfo_image_textView4"
+            android:text="经    验："
+            android:textColor="#8C3A30" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="成就"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.4"
+            android:gravity="center"
+            android:text="获得条件"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="奖励"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="状态"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/under_line" />
+
+    <ListView
+        android:id="@+id/myinfo_item_listView1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:cacheColorHint="#00000000"
+        android:divider="@drawable/line3"
+        android:paddingLeft="1dp"
+        android:paddingRight="1dp" >
+    </ListView>
+
+</LinearLayout>

@@ -1,0 +1,27 @@
+package cn.chinat2t.stockgod.activity;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import cn.chinat2t.stockgod.R;
+
+public class DuiHuanView extends LinearLayout{
+	
+	private LayoutInflater inflater;
+	private RelativeLayout layout;
+
+	public DuiHuanView(Context context) {
+		super(context);
+
+		inflater = LayoutInflater.from(context);
+		layout = (RelativeLayout) inflater.inflate(R.layout.recharge_exchange_layout, null);
+		addView(layout, new LinearLayout.LayoutParams(-1, -1));
+		initView();
+	}
+
+	protected void initView() {
+//		setContentView(R.layout.recharge_exchange_layout);
+	}
+	
+}

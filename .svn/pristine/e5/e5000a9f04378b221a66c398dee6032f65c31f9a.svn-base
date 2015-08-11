@@ -1,0 +1,71 @@
+package cn.chinat2t.stockgod.bean;
+
+import java.io.Serializable;
+import java.util.List;
+
+public class UserBean implements Serializable{
+	
+	public static final String USER_OBJECT = "user_name";
+	
+	private static final long serialVersionUID = 1L;
+	public static final String USER_LIN_SHI = "1";
+	public static final String USER_NORMAL = "2";
+	public static final String USER_VIP = "3";
+	
+	public int    uid;          // 用户ID
+	public double fund;      // 表示资金
+	public double gold;      // 表示金币
+	public double lottery;   // 
+	public double stockmoney;// 股票的价值
+	public double zonge;     // 表示交易总盈亏
+	public double jiaoyici;  // 表示交易次数
+	public double yingkuilv; // 表示 盈亏率
+	public List<AccountStockBean> listStock;  // 用户持有的股票
+
+	public String account; // "",
+	public String nickname;//: "11111112",
+	public String pic;	   //: null,
+	public String level;   //: "0",
+	public String experience;//: "0",
+	public String vip;     //: "0",
+	public String acceleration;//: "10",
+	public String phone;   //: null,
+	public String email;   //: "11111112@163.com",
+	public String onlinedays;//: null,
+	public String experiencevalue;//: null,
+	public String sex;     //: "1",
+	public String address; //: null,
+	public String pwd;     //: "MTExMTExMTI=",
+	public String daymail; //: "5",
+	public String freeze;  //: "0",
+	public String userphototype;//: "1",
+	public String usertype;//: "2",
+	public String zhucetime;//: "1372763547",
+	public String uplogintime;//: "1372763547"
+	
+	public String msg;
+	public int    responsecode;
+	private static UserBean user;
+	
+//	public List<UserGuanZhu> guanZhuList;
+//	public List<UserFenSi> fenSiList;
+//	public List<UserZhuiZhong> zuiZongList;
+	
+	private UserBean(){}
+	
+	public static UserBean getInstance(){
+		if(user == null){
+			user = new UserBean();
+		}
+		return user;
+	}
+	
+	public static UserBean getNewInstance(){
+		return new UserBean();
+	}
+
+	public static void setUser(UserBean user) {
+		UserBean.user = user;
+	}
+
+}

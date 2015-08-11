@@ -1,0 +1,286 @@
+package cn.chinat2t.stockgod.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Activity;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+import cn.chinat2t.stockgod.MainActivity;
+import cn.chinat2t.stockgod.R;
+import cn.chinat2t.stockgod.bean.KLineBean;
+import cn.chinat2t.stockgod.bean.KlineData;
+import cn.chinat2t.stockgod.bean.LineEntity;
+import cn.chinat2t.stockgod.bean.OHLCEntity;
+import cn.chinat2t.stockgod.bean.StickEntity;
+import cn.chinat2t.stockgod.bean.StockInfoBean;
+import cn.chinat2t.stockgod.http.CommunicationManager;
+import cn.chinat2t.stockgod.http.CommunicationResultListener;
+import cn.chinat2t.stockgod.utils.CtLog;
+import cn.chinat2t.stockgod.utils.DataUtil;
+import cn.chinat2t.stockgod.utils.StringUtil;
+import cn.chinat2t.stockgod.utils.TimerManager;
+import cn.chinat2t.stockgod.utils.TimerManager.TimerListener;
+import cn.chinat2t.stockgod.views.MACandleStickChart;
+
+/**
+ * 收益闪电对决
+ * @author Administrator
+ */
+public class FastFightActivity extends Activity implements OnClickListener {
+
+	public final static int FIGHT_SOTCK = 0;
+	public final static int FIGHT_EYE = 1;
+	public final static int FIGHT_BUY = 2;
+	public final static int FIGHT_SELL = 3;
+	
+	private Button buyButton;
+	private Button sellButton;
+	private Button eyeButton;
+	private TextView myLv;
+	private TextView yourLv;
+	private TextView daoJiShi;
+	private TextView nowGuJia;
+	private TextView nowGuShu;
+	private List<OHLCEntity> ohlc = new ArrayList<OHLCEntity>();
+	private MACandleStickChart macandlestickchart;
+	private int timeLenght = 10;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		setContentView(R.layout.fastfight_layout);
+		initViews();
+		
+		StockInfoBean stock = new StockInfoBean();
+		stock.id = 1;
+		CommunicationManager.getInstance().get5Line(stock , stockListener);
+		
+		TimerManager manager = new TimerManager(1000, timeLenght);
+		manager.setTimerListener(timeListener);
+		manager.start();
+		
+		MainActivity.setTitleName("闪电对决");
+	}
+	
+	private void initViews(){
+		buyButton = (Button) findViewById(R.id.fight_buy_button);
+		sellButton = (Button) findViewById(R.id.fight_sell_button);
+		eyeButton = (Button) findViewById(R.id.fight_sky_eye);
+		myLv = (TextView) findViewById(R.id.fight_my_zenglv);
+		yourLv = (TextView) findViewById(R.id.fight_your_zenglv);
+		daoJiShi = (TextView) findViewById(R.id.fight_dao_ji_shi);
+		nowGuJia = (TextView) findViewById(R.id.textview_gujia);
+		nowGuShu = (TextView) findViewById(R.id.textview_gushu);
+		macandlestickchart = (MACandleStickChart) findViewById(R.id.kline_stock_tu1);
+		
+		eyeButton.setOnClickListener(this);
+		sellButton.setOnClickListener(this);
+		buyButton.setOnClickListener(this);
+		
+		initMACandleStickChart();
+	}
+	
+	private void initMACandleStickChart() {
+		macandlestickchart.setAxisXColor(Color.LTGRAY);
+		macandlestickchart.setAxisYColor(Color.LTGRAY);
+		macandlestickchart.setLatitudeColor(Color.GRAY);
+		macandlestickchart.setLongitudeColor(Color.GRAY);
+		macandlestickchart.setBorderColor(Color.LTGRAY);
+		macandlestickchart.setLongtitudeFontColor(Color.RED);
+		macandlestickchart.setLatitudeFontColor(Color.RED);
+		macandlestickchart.setPositiveStickBorderColor(Color.rgb(211, 76, 29));
+		macandlestickchart.setNegativeStickFillColor(Color.rgb(211, 76, 29));
+		macandlestickchart.setNegativeStickBorderColor(Color.rgb(52, 129, 1));
+		macandlestickchart.setNegativeStickFillColor(Color.rgb(52, 129, 1));
+		macandlestickchart.setAxisMarginRight(1);
+		macandlestickchart.setDisplayBorder(false);
+
+		macandlestickchart.setDisplayAxisXTitle(false);
+		macandlestickchart.setDisplayAxisYTitle(true);
+		macandlestickchart.setDisplayLatitude(true);
+		macandlestickchart.setDisplayLongitude(false);
+		macandlestickchart.setShowCandleSticks(true);
+		macandlestickchart.setBackgroudColor(Color.TRANSPARENT);
+	}
+	
+	private TimerListener timeListener = new TimerListener() {
+		
+		@Override
+		public void pause() {}
+		
+		@Override
+		public void finish() {
+			showResult();
+		}
+
+		@Override
+		public void update(int time) {
+			CtLog.d("time: " + time);
+			daoJiShi.setText(StringUtil.formatTime(timeLenght - time));
+		}
+	};
+	
+	private CommunicationResultListener buyListener = new CommunicationResultListener() {
+		
+		// 被JsonParserManager中的parserMonthLine()调用
+		public void resultListener(byte result, Object resultData) {
+			if(result == CommunicationManager.SUCCEED && token > 0){
+				Message msg = mHandler.obtainMessage();
+				msg.what = result;
+				msg.arg1 = FIGHT_BUY;
+				msg.obj = resultData;
+				mHandler.sendMessage(msg);
+			}
+		};
+	};
+	
+	private CommunicationResultListener sellListener = new CommunicationResultListener() {
+		
+		// 被JsonParserManager中的parserMonthLine()调用
+		public void resultListener(byte result, Object resultData) {
+			if(result == CommunicationManager.SUCCEED && token > 0){
+				Message msg = mHandler.obtainMessage();
+				msg.what = result;
+				msg.arg1 = FIGHT_SELL;
+				msg.obj = resultData;
+				mHandler.sendMessage(msg);
+			}
+		};
+	};
+	
+	private CommunicationResultListener eyeListener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			if(result == CommunicationManager.SUCCEED && token > 0){
+				Message msg = mHandler.obtainMessage();
+				msg.what = result;
+				msg.arg1 = FIGHT_EYE;
+				msg.obj = resultData;
+				mHandler.sendMessage(msg);
+			}
+		};
+	};
+	
+	private CommunicationResultListener stockListener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			if(result == CommunicationManager.SUCCEED && token > 0){
+				Message msg = mHandler.obtainMessage();
+				msg.what = result;
+				msg.arg1 = FIGHT_SOTCK;
+				msg.obj = resultData;
+				mHandler.sendMessage(msg);
+			}
+		};
+	};
+
+	private void showResult() {
+		if(StringUtil.paraseString(yourLv.getText().toString()) < StringUtil.paraseString(myLv.getText().toString())){
+			Toast.makeText(this, "您赢了！", Toast.LENGTH_LONG).show();
+		}else{
+			Toast.makeText(this, "您输了！", Toast.LENGTH_LONG).show();
+		}
+	}
+	
+	Handler mHandler = new Handler(){
+		
+		public void handleMessage(android.os.Message msg) {
+			if(msg.what == CommunicationManager.SUCCEED) {
+				switch (msg.arg1) {
+				case FIGHT_SOTCK:
+					KLineBean kLine = (KLineBean) msg.obj;
+					List<KlineData> lineList = kLine.kline;
+					if(lineList == null) return;
+					ohlc.clear();
+					for(KlineData data : lineList){
+						OHLCEntity oh = new OHLCEntity(data.open, data.high, data.low, data.close, data.yearm);
+						ohlc.add(oh);
+						StickEntity stick = new StickEntity(data.shou, 0, data.yearm);
+					}
+					int length = ohlc.size() > 20 ? 20 : ohlc.size();
+					macandlestickchart.setMaxCandleSticksNum(length);
+					macandlestickchart.setLatitudeNum(5);
+					// 为chart2增加均线
+					macandlestickchart.setLineData(getLineEntityList());   //  设置MA均线
+					macandlestickchart.setOHLCData(ohlc);    // 蜡烛图样的数值
+					macandlestickchart.invalidate();  // 更新视图
+					break;
+
+				case FIGHT_EYE:
+					eyeButton.setVisibility(View.GONE);
+					yourLv.setVisibility(View.VISIBLE);
+					yourLv.setText("收益率：34%");
+					break;
+					
+				case FIGHT_SELL:
+					Toast.makeText(FastFightActivity.this, "卖出成功！", 0).show();
+					break;
+					
+				case FIGHT_BUY:
+					Toast.makeText(FastFightActivity.this, "买出成功！", 0).show();
+					break;
+				
+				case -6:
+					daoJiShi.setText("");
+					break;
+				}
+				
+			} else {
+			
+			}
+		}
+
+	};
+	
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.fight_buy_button:
+			CommunicationManager.getInstance().buyAccountStock(1, 1, 1, buyListener);
+			break;
+
+		case R.id.fight_sell_button:
+			CommunicationManager.getInstance().sellAccountStock(1, 1, sellListener);
+			break;
+		
+		case R.id.fight_sky_eye:
+			CommunicationManager.getInstance().getHasSkyEye(1, eyeListener);
+			break;
+		}
+	}
+	
+	private List<LineEntity> getLineEntityList() {
+		List<LineEntity> lines = new ArrayList<LineEntity>();
+
+		// 计算5日均线
+		LineEntity MA5 = new LineEntity();
+		MA5.setTitle("MA5");
+		MA5.setLineColor(Color.rgb(222, 63, 209));
+		MA5.setLineData(DataUtil.initMA(5, ohlc));
+		lines.add(MA5);
+
+		// 计算10日均线
+		LineEntity MA10 = new LineEntity();
+		MA10.setTitle("MA10");
+		MA10.setLineColor(Color.RED);
+		MA10.setLineData(DataUtil.initMA(10, ohlc));
+		lines.add(MA10);
+
+		// 计算25日均线
+		LineEntity MA25 = new LineEntity();
+		MA25.setTitle("MA25");
+		MA25.setLineColor(Color.rgb(52, 129, 1));
+		MA25.setLineData(DataUtil.initMA(25, ohlc));
+		lines.add(MA25);
+		return lines;
+	}
+}

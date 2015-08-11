@@ -1,0 +1,12 @@
+package cn.chinat2t.stockgod.bean;
+
+public class UserDaoJu extends DJBean{
+	public int id;		//": "1",
+	public int uid;		//: "1",
+	public String begingtime;//: "1371357372",
+	public String endtime;	 //: "19713573725",
+    public int propsid;		 //: "1",
+    public int useflag;		 //: "1",
+    public int usechangdi;	 //: "1",
+    public int shuliang;	 //: "12"
+}

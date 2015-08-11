@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp" >
+
+    <RadioGroup
+        android:id="@+id/mall_tabs_radiogroup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp" >
+
+        <RadioButton
+            android:id="@+id/radiobtn1"
+            style="@style/tab_item_background_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg"
+            android:checked="true"
+            android:text="道具" />
+
+        <RadioButton
+            android:id="@+id/radiobtn2"
+            style="@style/tab_item_background_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg"
+            android:text="VIP卡" />
+
+        <RadioButton
+            android:id="@+id/radiobtn3"
+            style="@style/tab_item_background_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg"
+            android:text="兑换" />
+
+        <RadioButton
+            android:id="@+id/radiobtn4"
+            style="@style/tab_item_background_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg"
+            android:text="充值" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="-3dp"
+        android:background="@drawable/main_circle_bg"
+        android:orientation="vertical"
+        android:paddingLeft="1dp"
+        android:paddingRight="1dp" >
+    </LinearLayout>
+
+</LinearLayout>

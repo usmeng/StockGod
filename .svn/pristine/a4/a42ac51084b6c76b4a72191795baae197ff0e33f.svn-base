@@ -1,0 +1,119 @@
+package cn.chinat2t.stockgod.activity;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import cn.chinat2t.stockgod.MainActivity;
+import cn.chinat2t.stockgod.R;
+import cn.chinat2t.stockgod.bean.RoomBean;
+
+public class RoomActivity extends Activity implements OnClickListener{
+	
+//	private TextView titleTv = null;
+	private int roomId = 0;
+	private Intent intent = null;
+	private long clickTime = 0;
+	private RoomBean roomBean;
+	private View game1;
+	private View game2;
+	private View game3;
+	private String[] saizhiList;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		setContentView(R.layout.room_layout);
+		roomId = getIntent().getIntExtra("flag", 1);
+		roomBean = (RoomBean) getIntent().getSerializableExtra("saizhi");
+		game1 = findViewById(R.id.room_game_type1);
+		game2 = findViewById(R.id.room_game_type2);
+		game3 = findViewById(R.id.room_game_type3);
+		initViews();
+		initData();
+		
+		initTitleName();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		initTitleName();
+	}
+
+	private void initTitleName() {
+		if(roomId == 1){
+			MainActivity.setTitleName("资金房间");
+		}else if(roomId == 2){
+			MainActivity.setTitleName("100金币房间");
+		}else if(roomId == 3){
+			MainActivity.setTitleName("200金币房间");
+		}else if(roomId == 4){
+			MainActivity.setTitleName("300金币房间");
+		}
+	}
+	
+	private void initViews(){
+//		titleTv = (TextView) findViewById(R.id.room_title_title);
+		game1.setOnClickListener(this);
+		game2.setOnClickListener(this);
+		game3.setOnClickListener(this);
+	}
+	
+	private void initData(){
+		if(roomBean == null) return;
+//		titleTv.setText(roomBean.ext);
+		saizhiList = roomBean.saizhi.split(",");
+		if(saizhiList != null){
+			if(saizhiList.length >= 1){
+				game1.setVisibility(View.VISIBLE);
+			}
+			if(saizhiList.length >= 2){
+				game2.setVisibility(View.VISIBLE);
+			}
+			if(saizhiList.length >= 3){
+				game3.setVisibility(View.VISIBLE);
+			}
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		if(roomBean == null) return;
+		long time = System.currentTimeMillis();
+		switch (v.getId()) {
+		case R.id.room_game_type1:
+			if(time - clickTime > 1000){
+				clickTime = time;
+				intent = new Intent(this, GuessActivity.class);
+				intent.putExtra("roomId", roomId);
+				intent.putExtra("saizhiID", Integer.parseInt(saizhiList[0]));
+				CompetitiveGroup.getInstance().switchActivity("GuessActivity", intent, -1,-1);
+			}
+			break;
+		case R.id.room_game_type2:
+			if(time - clickTime > 1000){
+				clickTime = time;
+				intent = new Intent(this, ChooseActivity.class);
+				intent.putExtra("roomId", roomId);
+				intent.putExtra("saizhiID", Integer.parseInt(saizhiList[1]));
+				CompetitiveGroup.getInstance().switchActivity("ChooseActivity", intent, -1,-1);
+			}
+			break;
+		case R.id.room_game_type3:
+			if(time - clickTime > 1000){
+				clickTime = time;
+				intent = new Intent(this, FastFightActivity.class);
+				intent.putExtra("roomId", roomId);
+				intent.putExtra("saizhiID", Integer.parseInt(saizhiList[2]));
+				CompetitiveGroup.getInstance().switchActivity("FastFightActivity", intent, -1,-1);
+			}
+			break;
+
+		default:
+			break;
+		}
+	}
+}

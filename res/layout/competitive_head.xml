@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/head_news_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:background="@drawable/red_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="1dp"
+        android:paddingTop="1dp" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/main_gold_icon" />
+
+        <TextView
+            android:id="@+id/head_broad_toast"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="牛人冠军“江苏人” 两月收益超过80%"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/head_news_layout"
+        android:background="@drawable/line1" />
+
+    <RelativeLayout
+        android:id="@+id/head_info_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/head_news_layout"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" >
+
+        <Button
+            android:id="@+id/head_info_vip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/main_level_icon"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/head_info_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_toRightOf="@id/head_info_vip"
+            android:text="股神用户"
+            android:layout_marginTop="3dp"
+            android:textColor="#6c3938" />
+
+        <RelativeLayout
+            android:id="@+id/head_info_jingdu"
+            android:layout_width="80dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="1dp"
+            android:layout_below="@id/head_info_name"
+            android:layout_toRightOf="@id/head_info_vip" >
+
+            <ProgressBar
+                android:id="@+id/head_progress_bar"
+                style="@style/main_progressBar_Horizontal"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:max="100"
+                android:progress="50"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true" />
+
+            <TextView
+                android:id="@+id/head_info_jingdu_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="0/100"
+                android:textColor="@color/white"
+                android:textSize="10sp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/head_info_jb"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/head_info_jingdu"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/main_gold_icon" />
+
+            <TextView
+                android:id="@+id/head_info_jb_value"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="0"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/head_info_zj"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/head_info_jb"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/head_info_jingdu"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="-2dp"
+            android:paddingTop="-2dp" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/main_foud_icon" />
+
+            <TextView
+                android:id="@+id/head_info_zj_value"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="0"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/head_info_jq"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/head_info_zj"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/head_info_jingdu"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/main_jiang_icon" />
+
+            <TextView
+                android:id="@+id/head_info_jq_value"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="0"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view1"
+            android:layout_width="1dp"
+            android:layout_height="50dp"
+            android:layout_toRightOf="@id/head_info_zj"
+            android:background="@drawable/line4" />
+
+        <ImageView
+            android:id="@+id/head_info_huodong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/head_info_zj"
+            android:src="@drawable/btn_task_selector" />
+
+        <TextView
+            android:id="@+id/head_info_jiangjin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_toRightOf="@id/head_info_huodong"
+            android:singleLine="true"
+            android:text="奖励:"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+
+        <FrameLayout
+            android:id="@+id/head_jiang_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/head_info_jiangjin"
+            android:layout_toRightOf="@id/head_info_huodong"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/head_jiang_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/main_foud_icon" />
+
+                <TextView
+                    android:id="@+id/head_jiang_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:singleLine="true"
+                    android:text="1000"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="10dp" />
+
+                <ImageView
+                    android:id="@+id/head_task_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/main_task_finished" >
+                </ImageView>
+            </LinearLayout>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/main_vip_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/head_info_jingdu"
+            android:layout_below="@+id/head_info_jingdu"
+            android:text="VIP0"
+            android:textSize="12sp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="1dp"
+            android:textColor="#ff6E0300" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/head_info_layout"
+        android:background="@drawable/line1" />
+
+</RelativeLayout>

@@ -1,0 +1,789 @@
+package cn.chinat2t.stockgod.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TextView;
+import android.widget.Toast;
+import cn.chinat2t.stockgod.MainActivity;
+import cn.chinat2t.stockgod.R;
+import cn.chinat2t.stockgod.bean.AccountStockBean;
+import cn.chinat2t.stockgod.bean.SelfStockBean;
+import cn.chinat2t.stockgod.bean.StockInfoBean;
+import cn.chinat2t.stockgod.bean.UserBean;
+import cn.chinat2t.stockgod.bean.WeiTuoStockBean;
+import cn.chinat2t.stockgod.http.CommunicationManager;
+import cn.chinat2t.stockgod.http.CommunicationResultListener;
+import cn.chinat2t.stockgod.utils.Constant;
+
+public class SimulationActivity extends Activity implements OnCheckedChangeListener, OnClickListener{
+
+	private static final int KINDS_OF_STOCKS = 0;
+	private static final int ACCOUNT_OF_STOCKS = 1;
+	private static final int WEITUO_OF_STOCKS = 2;
+	private static final int SELF_OF_STOCKS = 3;
+	
+	private View marketView;
+	private View accountView;
+	private View selfChooseView;
+	private View weiTuoView;
+	private ListView marketListView;
+	private ListView weiTuoListView;
+	private ListView selfChooseListView;
+	private ListView accountListView;
+	
+	private MarketAdapter mAdapter;
+	private WeituoAdapter wAdapter;
+	private SelfChooseAdapter selfAdapter;
+	private AccountAdapter aAdapter;
+	private List<StockInfoBean> marketList;
+	private List<AccountStockBean> accountList;
+	private List<WeiTuoStockBean> weituoList;
+	private List<SelfStockBean> selfList;
+	private RadioGroup marketGroup;
+	private RadioGroup StockGroup;
+	private int flag = 0;
+	
+	private CommunicationManager communicationManager;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		setContentView(R.layout.simulation_layout);
+		flag = getIntent().getIntExtra("flag", 0);
+		communicationManager = CommunicationManager.getInstance();
+		
+		initViews();
+		initData();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MainActivity.setTitleName("模拟炒股");
+	}
+	
+	private void initData(){
+		marketList = new ArrayList<StockInfoBean>();
+		weituoList = new ArrayList<WeiTuoStockBean>();
+		accountList = new ArrayList<AccountStockBean>();
+		selfList = new ArrayList<SelfStockBean>();
+	}
+	
+	private void refreshMarketStock(int type) {
+		
+		communicationManager.getKindsOfStock(type, new CommunicationResultListener() {
+			
+			@Override
+			public void resultListener(byte result, Object resultData) {
+				super.resultListener(result, resultData);
+				switch (result) {
+				case CommunicationManager.FAIL:
+					
+					break;
+
+				case CommunicationManager.SUCCEED:
+					Message msg = handler.obtainMessage();
+					msg.obj = resultData;
+					msg.what = KINDS_OF_STOCKS;
+					handler.sendMessage(msg);
+					break;
+				}
+			}
+		});
+	}
+	
+	Handler handler = new Handler(new Callback() {
+		
+		@Override
+		public boolean handleMessage(Message msg) {
+			switch (msg.what) {
+			case KINDS_OF_STOCKS:
+				marketList = (List<StockInfoBean>) msg.obj;
+				mAdapter.setData(marketList);
+				mAdapter.notifyDataSetChanged();
+				break;
+				
+			case ACCOUNT_OF_STOCKS:
+				UserBean user = (UserBean) msg.obj;
+				accountZiChan.setText(String.valueOf(user.fund));
+				accountZongYingkui.setText(String.valueOf(user.zonge));
+				accountShiZhi.setText(String.valueOf(user.stockmoney));
+				accountJiaoYi.setText(String.valueOf(user.jiaoyici));
+				accountYingkuiLv.setText(user.yingkuilv + "%");
+				accountList = user.listStock;
+				aAdapter.setData(accountList);
+				aAdapter.notifyDataSetInvalidated();
+				break;
+				
+			case SELF_OF_STOCKS:
+				selfList = (List<SelfStockBean>) msg.obj;
+				selfAdapter.setData(selfList);
+				selfAdapter.notifyDataSetInvalidated();
+				break;
+				
+			case WEITUO_OF_STOCKS:
+				weituoList = (List<WeiTuoStockBean>) msg.obj;
+				wAdapter.setData(weituoList);
+				wAdapter.notifyDataSetInvalidated();
+				break;
+				
+			case -1:
+				Toast.makeText(SimulationActivity.this, msg.obj.toString(), 0).show();
+				break;
+				
+			case -2:
+				WeiTuoStockBean bean = (WeiTuoStockBean) msg.obj;
+				Toast.makeText(SimulationActivity.this, bean.sname + "已撤销", 0).show();
+				weituoList.remove(bean);
+				wAdapter.setData(weituoList);
+				wAdapter.notifyDataSetInvalidated();
+				break;
+			case -3:
+				AccountStockBean accountBean = (AccountStockBean) msg.obj;
+				Toast.makeText(SimulationActivity.this, accountBean.sname + "已卖出", 0).show();
+				accountList.remove(accountBean);
+				aAdapter.setData(accountList);
+				aAdapter.notifyDataSetInvalidated();
+				break;
+			}
+			return false;
+		}
+	});
+	
+	private void initViews(){
+		StockGroup = ((RadioGroup)this.findViewById(R.id.simulation_menu_layout));
+		StockGroup.setOnCheckedChangeListener(this);
+		
+		accountView = findViewById(R.id.simulation_account_layout);
+		accountListView = (ListView) findViewById(R.id.simulation_account_list);
+		aAdapter = new AccountAdapter();
+		accountListView.setAdapter(aAdapter);
+		accountListView.setOnItemClickListener(accountItemClick);
+		
+		marketView = findViewById(R.id.simulation_market_layout);
+		marketListView = (ListView) findViewById(R.id.simulation_market_list);
+		marketGroup = (RadioGroup) findViewById(R.id.kind_stock_market);
+		marketGroup.setOnCheckedChangeListener(this);
+		mAdapter = new MarketAdapter();
+		marketListView.setAdapter(mAdapter);
+		marketListView.setOnItemClickListener(marketItemClick);
+		
+		selfChooseView = findViewById(R.id.simulation_self_layout);
+		selfChooseListView = (ListView) findViewById(R.id.simulation_self_list);
+		selfAdapter = new SelfChooseAdapter();
+		selfChooseListView.setAdapter(selfAdapter);
+		selfChooseListView.setOnItemClickListener(selfChooseItemClick);
+		Button searchBtn = (Button) findViewById(R.id.self_search_button);
+		searchValue = (EditText) findViewById(R.id.self_search_value);
+		searchBtn.setOnClickListener(this);
+		
+		weiTuoView = findViewById(R.id.simulation_weituo_layout);
+		weiTuoListView = (ListView) findViewById(R.id.simulation_weituo_list);
+		wAdapter = new WeituoAdapter();
+		weiTuoListView.setAdapter(wAdapter);
+		weiTuoListView.setOnItemClickListener(weiTuoItemClick);
+		
+		if(flag == 1){
+			((RadioButton)findViewById(R.id.simulation_radio_button1)).setChecked(true);
+//			onCheckedChanged(StockGroup, R.id.simulation_radio_button1);
+		} else if(flag == 2) {
+			((RadioButton)findViewById(R.id.simulation_radio_button2)).setChecked(true);
+//			onCheckedChanged(StockGroup, R.id.simulation_radio_button2);
+		}else{
+			((RadioButton)findViewById(R.id.simulation_radio_button0)).setChecked(true);
+			onCheckedChanged(StockGroup, R.id.simulation_radio_button0);
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+
+		case R.id.self_search_button:
+			String value = searchValue.getText().toString();
+			if(value != null && value.length() > 0){
+				CommunicationManager.getInstance().getSearchAccountStock(value, new CommunicationResultListener() {
+					
+					@Override
+					public void resultListener(byte result, Object resultData) {
+						super.resultListener(result, resultData);
+						switch (result) {
+						case CommunicationManager.FAIL:
+							
+							break;
+
+						case CommunicationManager.SUCCEED:
+							Message message = handler.obtainMessage();
+							message.what = SELF_OF_STOCKS;
+							message.obj = resultData;
+							handler.sendMessage(message);
+							break;
+						}
+					}
+				}
+				);
+			}
+			break;
+			
+		case R.id.account_follow_niuren:
+			break;
+		
+			
+		}
+	}
+
+	@Override
+	public void onCheckedChanged(RadioGroup group, int checkedId) {
+		switch (group.getId()) {
+		case R.id.simulation_menu_layout:
+			if(checkedId == R.id.simulation_radio_button0){         //市场
+				showMarket();
+				refreshMarketStock(1);
+			}else if(checkedId == R.id.simulation_radio_button1){   //帐户
+				showAccount();
+				refreshAccountStock();
+			} else if(checkedId == R.id.simulation_radio_button2){  //自选
+				showSelfChoose();
+				refreshSelfStock();
+			} else if(checkedId == R.id.simulation_radio_button3){  //委托
+				showWeiTuo();
+				refreshWeiTuoStock();
+			}
+			break;
+		case R.id.kind_stock_market:
+			int type = 1;
+			if(checkedId == R.id.simulation_market_radio1){
+				type = 1;
+			} else if(checkedId == R.id.simulation_market_radio2){
+				type = 2;
+			} else if(checkedId == R.id.simulation_market_radio3){  
+				type = 3;
+			} else if(checkedId == R.id.simulation_market_radio4){ 
+				type = 4;
+			} else if(checkedId == R.id.simulation_market_radio5){ 
+				type = 5;
+			}
+			refreshMarketStock(type);
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void refreshWeiTuoStock() {
+		UserBean user = UserBean.getInstance();
+		user.uid = 1;
+		communicationManager.getWeiTuoStock(user, new CommunicationResultListener() {
+			
+			@Override
+			public void resultListener(byte result, Object resultData) {
+				super.resultListener(result, resultData);
+				switch (result) {
+				case CommunicationManager.FAIL:
+					
+					break;
+
+				case CommunicationManager.SUCCEED:
+					Message message = handler.obtainMessage();
+					message.what = WEITUO_OF_STOCKS;
+					message.obj = resultData;
+					handler.sendMessage(message);
+					break;
+				}
+			}
+		
+		});
+	}
+
+	private void refreshSelfStock() {
+		UserBean user = UserBean.getInstance();
+		user.uid = 1;
+		communicationManager.getSelfStock(user, new CommunicationResultListener() {
+			
+			@Override
+			public void resultListener(byte result, Object resultData) {
+				super.resultListener(result, resultData);
+				switch (result) {
+				case CommunicationManager.FAIL:
+					
+					break;
+
+				case CommunicationManager.SUCCEED:
+					Message message = handler.obtainMessage();
+					message.what = SELF_OF_STOCKS;
+					message.obj = resultData;
+					handler.sendMessage(message);
+					break;
+				}
+			}
+		
+		});
+	}
+
+	private void refreshAccountStock() {
+		UserBean user = UserBean.getInstance();
+		user.uid = 1;
+		communicationManager.getAccountStock(user, new CommunicationResultListener() {
+			
+			@Override
+			public void resultListener(byte result, Object resultData) {
+				super.resultListener(result, resultData);
+				switch (result) {
+				case CommunicationManager.FAIL:
+					
+					break;
+
+				case CommunicationManager.SUCCEED:
+					Message message = handler.obtainMessage();
+					message.what = ACCOUNT_OF_STOCKS;
+					message.obj = resultData;
+					handler.sendMessage(message);
+					break;
+				}
+			}
+		
+		});
+	}
+
+	private void showAccount(){
+		accountZiChan = (TextView) accountView.findViewById(R.id.simulation_account_zc);
+		accountZongYingkui = (TextView) accountView.findViewById(R.id.simulation_account_yk);
+		accountShiZhi = (TextView) accountView.findViewById(R.id.simulation_account_sz);
+		accountJiaoYi = (TextView) accountView.findViewById(R.id.simulation_account_jy);
+		accountYingkuiLv = (TextView) accountView.findViewById(R.id.simulation_account_ykl);
+		accountView.findViewById(R.id.account_follow_niuren).setOnClickListener(this);
+		marketView.setVisibility(View.GONE);
+		selfChooseView.setVisibility(View.GONE);
+		accountView.setVisibility(View.VISIBLE);
+		weiTuoView.setVisibility(View.GONE);
+	}
+	
+	private void showMarket(){
+		marketView.setVisibility(View.VISIBLE);
+		weiTuoView.setVisibility(View.GONE);
+		selfChooseView.setVisibility(View.GONE);
+		accountView.setVisibility(View.GONE);
+		((RadioButton)this.findViewById(R.id.simulation_market_radio1)).setChecked(true);
+		
+		mAdapter.setData(marketList);
+		mAdapter.notifyDataSetChanged();
+	}
+	
+	private void showWeiTuo(){
+		marketView.setVisibility(View.GONE);
+		selfChooseView.setVisibility(View.GONE);
+		accountView.setVisibility(View.GONE);
+		weiTuoView.setVisibility(View.VISIBLE);
+	}
+	
+	private void showSelfChoose(){
+		marketView.setVisibility(View.GONE);
+		selfChooseView.setVisibility(View.VISIBLE);
+		weiTuoView.setVisibility(View.GONE);
+		accountView.setVisibility(View.GONE);
+	}
+	
+	class MarketAdapter extends BaseAdapter{
+
+		private List<StockInfoBean> mList = null;
+		
+		public void setData(List<StockInfoBean> mList){
+			this.mList = mList;
+		}
+		
+		@Override
+		public int getCount() {
+			if(mList != null) return mList.size();
+			return 0;
+		}
+
+		@Override
+		public Object getItem(int arg0) {
+			return mList.get(arg0);
+		}
+
+		@Override
+		public long getItemId(int arg0) {
+			return arg0;
+		}
+
+		@Override
+		public View getView(int arg0, View arg1, ViewGroup arg2) {
+			MarketHolder holder = null;
+			if(arg1 == null){
+				arg1 = View.inflate(SimulationActivity.this, R.layout.market_listitem_layout, null);
+				holder = new MarketHolder();
+				holder.tv1 = (TextView) arg1.findViewById(R.id.listitem_text1);
+				holder.tv2 = (TextView) arg1.findViewById(R.id.listitem_text2);
+				holder.tv3 = (TextView) arg1.findViewById(R.id.listitem_text3);
+				holder.tv4 = (TextView) arg1.findViewById(R.id.listitem_text4);
+				holder.tv5 = (TextView) arg1.findViewById(R.id.listitem_text5);
+				arg1.setTag(holder);
+			} else {
+				holder = (MarketHolder) arg1.getTag();
+			}
+			StockInfoBean info = mList.get(arg0);
+			holder.tv1.setText(info.sname);
+			holder.tv2.setText(info.stklabel);
+			holder.tv3.setText(String.valueOf(info.nowprice));
+			if(info.closes > 0){
+				holder.tv4.setTextColor(Color.RED);
+			} else {
+				holder.tv4.setTextColor(Color.GREEN);
+			}
+			if(arg0 % 2 == 0) arg1.setBackgroundColor(getResources().getColor(R.color.itemcolor0));
+			else arg1.setBackgroundColor(getResources().getColor(R.color.itemcolor1));
+			holder.tv4.setText(info.zhangfu + "%");
+			if(info.opens > 0){
+				holder.tv5.setTextColor(Color.RED);
+			} else {
+				holder.tv5.setTextColor(Color.GREEN);
+			}
+			holder.tv5.setText(String.valueOf(info.zhangdie));
+			return arg1;
+		}
+		
+	}
+	
+	class SelfChooseAdapter extends BaseAdapter{
+		
+		private List<SelfStockBean> mList = new ArrayList<SelfStockBean>();
+		
+		public void setData(List<SelfStockBean> mList){
+			this.mList = mList;
+		}
+		
+		@Override
+		public int getCount() {
+			return mList.size();
+		}
+		
+		@Override
+		public Object getItem(int arg0) {
+			return arg0;
+		}
+		
+		@Override
+		public long getItemId(int arg0) {
+			return arg0;
+		}
+		
+		@Override
+		public View getView(final int arg0, View arg1, ViewGroup arg2) {
+			SelfHolder holder = null;
+			if(arg1 == null){
+				arg1 = View.inflate(SimulationActivity.this, R.layout.self_listitem_layout, null);
+				holder = new SelfHolder();
+				holder.tv1 = (TextView) arg1.findViewById(R.id.selflistitem_text1);
+				holder.tv2 = (TextView) arg1.findViewById(R.id.selflistitem_text2);
+				holder.iv = (ImageView) arg1.findViewById(R.id.selflistitem_opt);
+				arg1.setTag(holder);
+			} else {
+				holder = (SelfHolder) arg1.getTag();
+			}
+			if(arg0 != 0){
+				if(arg0 % 2 == 0) arg1.setBackgroundColor(getResources().getColor(R.color.itemcolor0));
+				else arg1.setBackgroundColor(getResources().getColor(R.color.itemcolor1));
+			}
+			final StockInfoBean bean = mList.get(arg0);
+			holder.tv1.setText(bean.stklabel);
+			holder.tv2.setText(bean.sname);
+			// TODO 这里判断是否为添加或删除
+			holder.iv.setImageResource(R.drawable.plus);
+			holder.iv.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+
+					CommunicationManager.getInstance().eidtSelfStock(1, bean.id, 1,
+						new CommunicationResultListener() {
+							@Override
+							public void resultsListener(byte result, Object... resultData) {
+								super.resultsListener(result, resultData);
+								if(result == CommunicationManager.SUCCEED && "true".equals(resultData[0])){
+									Message message = handler.obtainMessage();
+									message.what = -1;
+									message.obj = bean.sname + resultData[2];
+									handler.sendMessage(message);
+								}
+							}
+						});
+				
+				}
+			});
+			return arg1;
+		}
+		
+	}
+	
+	class AccountAdapter extends BaseAdapter{
+		
+		private List<AccountStockBean> mList = new ArrayList<AccountStockBean>();
+		
+		public void setData(List<AccountStockBean> mList){
+			this.mList = mList;
+		}
+		
+		@Override
+		public int getCount() {
+			return mList.size();
+		}
+		
+		@Override
+		public Object getItem(int arg0) {
+			return arg0;
+		}
+		
+		@Override
+		public long getItemId(int arg0) {
+			return arg0;
+		}
+		
+		@Override
+		public View getView(final int arg0, View arg1, ViewGroup arg2) {
+			AccountHolder holder = null;
+			if(arg1 == null){
+				arg1 = View.inflate(SimulationActivity.this, R.layout.account_listitem_layout, null);
+				holder = new AccountHolder();
+				holder.tv1 = (TextView) arg1.findViewById(R.id.stock_text1);
+				holder.tv2 = (TextView) arg1.findViewById(R.id.stock_text2);
+				holder.tv3 = (TextView) arg1.findViewById(R.id.stock_text3);
+				holder.tv4 = (TextView) arg1.findViewById(R.id.stock_text4);
+				holder.tv5 = (TextView) arg1.findViewById(R.id.stock_text5);
+				holder.btn6 = (Button) arg1.findViewById(R.id.stock_button6);
+				arg1.setTag(holder);
+			} else {
+				holder = (AccountHolder) arg1.getTag();
+			}
+			if(arg0 != 0){
+				if(arg0 % 2 == 0) arg1.setBackgroundColor(getResources().getColor(R.color.itemcolor0));
+				else arg1.setBackgroundColor(getResources().getColor(R.color.itemcolor1));
+			}
+			final AccountStockBean bean = mList.get(arg0);
+			holder.tv1.setText(bean.sname);
+			holder.tv2.setText(String.valueOf(bean.stklabel));
+			holder.tv3.setText(String.valueOf(bean.cost_price));
+			holder.tv4.setText(String.valueOf(bean.nowprice));
+			holder.tv5.setText(bean.zhangfu + "%");
+			holder.btn6.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+
+					CommunicationManager.getInstance().sellAccountStock(1, bean.id,
+						new CommunicationResultListener() {
+							@Override
+							public void resultsListener(byte result, Object... resultData) {
+								super.resultsListener(result, resultData);
+								if(result == CommunicationManager.SUCCEED && "true".equals(resultData[0])){
+									Message message = handler.obtainMessage();
+									message.what = -3;
+									message.obj = bean;
+									handler.sendMessage(message);
+								}
+							}
+						});
+				}
+			});
+			return arg1;
+		}
+		
+	}
+	
+	class AccountHolder{
+		public TextView tv1;
+		public TextView tv2;
+		public TextView tv3;
+		public TextView tv4;
+		public TextView tv5;
+		public Button btn6;
+	}
+	
+	class WeituoAdapter extends BaseAdapter{
+		
+		private List<WeiTuoStockBean> mList = new ArrayList<WeiTuoStockBean>();
+		
+		public void setData(List<WeiTuoStockBean> mList){
+			this.mList = mList;
+		}
+		
+		@Override
+		public int getCount() {
+			return mList.size();
+		}
+		
+		@Override
+		public Object getItem(int arg0) {
+			return arg0;
+		}
+		
+		@Override
+		public long getItemId(int arg0) {
+			return arg0;
+		}
+		
+		@Override
+		public View getView(int arg0, View arg1, ViewGroup arg2) {
+			WeiTuoHolder holder = null;
+			if(arg1 == null){
+				arg1 = View.inflate(SimulationActivity.this, R.layout.weituo_listitem_layout, null);
+				holder = new WeiTuoHolder();
+				holder.tv1 = (TextView) arg1.findViewById(R.id.weituo_list_text1);
+				holder.tv2 = (TextView) arg1.findViewById(R.id.weituo_list_text2);
+				holder.tv3 = (TextView) arg1.findViewById(R.id.weituo_list_text3);
+				holder.tv4 = (TextView) arg1.findViewById(R.id.weituo_list_text4);
+				holder.tv5 = (TextView) arg1.findViewById(R.id.weituo_list_text5);
+				holder.tv6 = (TextView) arg1.findViewById(R.id.weituo_list_text6);
+				holder.tv7 = (Button) arg1.findViewById(R.id.weituo_list_text7);
+				arg1.setTag(holder);
+			} else {
+				holder = (WeiTuoHolder) arg1.getTag();
+			}
+			if(arg0 != 0){
+				if(arg0 % 2 == 0) arg1.setBackgroundColor(getResources().getColor(R.color.itemcolor0));
+				else arg1.setBackgroundColor(getResources().getColor(R.color.itemcolor1));
+			}
+			final WeiTuoStockBean bean = mList.get(arg0);
+			holder.tv1.setText(bean.sname);
+			holder.tv2.setText(String.valueOf(bean.stklabel));
+			holder.tv3.setText(bean.sellflag);
+			holder.tv4.setText(bean.sellstatus);
+			holder.tv5.setText(String.valueOf(bean.nowprice));
+			holder.tv6.setText(String.valueOf(bean.amount));
+			holder.tv7.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+
+					CommunicationManager.getInstance().cancelWeiTuoStock(1, bean.id,
+						new CommunicationResultListener() {
+							@Override
+							public void resultsListener(byte result, Object... resultData) {
+								super.resultsListener(result, resultData);
+								if(result == CommunicationManager.SUCCEED && "true".equals(resultData[0])){
+									Message message = handler.obtainMessage();
+									message.what = -2;
+									message.obj = bean;
+									handler.sendMessage(message);
+								}
+							}
+						});
+				}
+			});
+			return arg1;
+		}
+		
+	}
+	
+	class WeiTuoHolder{
+		public TextView tv1;
+		public TextView tv2;
+		public TextView tv3;
+		public TextView tv4;
+		public TextView tv5;
+		public TextView tv6;
+		public Button tv7;
+	}
+	
+	class MarketHolder{
+		public TextView tv1;
+		public TextView tv2;
+		public TextView tv3;
+		public TextView tv4;
+		public TextView tv5;
+	}
+	
+	class SelfHolder{
+		public TextView tv1;
+		public TextView tv2;
+		public ImageView iv;
+	}
+	
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			CompetitiveGroup.getInstance().onKeyDown(keyCode, event);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
+	
+	OnItemClickListener marketItemClick = new OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View view, int positon,
+				long id) {
+			Intent intent = new Intent(SimulationActivity.this, SimulationSubActivity.class);
+			StockInfoBean stockInfoBean = marketList.get(positon);
+			intent.putExtra(Constant.string.INTENT_SIMULATION_VALUE, stockInfoBean);
+			CompetitiveGroup.getInstance().switchActivity("SimulationSubActivity", intent, -1, -1);
+		}
+	};
+	
+	OnItemClickListener accountItemClick = new OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View view, int positon,
+				long id) {
+			Intent intent = new Intent(SimulationActivity.this, SimulationSubActivity.class);
+			AccountStockBean stockInfoBean = accountList.get(positon);
+			intent.putExtra(Constant.string.INTENT_SIMULATION_VALUE, stockInfoBean);
+			CompetitiveGroup.getInstance().switchActivity("SimulationSubActivity", intent, -1, -1);
+		}
+	};
+	
+	OnItemClickListener weiTuoItemClick = new OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View view, int positon,
+				long id) {
+			Intent intent = new Intent(SimulationActivity.this, SimulationSubActivity.class);
+			StockInfoBean stockInfoBean = weituoList.get(positon);
+			intent.putExtra(Constant.string.INTENT_SIMULATION_VALUE, stockInfoBean);
+			CompetitiveGroup.getInstance().switchActivity("SimulationSubActivity", intent, -1, -1);
+		}
+	};
+	
+	OnItemClickListener selfChooseItemClick = new OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View view, int positon,
+				long id) {
+			Intent intent = new Intent(SimulationActivity.this, SimulationSubActivity.class);
+			StockInfoBean stockInfoBean = selfList.get(positon);
+			intent.putExtra(Constant.string.INTENT_SIMULATION_VALUE, stockInfoBean);
+			CompetitiveGroup.getInstance().switchActivity("SimulationSubActivity", intent, -1, -1);
+		}
+	};
+	
+	private EditText searchValue;
+	private TextView accountZiChan;
+	private TextView accountZongYingkui;
+	private TextView accountShiZhi;
+	private TextView accountJiaoYi;
+	private TextView accountYingkuiLv;
+	
+}

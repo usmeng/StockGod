@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/friend_dongtai_list_item"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:padding="5dp"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/friend_dongtai_textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/text_black_normal"
+        android:textSize="12sp"
+        android:text="%s以%s元的价格买入%s[%s]" />
+
+    <TextView
+        android:id="@+id/friend_dongtai_textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/text_grey_small"
+        android:text="2013-6-27  14:25:35" />
+
+</LinearLayout>

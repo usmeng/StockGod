@@ -1,0 +1,38 @@
+package cn.chinat2t.stockgod.activity;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import cn.chinat2t.stockgod.R;
+
+public class BuyDaoJustView extends LinearLayout implements OnClickListener{
+	
+	private LayoutInflater inflater;
+	private RelativeLayout layout;
+
+	public BuyDaoJustView(Context context) {
+		super(context);
+		
+		inflater = LayoutInflater.from(context);
+		layout = (RelativeLayout) inflater.inflate(R.layout.buy_daoju_layout, null);
+		addView(layout, new LinearLayout.LayoutParams(-1, -1));
+		
+		initView();
+	}
+
+	protected void initView() {
+		
+		findViewById(R.id.button3).setOnClickListener(this);
+	}
+
+	@Override
+	public void onClick(View v) {
+		if(layout == null) return;
+		layout.removeAllViews();
+		View view2 = new ChongZhiView(getContext());
+		layout.addView(view2, new RelativeLayout.LayoutParams(-1, -1));
+	}
+}

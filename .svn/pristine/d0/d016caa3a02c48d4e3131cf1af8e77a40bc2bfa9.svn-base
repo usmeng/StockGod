@@ -1,0 +1,10 @@
+package cn.chinat2t.stockgod.bean;
+
+public class GuessStock {
+	public int stock_id;   // "146092",
+	public int guess_rise; // "12",
+	public int guess_fall; // "123",
+	public int countuser;  // "135",
+	public String guess_rise_lv; // "8.88888888889%",
+	public String guess_fall_lv; // "91.1111111111%"
+}

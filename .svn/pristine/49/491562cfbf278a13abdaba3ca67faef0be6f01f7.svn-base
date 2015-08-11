@@ -1,0 +1,1061 @@
+package cn.chinat2t.stockgod.http;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import cn.chinat2t.stockgod.bean.AccountStockBean;
+import cn.chinat2t.stockgod.bean.GameStockBean;
+import cn.chinat2t.stockgod.bean.GuessStock;
+import cn.chinat2t.stockgod.bean.KLineBean;
+import cn.chinat2t.stockgod.bean.KlineData;
+import cn.chinat2t.stockgod.bean.PanKou;
+import cn.chinat2t.stockgod.bean.PanKouBean;
+import cn.chinat2t.stockgod.bean.RenShu;
+import cn.chinat2t.stockgod.bean.RoomBean;
+import cn.chinat2t.stockgod.bean.RoomXiangBean;
+import cn.chinat2t.stockgod.bean.SelfStockBean;
+import cn.chinat2t.stockgod.bean.SellBuyStock;
+import cn.chinat2t.stockgod.bean.SellBuyStockBean;
+import cn.chinat2t.stockgod.bean.SkyEye;
+import cn.chinat2t.stockgod.bean.StockInfoBean;
+import cn.chinat2t.stockgod.bean.UserBean;
+import cn.chinat2t.stockgod.bean.UserDaoJu;
+import cn.chinat2t.stockgod.bean.UserFenSi;
+import cn.chinat2t.stockgod.bean.UserGuanZhu;
+import cn.chinat2t.stockgod.bean.WeiTuoStockBean;
+import cn.chinat2t.stockgod.utils.CtLog;
+import cn.chinat2t.stockgod.views.StockSellView;
+
+public class JsonParserManager {
+
+	private static JsonParserManager mParser;
+
+	private JsonParserManager() {
+	}
+
+	public static JsonParserManager getInstance() {
+		if (mParser == null) {
+			mParser = new JsonParserManager();
+		}
+		return mParser;
+	}
+
+	public void parserKindsOfStock(String result, CommunicationResultListener listener) {
+
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			List<StockInfoBean> stockList = new ArrayList<StockInfoBean>();
+
+			if(diaryObj.length() > 0){
+				JSONArray names = diaryObj.names();
+				for (int i = 0; i < names.length(); i++) {
+					if(!"responsecode".equals(names.getString(i)) && !"msg".equals(names.getString(i))){
+						JSONObject object = diaryObj.getJSONObject(names.getString(i));
+						StockInfoBean bean = new StockInfoBean();
+						stockList.add(initStock(bean, object));
+					}
+				}
+			}
+			if (listener != null) {
+				  listener.resultListener(CommunicationManager.SUCCEED, stockList);
+			}
+
+		} catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	
+	}
+	
+	public void parserSelfChooseOfStock(String result, CommunicationResultListener listener) {
+
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			List<SelfStockBean> listStock = new ArrayList<SelfStockBean>();
+			if(diaryObj.length() > 0){
+				JSONArray names = diaryObj.names();
+				for (int i = 0; i < names.length(); i++) {
+					String name = names.getString(i);
+					if(!"responsecode".equals(name) && !"msg".equals(name)){
+						JSONArray selfStockArray = diaryObj.getJSONArray(name);
+						for (int j = 0; j < selfStockArray.length(); j++) {
+							SelfStockBean bean = new SelfStockBean();
+							JSONObject object = (JSONObject) selfStockArray.get(j);
+							initStock(bean, object);
+							bean.cost_price = object.getDouble("cost_price");
+							if(!object.isNull("self_shuliang"))
+								bean.self_shuliang = object.getDouble("self_shuliang");
+							if(!object.isNull("zixuanflag"))
+								bean.zixuanflag = object.getString("zixuanflag");
+							listStock.add(bean);
+						}
+					}
+				}
+			}
+			if (listener != null) {
+				listener.resultListener(CommunicationManager.SUCCEED, listStock);
+			}
+
+		} catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	
+	}
+
+	public void parserAccountOfStock(String result, CommunicationResultListener listener) {
+
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			UserBean user = UserBean.getInstance();
+			user.listStock = new ArrayList<AccountStockBean>();
+			if(diaryObj.length() > 0){
+				JSONArray names = diaryObj.names();
+				for (int i = 0; i < names.length(); i++) {
+					String name = names.getString(i);
+					if(!"responsecode".equals(name) && !"msg".equals(name)){
+						if(name.equals("0")){
+							JSONArray acconutStockArray = diaryObj.getJSONArray(name);
+							for (int j = 0; j < acconutStockArray.length(); j++) {
+								AccountStockBean bean = new AccountStockBean();
+								JSONObject object = (JSONObject) acconutStockArray.get(j);
+								initStock(bean, object);
+								bean.cost_price = object.getDouble("cost_price");
+								bean.self_shuliang = object.getDouble("self_shuliang");
+								user.listStock.add(bean);
+							}
+							
+						}else if(name.equals("1")){
+							JSONArray info = diaryObj.getJSONArray(name);
+							JSONObject object = (JSONObject) info.get(0);
+							user.uid = object.getInt("uid");
+							user.fund = object.getDouble("fund");
+							user.gold = object.getDouble("gold");
+							user.lottery = object.getDouble("lottery");
+							user.stockmoney = object.getDouble("stockmoney");
+							user.zonge = object.getDouble("zonge");
+							user.jiaoyici = object.getDouble("jiaoyici");
+							user.yingkuilv = object.getDouble("yingkuilv");
+						}
+					}
+				}
+			}
+			if (listener != null) {
+				listener.resultListener(CommunicationManager.SUCCEED, user);
+			}
+
+		} catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	
+	}
+
+	public void parserWeiTuoStock(String result, CommunicationResultListener listener) {
+
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			List<WeiTuoStockBean> listStock = new ArrayList<WeiTuoStockBean>();
+			if(diaryObj.length() > 0){
+				JSONArray names = diaryObj.names();
+				for (int i = 0; i < names.length(); i++) {
+					String name = names.getString(i);
+					if(!"responsecode".equals(name) && !"msg".equals(name)){
+						JSONArray selfStockArray = diaryObj.getJSONArray(name);
+						for (int j = 0; j < selfStockArray.length(); j++) {
+							WeiTuoStockBean bean = new WeiTuoStockBean();
+							JSONObject object = (JSONObject) selfStockArray.get(j);
+							initStock(bean, object);
+							bean.cost_price = object.getDouble("cost_price");
+							bean.sellflag = object.getString("sellflag");
+							bean.sellstatus = object.getString("sellstatus");
+							bean.chedanyes = object.getString("chedanyes");
+							bean.self_shuliang = object.getInt("self_shuliang");
+							listStock.add(bean);
+						}
+					}
+				}
+			}
+			if (listener != null) {
+				listener.resultListener(CommunicationManager.SUCCEED, listStock);
+			}
+		} catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	
+	}
+	
+
+	public void parserSellAccountStock(String result, CommunicationResultListener listener) {
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+//			StockInfoBean stockBean;
+			String res = "";
+			if(!diaryObj.isNull("diary")){
+				res = diaryObj.getString("diary");
+//				stockBean = new StockInfoBean();
+//				initStock(stockBean , new JSONObject(res));
+			}
+			String code = diaryObj.getString("responsecode");
+			String msg = diaryObj.getString("msg");
+			
+			if (listener != null) {
+				listener.resultsListener(CommunicationManager.SUCCEED, res, code, msg);
+				listener.resultListener(CommunicationManager.SUCCEED, msg);
+			}
+
+		} catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	
+	}
+
+	public void parserEditSelfStock(String result, CommunicationResultListener listener) {
+
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			String res = "";
+			if(!diaryObj.isNull("result")){
+				res = diaryObj.getString("result");
+			}
+			String code = diaryObj.getString("responsecode");
+			String msg = diaryObj.getString("msg");
+			
+			if (listener != null) {
+				listener.resultsListener(CommunicationManager.SUCCEED, res, code, msg);
+			}
+
+		} catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	
+	}
+	
+
+	public void parserSellWeiTuoStock(String result, CommunicationResultListener listener) {
+
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			String res = "";
+			if(!diaryObj.isNull("result")){
+				res = diaryObj.getString("result");
+			}
+			String code = diaryObj.getString("responsecode");
+			String msg = diaryObj.getString("msg");
+			
+			if (listener != null) {
+				listener.resultsListener(CommunicationManager.SUCCEED, res, code, msg);
+			}
+
+		} catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	
+	}
+	
+	private StockInfoBean initStock(StockInfoBean stockBean, JSONObject object) throws JSONException {
+		if(stockBean == null || object == null) return null;
+		stockBean.sname = paraseString(object, "ssname");
+		stockBean.closes = paraseDouble(object, "preclose");
+		stockBean.zhangdie = paraseDouble(object, "zhangdie");
+		stockBean.nowprice = paraseDouble(object, "nowprice");
+		
+		stockBean.id = object.getInt("id");
+		stockBean.sname = paraseString(object, "sname");
+		stockBean.date = paraseString(object, "date");
+		stockBean.time = paraseString(object, "time");
+		stockBean.block = paraseString(object, "block");
+		stockBean.precisions = (int) paraseDouble(object, "precisions");
+		stockBean.shou = (int) paraseDouble(object, "shou");
+		stockBean.isbuy = (int) paraseDouble(object, "isbuy");
+		stockBean.stklabel = object.getString("stklabel");
+		stockBean.opens = paraseDouble(object, "opens");
+		stockBean.high = paraseDouble(object, "high");
+		stockBean.low = paraseDouble(object, "low");
+		stockBean.amount = paraseDouble(object, "amount");
+		stockBean.nowv = (int) paraseDouble(object, "nowv");
+		stockBean.preclose = paraseDouble(object, "preclose");
+		stockBean.avprice = paraseDouble(object, "avprice");
+		stockBean.sellvol = paraseDouble(object, "sellvol");
+		stockBean.buyvol = paraseDouble(object, "buyvol");
+		stockBean.changehand = paraseDouble(object, "changehand");
+		stockBean.weicha = paraseDouble(object, "weicha");
+		stockBean.weibi = paraseDouble(object, "weibi");
+		stockBean.liangbi = paraseDouble(object, "liangbi");
+		stockBean.zhangdie = paraseDouble(object, "zhangdie");
+		stockBean.zhangfu = paraseDouble(object, "zhangfu");
+		stockBean.zhenfu = paraseDouble(object, "zhenfu");
+		stockBean.shiyinglv = paraseDouble(object, "shiyinglv");
+		stockBean.zongguben = paraseDouble(object, "zongguben");
+		stockBean.liutonggu = paraseDouble(object, "liutonggu");
+		stockBean.nowprice = paraseDouble(object, "nowprice");
+		stockBean.stocktype = (int) paraseDouble(object, "stocktype");
+		return stockBean;
+	}
+	
+	public String paraseString(JSONObject object, String param) throws JSONException{
+		if(!object.isNull(param)){
+			return object.getString(param);
+		}
+		return "";
+	}
+	
+	public int paraseInt(JSONObject object, String param) throws JSONException{
+		if(!object.isNull(param)){
+			String str = object.getString(param);
+			if(str != null && str.length() > 0)
+			return Integer.parseInt(str);
+		}
+		return 0;
+	}
+	
+	public double paraseDouble(JSONObject object, String param) throws JSONException{
+		if(!object.isNull(param)){
+			String str = object.getString(param);
+			if(str != null && str.length() > 0)
+			return Double.parseDouble(str);
+		}
+		return 0;
+	}
+
+	public void parserSellBuyStock(String result, CommunicationResultListener listener) {
+
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			SellBuyStockBean sellBuy = new SellBuyStockBean();
+			sellBuy.sellList = new ArrayList<SellBuyStock>();
+			sellBuy.buyList = new ArrayList<SellBuyStock>();
+			
+			JSONObject diaryObj = new JSONObject(result);
+			JSONArray names = diaryObj.names();
+			for (int i = 0; i < names.length(); i++) {
+				String name = names.getString(i);
+				if(!"responsecode".equals(name) && !"msg".equals(name)){
+					if("0".equals(name)){
+						JSONObject object = new JSONObject(diaryObj.getString(name));
+						sellBuy.beStock = new StockInfoBean();
+						initStock(sellBuy.beStock, object);
+					}else if("zuidagu".equals(name)){
+						sellBuy.zuidagu = diaryObj.getInt("zuidagu");
+					}else if("chiyougu".equals(name)){
+						sellBuy.chiyougu = diaryObj.getInt("chiyougu");
+					}else{
+						JSONArray buyList = diaryObj.getJSONArray(name);
+						for (int j = 0; j < buyList.length(); j++) {
+							JSONObject buy = buyList.getJSONObject(j);
+							SellBuyStock stock = initSellBuyStock(buy);
+							stock.member = j;
+							if("1".equals(name)){
+								stock.sellFlag = StockSellView.STOCK_BUY;
+								sellBuy.buyList.add(stock);
+							}else if("2".equals(name)){
+								stock.sellFlag = StockSellView.STOCK_SELL;
+								sellBuy.sellList.add(stock);
+							}
+							sellBuy.averprice = buy.getDouble("sprice");
+						}
+					}
+				}
+				
+			}
+			if (listener != null) {
+				listener.resultListener(CommunicationManager.SUCCEED, sellBuy);
+			}
+
+		} catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	}
+
+	private SellBuyStock initSellBuyStock(JSONObject buy) throws JSONException {
+		SellBuyStock stock = new SellBuyStock();
+		stock.id = buy.getInt("id");
+		stock.sid = buy.getInt("sid");
+		stock.uid = buy.getInt("uid");
+		stock.slang = buy.getInt("slang");
+		stock.sprice = buy.getDouble("sprice");
+		stock.oldprice = buy.getDouble("oldprice");
+		stock.bilv = buy.getDouble("bilv");
+		stock.chengjiaoe = buy.getDouble("chengjiaoe");
+		return stock;
+	}
+	
+	public void parserKLine(String result, CommunicationResultListener listener) {
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			KLineBean kLine = new KLineBean();
+			kLine.kline = new ArrayList<KlineData>();
+
+			if(diaryObj.length() > 0){
+				JSONArray names = diaryObj.names();
+				for (int i = 0; i < names.length(); i++) {
+					if(!"responsecode".equals(names.getString(i)) && !"msg".equals(names.getString(i))){
+						JSONArray array = diaryObj.getJSONArray(names.getString(i));
+						for (int j = 0; j < array.length(); j++) {
+							JSONObject object = array.getJSONObject(j);
+							KlineData entity = new KlineData();
+							entity.id = paraseInt(object, "id");
+//							entity.stocktime = paraseString(object, "stocktime");
+							entity.noeprice = paraseDouble(object,"noeprice");
+							entity.navprice = paraseDouble(object,"noeprice");
+							entity.shou = paraseDouble(object,"shou");
+//							entity.amount = paraseInt(object,"counte");
+//							entity.isbuy = paraseInt(object,"isbuy");
+//							entity.nowv = paraseInt(object,"nowv");
+							entity.yearm = paraseString(object, "yearm");
+							entity.dayhour = paraseString(object, "dayhour");
+//							entity.times = paraseInt(object,"times");
+							entity.open = paraseDouble(object, "open");
+							entity.close = paraseDouble(object, "close");
+							entity.high = paraseDouble(object, "high");
+							entity.low = paraseDouble(object, "low");
+							entity.jine = paraseDouble(object, "jine");
+							entity.sid = paraseInt(object, "sid");
+							entity.xianflag = paraseInt(object, "xianflag");
+//							entity.stocktime = paraseString(object, "stocktime");
+							kLine.kline.add(entity);
+						}
+						
+					}
+				}
+			}
+			if (listener != null) {
+				  listener.resultListener(CommunicationManager.SUCCEED, kLine);
+			}
+
+		} catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	}
+
+	public void parserGoldRooms(String result, CommunicationResultListener listener) {
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			List<RoomBean> rooms = new ArrayList<RoomBean>();
+
+			if(diaryObj.length() > 0){
+				JSONArray names = diaryObj.names();
+				for (int i = 0; i < names.length(); i++) {
+					if(!"responsecode".equals(names.getString(i)) && !"msg".equals(names.getString(i))){
+						JSONObject object = diaryObj.getJSONObject(names.getString(i));
+						
+						RoomBean room = new RoomBean();
+						room.id = object.getInt("id");
+						room.name = object.getString("name");
+						room.type = object.getInt("type");
+						room.saizhi = object.getString("saizhi");
+						room.level = object.getInt("level");
+						room.ext = object.getString("ext");
+						room.ext2 = object.getString("ext2");
+						room.ext3 = object.getString("ext3");
+						room.duiyingname = object.getString("duiyingname");
+						rooms.add(room);
+						CtLog.d("data = "+room.toString());
+					}
+				}
+			}
+			if (listener != null) {
+				  listener.resultListener(CommunicationManager.SUCCEED, rooms);
+			}
+
+		} catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	}
+
+	public void parserPanKouStock(String result, CommunicationResultListener listener) {
+
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			PanKou pankou = new PanKou();
+			pankou.pankouList = new ArrayList<PanKouBean>();
+			pankou.mingxiList = new ArrayList<PanKouBean>();
+			if(diaryObj.length() > 0){
+				JSONArray names = diaryObj.names();
+				for (int i = 0; i < names.length(); i++) {
+					String name = names.getString(i);
+					if(!"responsecode".equals(name) && !"msg".equals(name)){
+						if(name.equals("0")){
+							JSONObject object = diaryObj.getJSONObject(name);
+							pankou.stock = new StockInfoBean();
+							initStock(pankou.stock, object);
+						}else{
+							JSONArray array = diaryObj.getJSONArray(name);
+							for (int j = 0; j < array.length(); j++) {
+								JSONObject object = (JSONObject) array.get(j);
+								PanKouBean bean = new PanKouBean();
+								bean.type = j;
+								bean.id = object.getInt("id");
+								bean.sid = object.getInt("sid");
+								bean.slang = object.getInt("slang");
+								bean.sprice = object.getDouble("sprice");
+								bean.uptime = object.getString("uptime");
+								bean.xingzhi = object.getInt("xingzhi");
+								bean.oldprice = object.getDouble("oldprice");
+								bean.bilv = object.getInt("bilv");
+								if("1".equals(name)){
+									pankou.pankouList.add(bean);
+								} else {
+									pankou.mingxiList.add(bean);
+								}
+							}
+						}
+					}
+				}
+			}
+			if (listener != null) {
+				listener.resultListener(CommunicationManager.SUCCEED, pankou);
+			}
+		} catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	
+	}
+	
+	public void parserHasSkyEye(String result, CommunicationResultListener listener){
+
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			boolean hasSkyEye = false;
+			if("1".equals(diaryObj.getString("responsecode"))){
+				hasSkyEye = true;
+			}
+			
+			if (listener != null) {
+				listener.resultListener(CommunicationManager.SUCCEED, hasSkyEye);
+			}
+		} catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	
+	}
+	
+	public void parserGuessNum(String result, CommunicationResultListener listener) {
+
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			GuessStock guessStock = new GuessStock();
+			if(!diaryObj.isNull("0")){
+				JSONObject object = diaryObj.getJSONObject("0");
+				guessStock.stock_id = object.getInt("stock_id");
+				guessStock.guess_rise = object.getInt("guess_rise");
+				guessStock.guess_fall = object.getInt("guess_fall");
+				guessStock.countuser  = object.getInt("countuser");
+				guessStock.guess_fall_lv = object.getString("guess_fall_lv");
+				guessStock.guess_rise_lv = object.getString("guess_rise_lv");
+			}
+			
+			if (listener != null) {
+				listener.resultListener(CommunicationManager.SUCCEED, guessStock);
+			}
+		} catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	
+	}
+
+	public void parserGameXiang(String result, CommunicationResultListener listener) {
+
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			RoomXiangBean roomXiang = new RoomXiangBean();
+			if (!diaryObj.isNull("1")) {
+				JSONObject object = diaryObj.getJSONObject("1");
+				roomXiang.sname = paraseString(object, "sname");
+				roomXiang.name = paraseString(object, "name");
+				roomXiang.player = paraseInt(object, "player");
+				
+				JSONObject roomBean = object.getJSONObject("0");
+				roomXiang.roombean = new RoomBean();
+				roomXiang.roombean.stockList = new ArrayList<StockInfoBean>();
+				
+				if(!roomBean.isNull("0")){
+					JSONArray stockObject = roomBean.getJSONArray("0");
+					JSONObject jsonObject = stockObject.getJSONObject(0);
+					roomXiang.roombean.stockList.add(initStock(new StockInfoBean(), jsonObject));
+				}
+				
+				if(!roomBean.isNull("1")){
+					JSONArray stockObject = roomBean.getJSONArray("1");
+					JSONObject jsonObject = stockObject.getJSONObject(0);
+					roomXiang.roombean.stockList.add(initStock(new StockInfoBean(), jsonObject));
+				}
+				
+				if(!roomBean.isNull("2")){
+					JSONArray stockObject = roomBean.getJSONArray("2");
+					JSONObject jsonObject = stockObject.getJSONObject(0);
+					roomXiang.roombean.stockList.add(initStock(new StockInfoBean(), jsonObject));
+				}
+				
+				roomXiang.roombean.bl =  paraseInt(roomBean, "bl");           //roomBean.getInt("bl");
+				roomXiang.roombean.condense = paraseString(roomBean, "condense"); //roomBean.getString("condense");
+				roomXiang.roombean.confs = paraseInt(roomBean, "confs");      //roomBean.getInt("confs");
+				roomXiang.roombean.conft = paraseInt(roomBean, "conft");      //roomBean.getInt("conft");
+				roomXiang.roombean.csxs = paraseInt(roomBean, "csxs");        //roomBean.getInt("csxs");
+				roomXiang.roombean.date = paraseInt(roomBean, "date");        //roomBean.getInt("date");
+				roomXiang.roombean.day = paraseInt(roomBean, "day");          //roomBean.getInt("day");
+				roomXiang.roombean.ext = paraseString(roomBean, "ext");       //roomBean.getString("ext");
+				roomXiang.roombean.ext2 = paraseString(roomBean, "ext2");     //roomBean.getString("ext2");
+				roomXiang.roombean.ext3 = paraseString(roomBean, "ext3");     //roomBean.getString("ext3");
+				roomXiang.roombean.id = paraseInt(roomBean, "id");            //roomBean.getInt("id");
+				roomXiang.roombean.yazhu = paraseString(roomBean, "yazhu");   //roomBean.getString("jiazhu");
+				roomXiang.roombean.jlxs = paraseInt(roomBean, "jlxs");        //roomBean.getInt("jlxs");
+				roomXiang.roombean.low = paraseInt(roomBean, "low");          //roomBean.getInt("low");
+				roomXiang.roombean.much = paraseString(roomBean, "much");     //roomBean.getString("much");
+				roomXiang.roombean.name = paraseString(roomBean, "name");     //roomBean.getString("name");
+				roomXiang.roombean.rid = paraseInt(roomBean, "rid");          //roomBean.getInt("rid");
+				roomXiang.roombean.scope = paraseString(roomBean, "scope");   //roomBean.getString("scope");
+				roomXiang.roombean.sid = paraseInt(roomBean, "sid");          //roomBean.getInt("sid");
+				roomXiang.roombean.sort = paraseString(roomBean, "sort");     //roomBean.getString("sort");
+				roomXiang.roombean.status = paraseString(roomBean, "status"); //roomBean.getString("status");
+				roomXiang.roombean.stock = paraseString(roomBean, "stock");   //roomBean.getInt("stock");
+				roomXiang.roombean.time = paraseInt(roomBean, "time");        //roomBean.getInt("time");
+				roomXiang.roombean.yasuo = paraseInt(roomBean, "yasuo");      //roomBean.getInt("yasuo");
+				roomXiang.roombean.goldf = paraseInt(roomBean, "goldf");      //roomBean.getInt("goldf");
+				roomXiang.roombean.golds = paraseInt(roomBean, "golds");      //roomBean.getInt("golds");
+				roomXiang.roombean.goldt = paraseInt(roomBean, "goldt");      //roomBean.getInt("goldt");
+				
+				JSONObject eye = object.getJSONObject("1");
+				roomXiang.skyEye = new SkyEye();
+				roomXiang.skyEye.begingtime = paraseString(eye, "begingtime"); //eye.getString("begingtime");
+				roomXiang.skyEye.endtime = paraseString(eye, "endtime");       //eye.getString("endtime");
+				roomXiang.skyEye.id = paraseInt(eye, "id");                    //eye.getInt("id");
+				roomXiang.skyEye.propsid = paraseInt(eye, "propsid");          //eye.getInt("propsid");
+				roomXiang.skyEye.uid = paraseInt(eye, "uid");                  //eye.getInt("uid");
+				roomXiang.skyEye.usechangdi = paraseString(eye, "usechangdi"); //eye.getString("usechangdi");
+				roomXiang.skyEye.useflag = paraseInt(eye, "useflag");          //eye.getInt("useflag");
+				
+				JSONObject renshu = object.getJSONObject("2");
+				roomXiang.renshu = new RenShu();
+				roomXiang.renshu.countuser = paraseInt(renshu, "countuser");   //renshu.getInt("countuser");
+				roomXiang.renshu.guess_fall = paraseInt(renshu, "guess_fall"); //renshu.getInt("guess_fall");
+				roomXiang.renshu.guess_rise = paraseInt(renshu, "guess_rise"); //renshu.getInt("guess_rise");
+				roomXiang.renshu.id = paraseInt(renshu, "id");                 //renshu.getInt("id");
+				roomXiang.renshu.stock_id = paraseInt(renshu, "stock_id");     //renshu.getInt("stock_id");
+				roomXiang.renshu.uptime = paraseString(renshu, "uptime");      //renshu.getString("uptime");	
+			}
+			if (listener != null) {
+				listener.resultListener(CommunicationManager.SUCCEED, roomXiang);
+			}
+		} catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	}
+	
+	public void parserGameXiang2(String result, CommunicationResultListener listener) {
+
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			RoomBean room = new RoomBean();
+			if(!diaryObj.isNull("0")){
+				JSONObject roomBean = diaryObj.getJSONObject("0");
+				
+				room.bl =  paraseInt(roomBean, "bl");           //roomBean.getInt("bl");
+				room.condense = paraseString(roomBean, "condense"); //roomBean.getString("condense");
+				room.confs = paraseInt(roomBean, "confs");      //roomBean.getInt("confs");
+				room.conft = paraseInt(roomBean, "conft");      //roomBean.getInt("conft");
+				room.csxs = paraseInt(roomBean, "csxs");        //roomBean.getInt("csxs");
+				room.date = paraseInt(roomBean, "date");        //roomBean.getInt("date");
+				room.day = paraseInt(roomBean, "day");          //roomBean.getInt("day");
+				room.ext = paraseString(roomBean, "ext");       //roomBean.getString("ext");
+				room.ext2 = paraseString(roomBean, "ext2");     //roomBean.getString("ext2");
+				room.ext3 = paraseString(roomBean, "ext3");     //roomBean.getString("ext3");
+				room.id = paraseInt(roomBean, "id");            //roomBean.getInt("id");
+				room.yazhu = paraseString(roomBean, "yazhu");   //roomBean.getString("jiazhu");
+				room.jlxs = paraseInt(roomBean, "jlxs");        //roomBean.getInt("jlxs");
+				room.low = paraseInt(roomBean, "low");          //roomBean.getInt("low");
+				room.up = paraseInt(roomBean, "up");            //roomBean.getInt("low");
+				room.much = paraseString(roomBean, "much");     //roomBean.getString("much");
+				room.name = paraseString(roomBean, "name");     //roomBean.getString("name");
+				room.rid = paraseInt(roomBean, "rid");          //roomBean.getInt("rid");
+				room.pid = paraseString(roomBean, "pid");       //roomBean.getInt("rid");
+				room.scope = paraseString(roomBean, "scope");   //roomBean.getString("scope");
+				room.sid = paraseInt(roomBean, "sid");          //roomBean.getInt("sid");
+				room.sort = paraseString(roomBean, "sort");     //roomBean.getString("sort");
+				room.status = paraseString(roomBean, "status"); //roomBean.getString("status");
+				room.stock = paraseString(roomBean, "stock");   //roomBean.getInt("stock");
+				room.time = paraseInt(roomBean, "time");        //roomBean.getInt("time");
+				room.yasuo = paraseInt(roomBean, "yasuo");      //roomBean.getInt("yasuo");
+				room.goldf = paraseInt(roomBean, "goldf");      //roomBean.getInt("goldf");
+				room.golds = paraseInt(roomBean, "golds");      //roomBean.getInt("golds");
+				room.goldt = paraseInt(roomBean, "goldt");      //roomBean.getInt("goldt");
+			}
+			if (!diaryObj.isNull("1")) {
+				JSONArray array = diaryObj.getJSONArray("1");
+				room.stockList = new ArrayList<StockInfoBean>();
+				room.gameList = new ArrayList<GameStockBean>();
+				for (int i = 0; i < array.length(); i++) {
+					JSONObject jsonObject = array.getJSONObject(i);
+					GameStockBean gameStock = new GameStockBean();
+					gameStock.id = paraseString(jsonObject, "id");
+					gameStock.code = paraseString(jsonObject, "code");
+					gameStock.ssname = paraseString(jsonObject, "ssname");
+					gameStock.preclose = paraseString(jsonObject, "preclose");
+					gameStock.zhangdie = paraseString(jsonObject, "zhangdie");
+					gameStock.nowprice = paraseString(jsonObject, "nowprice");
+					room.gameList.add(gameStock);
+//					room.stockList.add(initStock(new StockInfoBean(), jsonObject));
+				}
+			}
+			if (listener != null) {
+				listener.resultListener(CommunicationManager.SUCCEED, room);
+			}
+		} catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	}
+	
+	public void parserChoose(String result, CommunicationResultListener listener){
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			RoomXiangBean roomXiang = new RoomXiangBean();
+			if(!diaryObj.isNull("0")){
+				JSONObject object = diaryObj.getJSONObject("0");
+				
+			}
+			if (!diaryObj.isNull("1")) {
+				JSONArray array = diaryObj.getJSONArray("1");
+			}
+		}catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	}
+	
+	public void parserGuess(String result, CommunicationResultListener listener){
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			RoomXiangBean roomXiang = new RoomXiangBean();
+			if(!diaryObj.isNull("0")){
+				JSONObject object = diaryObj.getJSONObject("0");
+				
+			}
+			if (!diaryObj.isNull("1")) {
+				JSONArray array = diaryObj.getJSONArray("1");
+			}
+		}catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	}
+	
+	public void parserFight(String result, CommunicationResultListener listener){
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			RoomXiangBean roomXiang = new RoomXiangBean();
+			if(!diaryObj.isNull("0")){
+				JSONObject object = diaryObj.getJSONObject("0");
+				
+			}
+			if (!diaryObj.isNull("1")) {
+				JSONArray array = diaryObj.getJSONArray("1");
+			}
+		}catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	}
+
+	public void parserUserStr(String result, CommunicationResultListener listener) {
+
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			UserBean user = UserBean.getNewInstance();
+			user.responsecode = paraseInt(diaryObj, "responsecode");
+			user.msg = paraseString(diaryObj, "msg");
+			if(!diaryObj.isNull("result")){
+				JSONObject object = diaryObj.getJSONObject("result");
+				user.uid = paraseInt(object, "uid");
+				user.email = paraseString(object, "email");
+				user.sex = paraseString(object, "sex");
+				user.nickname = paraseString(object, "nickname");
+				
+				user.pwd = paraseString(object, "pwd");
+				user.vip = paraseString(object, "vip");
+				user.usertype = paraseString(object, "usertype");
+				user.phone = paraseString(object, "phone");
+				user.address = paraseString(object, "address");
+			}
+			if (listener != null) {
+				listener.resultListener(CommunicationManager.SUCCEED, user);
+			}
+		}catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	
+	}
+	
+	public void parserGuanZhuList(String result, CommunicationResultListener listener) {
+
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			List<UserGuanZhu> list = new ArrayList<UserGuanZhu>();
+			if(!diaryObj.isNull("result")){
+				JSONArray array = diaryObj.getJSONArray("result");
+				for (int i = 0; i < array.length(); i++) {
+					UserGuanZhu guanzhu = new UserGuanZhu();
+					JSONObject object = array.getJSONObject(i);
+					guanzhu.id = paraseInt(object, "id");
+					guanzhu.uid = paraseInt(object, "uid");
+					guanzhu.guanzhuflag = paraseInt(object, "guanzhuflag");
+					guanzhu.beiuid = paraseInt(object, "beiuid");
+					guanzhu.level = paraseInt(object, "level");
+					guanzhu.uptime = paraseString(object, "uptime");
+					guanzhu.usertype = paraseInt(object, "usertype");
+					guanzhu.nickname = paraseString(object, "nickname");
+					
+					list.add(guanzhu);
+				}
+			}
+			if (listener != null) {
+				listener.resultListener(CommunicationManager.SUCCEED, list);
+			}
+		}catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	
+	}
+
+	public void parserFenSiList(String result, CommunicationResultListener listener) {
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			List<UserFenSi> list = new ArrayList<UserFenSi>();
+			if(!diaryObj.isNull("result")){
+				JSONArray array = diaryObj.getJSONArray("result");
+				for (int i = 0; i < array.length(); i++) {
+					UserFenSi guanzhu = new UserFenSi();
+					JSONObject object = array.getJSONObject(i);
+					guanzhu.id = paraseInt(object, "id");
+					guanzhu.uid = paraseInt(object, "uid");
+					guanzhu.guanzhuflag = paraseInt(object, "guanzhuflag");
+					guanzhu.bierenid = paraseInt(object, "bierenid");
+					guanzhu.level = paraseInt(object, "level");
+					guanzhu.zhuizongflag = paraseInt(object, "zhuizongflag");
+					guanzhu.ext = paraseString(object, "ext");
+					guanzhu.nickname = paraseString(object, "nickname");
+					guanzhu.fensiid = paraseInt(object, "fensiid");
+					guanzhu.vip = paraseInt(object, "vip");
+					
+					list.add(guanzhu);
+				}
+			}
+			if (listener != null) {
+				listener.resultListener(CommunicationManager.SUCCEED, list);
+			}
+		}catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+		
+	}
+
+	public void parserZuiZongList(String result, CommunicationResultListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void parserDongTaiList(String result, CommunicationResultListener listener) {
+		
+	}
+
+	public void parserDaoJuList(String result, CommunicationResultListener listener) {
+		try {
+			CtLog.d(result);
+			if(result == null ) {
+				listener.resultListener(CommunicationManager.FAIL, "获取数据失败！");
+				return;
+			}
+			
+			JSONObject diaryObj = new JSONObject(result);
+			List<UserDaoJu> list = new ArrayList<UserDaoJu>();
+			if(!diaryObj.isNull("result")){
+				JSONArray array = diaryObj.getJSONArray("result");
+				for (int i = 0; i < array.length(); i++) {
+					UserDaoJu guanzhu = new UserDaoJu();
+					JSONObject object = array.getJSONObject(i);
+					guanzhu.id = paraseInt(object, "id");
+					guanzhu.uid = paraseInt(object, "uid");
+					guanzhu.begingtime = paraseString(object, "begingtime");
+					guanzhu.endtime = paraseString(object, "endtime");
+					guanzhu.propsid = paraseInt(object, "propsid");
+					guanzhu.useflag = paraseInt(object, "useflag");
+					guanzhu.usechangdi = paraseInt(object, "usechangdi");
+					guanzhu.shuliang = paraseInt(object, "shuliang");
+					list.add(guanzhu);
+				}
+			}
+			if (listener != null) {
+				listener.resultListener(CommunicationManager.SUCCEED, list);
+			}
+		}catch (JSONException e) {
+			if (listener != null)
+				listener.resultListener(CommunicationManager.FAIL, "数据解析错误！");
+			e.printStackTrace();
+		}
+	}
+	
+}

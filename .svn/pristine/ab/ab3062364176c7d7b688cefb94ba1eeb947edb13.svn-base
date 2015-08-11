@@ -1,0 +1,363 @@
+package cn.chinat2t.stockgod.views;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
+import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+import android.widget.Toast;
+import cn.chinat2t.stockgod.R;
+import cn.chinat2t.stockgod.activity.SimulationSubActivity;
+import cn.chinat2t.stockgod.activity.SimulationSubActivity.ViewBackPressedListener;
+import cn.chinat2t.stockgod.bean.SellBuyStock;
+import cn.chinat2t.stockgod.bean.SellBuyStockBean;
+import cn.chinat2t.stockgod.bean.StockInfoBean;
+import cn.chinat2t.stockgod.bean.UserBean;
+import cn.chinat2t.stockgod.http.CommunicationManager;
+import cn.chinat2t.stockgod.http.CommunicationResultListener;
+
+public class StockSellView extends LinearLayout implements OnClickListener, TextWatcher {
+
+	public static final int STOCK_LIST = 2;
+	public static final int STOCK_SELL = 1;
+	public static final int STOCK_BUY = 0;
+	private LayoutInflater mInflater;
+	private ListView sellList;
+	private ListView buyList;
+	private Button button;
+	private EditText priceEdit;
+	private EditText amountEdit;
+	private View stockSellView;
+	private PopupWindow menu;
+	private SimulationSubActivity activity;
+	List<SellBuyStock> stockSellList = new ArrayList<SellBuyStock>();
+	List<SellBuyStock> stockBuyList = new ArrayList<SellBuyStock>();
+	private StockAdapter sellAdapter;
+	private StockAdapter buyAdapter;
+	private StockInfoBean stock;
+	private int type;
+	private TextView zuidagu;
+	private TextView yichigu;
+	
+	public StockSellView(Context context, StockInfoBean stock, int type) {
+		super(context);
+		this.stock = stock;
+		this.type = type;
+		activity = (SimulationSubActivity) context;
+		
+		mInflater = LayoutInflater.from(activity);
+		stockSellView = mInflater.inflate(R.layout.stock_buy_layout, null);
+		addView(stockSellView);
+		
+		button = (Button) stockSellView.findViewById(R.id.btn_stock_buy);
+		button.setOnClickListener(this);
+		
+		if(type == STOCK_BUY){
+			button.setBackgroundResource(R.drawable.btn_red_selector);
+			button.setText("买入");
+		}else{
+			button.setBackgroundResource(R.drawable.btn_green_selector);
+			button.setText("卖出");
+		}
+		
+		priceEdit = (EditText) stockSellView.findViewById(R.id.editText_price);
+		amountEdit = (EditText) stockSellView.findViewById(R.id.editText_amount);
+		yichigu = (TextView) stockSellView.findViewById(R.id.yi_chi_gu);
+		zuidagu = (TextView) stockSellView.findViewById(R.id.max_buy);
+		amountEdit.setOnClickListener(this);
+
+		sellList = (ListView)stockSellView.findViewById(R.id.listView_buy);
+		buyList = (ListView)stockSellView.findViewById(R.id.listView_sell);
+		
+		sellAdapter = new StockAdapter(stockSellList);
+		buyAdapter = new StockAdapter(stockBuyList);
+		sellList.setAdapter(sellAdapter);
+		buyList.setAdapter(buyAdapter);
+		
+		activity.setOnViewBackPressedListener(pressedListener);
+		CommunicationManager.getInstance().getStockSellBuyList(1, 1, listener);
+		
+	}
+	
+	private CommunicationResultListener listener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			switch (result) {
+			case CommunicationManager.FAIL:
+				break;
+				
+			case CommunicationManager.SUCCEED:
+				break;
+			}
+			if(token > 0){
+				Message msg = mHandler.obtainMessage();
+				msg.what = result;
+				msg.arg1 = STOCK_LIST;
+				msg.obj = resultData;
+				mHandler.sendMessage(msg);
+			}
+		};
+	};
+	
+	private CommunicationResultListener sellListener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			switch (result) {
+			case CommunicationManager.FAIL:
+				break;
+				
+			case CommunicationManager.SUCCEED:
+				break;
+			}
+			if(token > 0){
+				Message msg = mHandler.obtainMessage();
+				msg.what = result;
+				msg.arg1 = STOCK_SELL;
+				msg.obj = resultData;
+				mHandler.sendMessage(msg);
+			}
+		};
+	};
+	
+	private CommunicationResultListener buyListener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			switch (result) {
+			case CommunicationManager.FAIL:
+				break;
+				
+			case CommunicationManager.SUCCEED:
+				break;
+			}
+			if(token > 0){
+				Message msg = mHandler.obtainMessage();
+				msg.what = result;
+				msg.arg1 = STOCK_BUY;
+				msg.obj = resultData;
+				mHandler.sendMessage(msg);
+			}
+		};
+	};
+
+	ViewBackPressedListener pressedListener = new ViewBackPressedListener() {
+		
+		@Override
+		public void dismiss() {
+			if(menu != null)
+			menu.dismiss();
+		}
+
+		@Override
+		public boolean isShow() {
+			if(menu != null)
+				return menu.isShowing();
+			return false;
+		}
+	};
+	
+	Handler mHandler = new Handler(){
+		
+		public void handleMessage(Message msg) {
+			if(msg.what == CommunicationManager.SUCCEED) {
+				switch (msg.arg1) {
+				case STOCK_LIST:
+					SellBuyStockBean sellbuyList = (SellBuyStockBean) msg.obj;
+					
+					stock = sellbuyList.beStock;
+					stockSellList = sellbuyList.sellList;
+					sellAdapter.setmList(stockSellList);
+					sellAdapter.notifyDataSetInvalidated();
+
+					stockBuyList = sellbuyList.buyList;
+					buyAdapter.setmList(stockBuyList);
+					buyAdapter.notifyDataSetInvalidated();
+					
+					priceEdit.setText("" + sellbuyList.averprice);
+					amountEdit.setText("" + sellbuyList.zuidagu);
+					yichigu.setText(yichigu.getText().toString().replace("?", ""+sellbuyList.chiyougu));
+					zuidagu.setText(zuidagu.getText().toString().replace("?", ""+sellbuyList.zuidagu));
+					break;
+
+				case STOCK_SELL:
+					String toast = (String) msg.obj;
+					Toast.makeText(activity, toast, 0).show();
+					break;
+				
+				case STOCK_BUY:
+					String toast2 = (String) msg.obj;
+					Toast.makeText(activity, toast2, 0).show();
+					break;
+				}
+				
+			} else {
+			
+			}
+		};
+	};
+	
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.btn_stock_buy:
+			UserBean user = UserBean.getInstance();
+			user.uid = 1;
+			if(type == 0){
+				CommunicationManager.getInstance().buyAccountStock(user.uid, stock.id, 1, buyListener);
+			}else if(type == 1){
+				CommunicationManager.getInstance().sellAccountStock(user.uid, stock.id, sellListener);
+			}
+			break;
+		case R.id.editText_amount:
+			
+			menu = new PopupWindow(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+			LinearLayout contentView = (LinearLayout) mInflater.inflate(R.layout.window_menu_layout, null);
+			for (int i = 0; i < 6; i++) {
+				TextView text = new TextView(getContext());
+				String textValue = "";
+				if(i == 0){
+					textValue = "自主输入";
+				}else{
+					if(type == 0){
+						textValue = "买入" + "1/" + (i * 2);
+					} else {
+						textValue = "卖出" + "1/" + (i * 2);
+					}
+				}
+				text.setTag(i);
+				text.setText(textValue);
+				text.setTextSize(18);
+				text.setGravity(Gravity.CENTER);
+				LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
+				params.bottomMargin = 5;
+				params.topMargin = 5;
+				text.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						TextView text = (TextView) v;
+						int position = (Integer) text.getTag();
+						if(position == 0){
+							
+						}else{
+							amountEdit.setText(Integer.parseInt(amountEdit.getText().toString()) / (position * 2) + "");
+						}
+						menu.dismiss();
+					}
+				});
+				text.setLayoutParams(params);
+				text.setPadding(40, 2, 40, 2);
+				text.setMinWidth(200);
+				text.setBackgroundResource(R.drawable.menu_item);
+				contentView.addView(text);
+			}
+			menu.setContentView(contentView);
+			menu.setBackgroundDrawable(new BitmapDrawable());
+			menu.setOutsideTouchable(true);
+			int[] loaction = new int[2];
+			button.getLocationInWindow(loaction);
+			menu.showAtLocation(button, Gravity.CENTER | Gravity.BOTTOM, 0, loaction[1] / 2);
+			break;
+		}
+	}
+
+	class StockAdapter extends BaseAdapter{
+		
+        List<SellBuyStock> mList;
+        
+        public void setmList(List<SellBuyStock> mList) {
+			this.mList = mList;
+		}
+
+		public StockAdapter(List<SellBuyStock> mList) {
+        	this.mList = mList;
+		}
+        
+		@Override
+		public int getCount() {
+			return mList.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return position;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			StockHolder holder = null;
+			if(convertView == null){
+				convertView = mInflater.inflate(R.layout.sellbuy_listitem_layout, null);
+				holder = new StockHolder();
+				holder.tv1 = (TextView) convertView.findViewById(R.id.listitem_text1);
+				holder.tv2 = (TextView) convertView.findViewById(R.id.listitem_text2);
+				holder.tv3 = (TextView) convertView.findViewById(R.id.listitem_text3);
+				holder.tv4 = (TextView) convertView.findViewById(R.id.listitem_text4);
+				convertView.setTag(holder);
+			} else {
+				holder = (StockHolder) convertView.getTag();
+			}
+
+			SellBuyStock zijinBean = mList.get(position);
+			holder.tv1.setText((zijinBean.sellFlag == STOCK_BUY)?"买":"卖");
+			holder.tv1.setTextColor(getResources().getColor(R.color.red));
+			holder.tv2.setText((5 - zijinBean.member)+"");
+			holder.tv3.setText(String.valueOf(zijinBean.sprice));
+			holder.tv4.setText(String.valueOf(zijinBean.slang));
+			return convertView;
+		}
+		
+	}
+	
+	class StockHolder{
+		TextView tv1;
+		TextView tv2;
+		TextView tv3;
+		TextView tv4;
+		TextView tv5;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	@Override
+	public void afterTextChanged(Editable s) {
+		
+	}
+
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count,
+			int after) {
+		
+	}
+
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count) {
+		
+	}
+}

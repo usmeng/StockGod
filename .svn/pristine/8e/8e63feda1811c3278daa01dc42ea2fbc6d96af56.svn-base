@@ -1,0 +1,710 @@
+package cn.chinat2t.stockgod.http;
+
+import android.util.Log;
+import cn.chinat2t.stockgod.R;
+import cn.chinat2t.stockgod.bean.StockInfoBean;
+import cn.chinat2t.stockgod.bean.UserBean;
+
+
+public class CommunicationManager {
+	private final String TAG = "CommunicationManager";
+	private final int PAGESIZE = 10;
+	public static final byte FAIL = 0;
+	public static final byte SUCCEED = 1;
+    
+	private static CommunicationManager instance;
+	private NetworkManager networkManager;
+	private JsonParserManager jsonParserManager;
+
+	public CommunicationManager() {
+		if (networkManager == null)
+			networkManager = NetworkManager.getInstance();
+
+		if (jsonParserManager == null)
+			jsonParserManager = JsonParserManager.getInstance();
+	}
+
+	public static CommunicationManager getInstance() {
+		if (instance == null)
+			instance = new CommunicationManager();
+
+		return instance;
+	}
+	
+	public void eidtSelfStock(int userID, int stockId, int type, final CommunicationResultListener listener){
+
+		if (listener == null) {
+			return;
+		}
+
+		String url = ServerAddress.EDIT_SELF_OF_STOCK;
+		String prama = ServerAddress.EDIT_SELF_OF_STOCK_PARAM;
+		url = url + String.format(prama, userID, stockId, type);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserEditSelfStock(str, listener);
+			}
+		});
+		
+	}
+
+	public void sellAccountStock(int userID, int stockId, final CommunicationResultListener listener) {
+
+		if (listener == null) {
+			return;
+		}
+
+		String url = ServerAddress.SELL_ACCOUNT_OF_STOCK;
+		String prama = ServerAddress.SELL_ACCOUNT_OF_STOCK_PARAM;
+		url = url + String.format(prama, userID, stockId);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserSellAccountStock(str, listener);
+			}
+		});
+	
+	}
+
+	public void buyAccountStock(int userID, int stockId, int member, final CommunicationResultListener listener) {
+
+		if (listener == null) {
+			return;
+		}
+
+		String url = ServerAddress.Buy_ACCOUNT_OF_STOCK;
+		String prama = ServerAddress.Buy_ACCOUNT_OF_STOCK_PARAM;
+		url = url + String.format(prama, userID, stockId, member);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserSellAccountStock(str, listener);
+			}
+		});
+	
+	}
+	
+	public void getKindsOfStock(int type, final CommunicationResultListener listener){
+
+		if (listener == null) {
+			return;
+		}
+
+		String url = ServerAddress.GET_KINDS_OF_STOCK;
+		String prama = ServerAddress.GET_KINDS_OF_STOCK_PARAM;
+		url = url + String.format(prama, type);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserKindsOfStock(str, listener);
+			}
+		});
+		
+	}
+
+	public void getAccountStock(UserBean user, final CommunicationResultListener listener) {
+
+		if (user == null || listener == null) {
+			return;
+		}
+
+		String url = ServerAddress.GET_ACCOUNT_OF_STOCK;
+		String prama = ServerAddress.GET_ACCOUNT_OF_STOCK_PARAM;
+		url = url + String.format(prama, user.uid);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserAccountOfStock(str, listener);
+			}
+		});
+	}
+	
+
+	public void getSelfStock(UserBean user, final CommunicationResultListener listener) {
+
+		if (user == null || listener == null) {
+			return;
+		}
+
+		String url = ServerAddress.GET_SELF_OF_STOCK;
+		String prama = ServerAddress.GET_SELF_OF_STOCK_PARAM;
+		url = url + String.format(prama, user.uid);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserSelfChooseOfStock(str, listener);
+			}
+		});
+	
+	}
+	
+	public void getWeiTuoStock(UserBean user, final CommunicationResultListener listener) {
+
+
+		if (user == null || listener == null) {
+			return;
+		}
+
+		String url = ServerAddress.GET_WEITUO_OF_STOCK;
+		String prama = ServerAddress.GET_WEITUO_OF_STOCK_PARAM;
+		url = url + String.format(prama, user.uid);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserWeiTuoStock(str, listener);
+			}
+		});
+	
+	}
+
+	private void getKLine(String url, StockInfoBean stock, final CommunicationResultListener listener) {
+		
+		if (listener == null) {
+			return;
+		}
+		
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				Log.d(TAG, "str:" + str);
+				jsonParserManager.parserKLine(str, listener);
+			}
+		});
+	}
+	
+	public void getDayLine(StockInfoBean stock, final CommunicationResultListener listener) {
+		String url = ServerAddress.GET_KLINE_DAY_LINSHI;
+		String param = ServerAddress.GET_KLINE_DAY_PARAM;
+		url = url + String.format(param, 5, 1);
+		getKLine(url, stock, listener);
+	}
+	
+	public void getWeekLine(StockInfoBean stock, final CommunicationResultListener listener) {
+		String url = ServerAddress.GET_KLINE_WEEK_LINSHI;
+		String param = ServerAddress.GET_KLINE_WEEK_PARAM;
+		url = url + String.format(param, 5, 1);
+		getKLine(url, stock, listener);
+	}
+	
+	public void get5Line(StockInfoBean stock, final CommunicationResultListener listener) {
+		String url = ServerAddress.GET_KLINE_5_LINSHI;
+		String param = ServerAddress.GET_KLINE_5_PARAM;
+		url = url + String.format(param, 5, 1);
+		getKLine(url, stock, listener);
+	}
+	
+	public void get30Line(StockInfoBean stock, final CommunicationResultListener listener) {
+		String url = ServerAddress.GET_KLINE_30_LINSHI;
+		String param = ServerAddress.GET_KLINE_30_PARAM;
+		url = url + String.format(param, 5, 1);
+		getKLine(url, stock, listener);
+	}
+	
+	public void get60Line(StockInfoBean stock, final CommunicationResultListener listener) {
+		String url = ServerAddress.GET_KLINE_60_LINSHI;
+		String param = ServerAddress.GET_KLINE_60_PARAM;
+		url = url + String.format(param, 5, 1);
+		getKLine(url, stock, listener);
+	}
+
+	public void getMonthLine(StockInfoBean stock, final CommunicationResultListener listener) {
+		String url = ServerAddress.GET_KLINE_MONTH_LINSHI;
+		String param = ServerAddress.GET_KLINE_MONTH_PARAM;
+		url = url + String.format(param, 5, 1);
+		getKLine(url, stock, listener);
+	}
+	
+	public void getFenShiLine(StockInfoBean stock, final CommunicationResultListener listener) {
+		String url = ServerAddress.GET_KLINE_FENSHI_LINSHI;
+		String param = ServerAddress.GET_KLINE_MONTH_PARAM;
+		url = url + String.format(param, 5, 1);
+		getKLine(url, stock, listener);
+	}
+	
+	public void cancelWeiTuoStock(int userID, int stockID, final CommunicationResultListener listener) {
+
+		if (listener == null) {
+			return;
+		}
+
+		String url = ServerAddress.EDIT_SELL_WEITUO_STOCK;
+		String prama = ServerAddress.EDIT_SELL_WEITUO_STOCK_PARAM;
+		url = url + String.format(prama, userID, stockID);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserSellWeiTuoStock(str, listener);
+			}
+		});
+	
+	}
+
+	public void getSearchAccountStock(String value, final CommunicationResultListener listener) {
+
+		if (listener == null) {
+			return;
+		}
+
+		String url = ServerAddress.SEARCH_ACCOUNT_OF_STOCK;
+		String prama = ServerAddress.SEARCH_ACCOUNT_OF_STOCK_PARAM;
+		url = url + String.format(prama, value);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserSelfChooseOfStock(str, listener);
+			}
+		});
+	
+	}
+
+	public void getStockSellBuyList(int userId, int stockId, final CommunicationResultListener listener) {
+
+		if (listener == null) {
+			return;
+		}
+
+		String url = ServerAddress.GET_SELL_BUY_STOCK;
+		String prama = ServerAddress.GET_SELL_BUY_STOCK_PARAM;
+		url = url + String.format(prama, userId, stockId);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserSellBuyStock(str, listener);
+			}
+		});
+	
+	}
+
+	public void getGoldRoom(int typeId, final CommunicationResultListener listener) {
+
+		if (listener == null) {
+			return;
+		}
+
+		String url = ServerAddress.GET_GOLD_ROOM;
+		String prama = ServerAddress.GET_GOLD_ROOM_PARAM;
+		url = url + String.format(prama, typeId);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserGoldRooms(str, listener);
+			}
+		});
+	
+	}
+
+	public void getPanKouLine(StockInfoBean stock, final CommunicationResultListener listener) {
+
+		if (listener == null) {
+			return;
+		}
+
+		String url = ServerAddress.GET_PANKOU_STOCK;
+		String prama = ServerAddress.GET_PANKOU_STOCK_PARAM;
+		url = url + String.format(prama, 1, 1);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserPanKouStock(str, listener);
+			}
+		});
+	
+	}
+	
+	public void getGuessNumber(int userId, int roomId, final CommunicationResultListener listener) {
+
+		if (listener == null) {
+			return;
+		}
+		String url = ServerAddress.GET_GUESS_NUMBER;
+		String prama = ServerAddress.GET_GUESS_NUMBER_PARAM;
+		url = url + String.format(prama, userId, roomId);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserGuessNum(str, listener);
+			}
+		});
+	
+	}
+	
+	public void getHasSkyEye(int userId, final CommunicationResultListener listener) {
+		if (listener == null)	return;
+
+		String url = ServerAddress.GET_STOCK_SKY_EYE;
+		String prama = ServerAddress.GET_STOCK_SKY_EYE_PARAM;
+		url = url + String.format(prama, 1);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserHasSkyEye(str, listener);
+			}
+		});
+	
+	}
+
+	public void getGameXiang(int saizhiID, int userID, int roomID,
+			final CommunicationResultListener listener) {
+
+		if (listener == null) {
+			return;
+		}
+
+		String url = ServerAddress.GET_ROOM_XIANG;
+		String prama = ServerAddress.GET_ROOM_XIANG_PARAM;
+		url = url + String.format(prama, saizhiID, userID, roomID);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserGameXiang(str, listener);
+			}
+		});
+		
+	}
+	
+	public void getGameJu(int userID, int roomID, int saizhiID,
+			final CommunicationResultListener listener) {
+
+		if (listener == null) {
+			return;
+		}
+
+		String url = ServerAddress.GET_GAME_JU;
+		String prama = ServerAddress.GET_GAME_JU_PARAM;
+		url = url + String.format(prama, userID, saizhiID, roomID);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserGameXiang2(str, listener);
+			}
+		});
+	}
+	
+	/*public void getGameXiang(final int type, int saizhiID, int userID, int roomID,
+			final CommunicationResultListener listener) {
+
+		if (listener == null) return;
+
+		String url = ServerAddress.GET_ROOM_XIANG;
+		String prama = ServerAddress.GET_ROOM_XIANG_PARAM;
+		url = url + String.format(prama, saizhiID, userID, roomID);
+
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				if(type == 0){
+					jsonParserManager.parserGuess(str, listener);
+				}else if(type == 1){
+					jsonParserManager.parserChoose(str, listener);
+				}else if(type == 2){
+					jsonParserManager.parserFight(str, listener);
+				}
+			}
+		});
+	
+	}*/
+	
+	/** 注册*/
+	public void reg(int sex, String name, String pass, String email, final CommunicationResultListener listener){
+		String url = ServerAddress.demo2.REG;
+		String prama = ServerAddress.demo2.REG_PARAM;
+		url = url + String.format(prama, name, pass, pass, email, sex);
+		httpAction(url, listener);
+	}
+	
+	/** 登陆*/
+	public void login(String username, String pass, final CommunicationResultListener listener) {
+		String url = ServerAddress.demo2.LOGIN;
+		String prama = ServerAddress.demo2.LOGIN_PARAM;
+		url = url + String.format(prama, username, pass);
+		httpAction(url, listener);	
+	}
+	
+	/** 充值密码*/
+	public void restPass(String userID, String pass, String newpassword, final CommunicationResultListener listener) {
+		String url = ServerAddress.demo2.RESET_PASS;
+		String prama = ServerAddress.demo2.RESET_PASS_PARAM;
+		url = url + String.format(prama, userID, pass, newpassword, pass);
+		httpAction(url, listener);
+	}
+	
+	/** 快速登陆*/
+	public void fastLogin(String name, String pass, final CommunicationResultListener listener) {
+		String url = ServerAddress.demo2.LOGIN_FAST;
+		String prama = ServerAddress.demo2.LOGIN_FAST_PARAM;
+		url = url + String.format(prama, name, pass, pass);
+		httpAction(url, listener);
+	}
+	
+	/** 修改昵称*/
+	public void reSetNameAction(int userId, String nickName, final CommunicationResultListener listener){
+		String url = ServerAddress.demo2.RESET_NAME;
+		String prama = ServerAddress.demo2.RESET_NAME_PARAM;
+		url = url + String.format(prama, userId, nickName);
+		httpAction(url, listener);
+	}
+	
+	/** 找回密码*/
+	public void foundPass(String email, String nickName, CommunicationResultListener listener){
+		String url = ServerAddress.demo2.FOUND_PASS;
+		String prama = ServerAddress.demo2.FOUND_PASS_PARAM;
+		url = url + String.format(prama, email, nickName);
+		httpAction(url, listener);
+	}
+	
+	public void httpAction(String url, final CommunicationResultListener listener){
+		
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				jsonParserManager.parserUserStr(str, listener);
+			}
+		});
+	
+	}
+
+	public void httpListAction(String url, final int type, final CommunicationResultListener listener) {
+		
+		listener.setToken(System.currentTimeMillis());
+		networkManager.requestGetString(url, new NetworkRequestListener() {
+			@Override
+			public void resultString(String str) {
+				if (str == null || str.equals("")) {
+					listener.resultListener(FAIL, R.string.http_lose);
+					return;
+				}
+				// 获取到json字符串后转入json解析
+				if(type == 0){
+					jsonParserManager.parserGuanZhuList(str, listener);
+				}else if(type == 1){
+					jsonParserManager.parserFenSiList(str, listener);
+				}else if(type == 2){
+					jsonParserManager.parserZuiZongList(str, listener);
+				}else if(type == 3){
+					jsonParserManager.parserDongTaiList(str, listener);
+				}else if(type == 5){
+					jsonParserManager.parserDaoJuList(str, listener);
+				}
+			}
+		});
+	
+	
+	}
+	
+	/** 获得用户信息*/
+	public void getUserInfo(int userId, CommunicationResultListener listener){
+		String url = ServerAddress.demo2.USER_INFO;
+		String prama = ServerAddress.demo2.USER_INFO_PARAM;
+		url = url + String.format(prama, userId);
+		httpAction(url, listener);
+	}
+	
+	/** 获取vip列表*/
+	public void getVipList(int userId, CommunicationResultListener listener){
+		String url = ServerAddress.demo2.GET_VIP_LIST;
+		String prama = ServerAddress.demo2.GET_VIP_LIST_PARAM;
+		url = url + String.format(prama, userId);
+		httpAction(url, listener);
+	}
+	
+	/** 修改VIP等级*/
+	public void editVipLevel(int userId, int vipId, CommunicationResultListener listener){
+		String url = ServerAddress.demo2.EDIT_VIP;
+		String prama = ServerAddress.demo2.EDIT_VIP_PARAM;
+		url = url + String.format(prama, userId, vipId);
+		httpAction(url, listener);
+	}
+	
+	/** 领取奖励*/
+	public void getLift(int userId, int jiangId, CommunicationResultListener listener){
+		String url = ServerAddress.demo2.LING_JIANG;
+		String prama = ServerAddress.demo2.LING_JIANG_PARAM;
+		url = url + String.format(prama, userId, jiangId);
+		httpAction(url, listener);
+	}
+	
+	/** 金币兑换资金*/
+	public void exchangeGoldToFund(int userId, String gold, CommunicationResultListener listener){
+		String url = ServerAddress.demo2.GOLD_TO_FUND;
+		String prama = ServerAddress.demo2.GOLD_TO_FUND_PARAM;
+		url = url + String.format(prama, userId, gold);
+		httpAction(url, listener);
+	}
+	
+	/** 获取道具列表*/
+	public void getDaoJuList(int userId, CommunicationResultListener listener){
+		String url = ServerAddress.demo2.GET_DAOJU_LIST;
+		String prama = ServerAddress.demo2.GET_DAOJU_LIST_PARAM;
+		url = url + String.format(prama, userId);
+		httpListAction(url, 5, listener);
+	}
+	
+	/** 获取道具详情*/
+	public void getDaoJuXiang(int userId, int daoJuId, CommunicationResultListener listener){
+		String url = ServerAddress.demo2.GET_DAOJU_LIST;
+		String prama = ServerAddress.demo2.GET_DAOJU_LIST_PARAM;
+		url = url + String.format(prama, userId, daoJuId);
+		httpAction(url, listener);
+	}
+	
+	/** 获取被追踪的牛人*/
+	public void zhuiZongFriend(int userId, int zhuiZhongId, CommunicationResultListener listener){
+		String url = ServerAddress.demo2.ZHUI_ZONG;
+		String prama = ServerAddress.demo2.ZHUI_ZONG_PARAM;
+		url = url + String.format(prama, userId, zhuiZhongId);
+		httpAction(url, listener);
+	}
+	
+	/** 获取粉丝列表*/
+	public void getFansList(int userId, CommunicationResultListener listener){
+		String url = ServerAddress.demo2.GET_FANS;
+		String prama = ServerAddress.demo2.GET_FANS_PARAM;
+		url = url + String.format(prama, userId);
+		httpListAction(url, 1, listener);
+	}
+	
+	/** 获取关注列表*/
+	public void getGuanZhuList(int userId, CommunicationResultListener listener){
+		String url = ServerAddress.demo2.GET_GUANZHU;
+		String prama = ServerAddress.demo2.GET_GUANZHU_PARAM;
+		url = url + String.format(prama, userId);
+		httpListAction(url, 0, listener);
+	}
+
+	public void cancelGuanZhu(int myUserId, int userId, CommunicationResultListener listener) {
+		String url = ServerAddress.demo2.CANCEL_GUANZHU;
+		String prama = ServerAddress.demo2.CANCEL_GUANZHU_PARAM;
+		url = url + String.format(prama, myUserId, userId);
+		httpAction(url, listener);
+	}
+
+}

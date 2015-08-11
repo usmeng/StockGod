@@ -1,0 +1,316 @@
+package cn.chinat2t.stockgod.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+import cn.chinat2t.stockgod.MainActivity;
+import cn.chinat2t.stockgod.R;
+import cn.chinat2t.stockgod.bean.GameStockBean;
+import cn.chinat2t.stockgod.bean.RoomBean;
+import cn.chinat2t.stockgod.bean.RoomXiangBean;
+import cn.chinat2t.stockgod.bean.StockInfoBean;
+import cn.chinat2t.stockgod.bean.UserBean;
+import cn.chinat2t.stockgod.http.CommunicationManager;
+import cn.chinat2t.stockgod.http.CommunicationResultListener;
+/**
+ * 选股竞技
+ * @author Administrator
+ *
+ */
+public class ChooseActivity extends Activity implements OnClickListener{
+
+	private ImageView chooseBtn1,chooseBtn2,chooseBtn3;
+	private List<View> stockViewList = new ArrayList<View>();
+	private List<StockInfoBean> stockList = new ArrayList<StockInfoBean>();
+	private List<GameStockBean> gameList = new ArrayList<GameStockBean>();
+	private StockInfoBean chooseStock;
+	private GameStockBean chooseGameStock;
+	private static final int DIALOG = 0;
+	private static final int ROOM_XIANG = 1;
+	private static final int GAME_XIANG = 2;
+
+	private RoomXiangBean roomXiang;
+	private RoomBean gameBean; 
+	
+	private Dialog dialog = null;
+	private EditText setAuto;
+	private Button button1;
+	private Button button2;
+	private Button button3;
+	private Button skyEyeButton;
+	private View eyeText;
+	private int value;
+	private int roomID;
+	private int saizhiID = 3;
+	private int userID = 1;
+	boolean isAuto = true;
+	private String zijinStr;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.choose_layout);
+		
+		initViews();
+		roomID = getIntent().getIntExtra("roomId", 1);
+		if(roomID == 1){ zijinStr = "资金";
+		}else{ zijinStr = "金币"; }
+		saizhiID = getIntent().getIntExtra("saizhiID", 1);
+		MainActivity.setTitleName("选股竞技");
+//		CommunicationManager.getInstance().getGameXiang(saizhiID, userID, roomID, roomXianglistener);
+		CommunicationManager.getInstance().getGameJu(userID, roomID, saizhiID, gameXianglistener);
+	}
+
+	private CommunicationResultListener roomXianglistener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			Message message = mHandler.obtainMessage();
+			message.arg1 = ROOM_XIANG;
+			message.what = result;
+			message.obj = resultData;
+			mHandler.sendMessage(message);
+		};
+	};
+	
+	private CommunicationResultListener gameXianglistener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			Message message = mHandler.obtainMessage();
+			message.arg1 = GAME_XIANG;
+			message.what = result;
+			message.obj = resultData;
+			mHandler.sendMessage(message);
+		};
+	};
+	
+	private void initViews(){
+		chooseBtn1 = (ImageView)findViewById(R.id.choose_check1);
+		chooseBtn1.setOnClickListener(this);
+		chooseBtn2 = (ImageView)findViewById(R.id.choose_check2);
+		chooseBtn2.setOnClickListener(this);
+		chooseBtn3 = (ImageView)findViewById(R.id.choose_check3);
+		chooseBtn3.setOnClickListener(this);
+		
+		setAuto = (EditText) findViewById(R.id.guess_set_auto_value);
+		setAuto.addTextChangedListener(textWatcher);
+		
+		button1 = (Button) findViewById(R.id.guess_set_button1);
+		button1.setOnClickListener(this);
+		button2 = (Button) findViewById(R.id.guess_set_button2);
+		button2.setOnClickListener(this);
+		button3 = (Button) findViewById(R.id.guess_set_button3);
+		button3.setOnClickListener(this);
+		findViewById(R.id.guess_set_confirm).setOnClickListener(this);
+		
+		stockViewList.add(findViewById(R.id.choose_stock_1));
+		stockViewList.add(findViewById(R.id.choose_stock_2));
+		stockViewList.add(findViewById(R.id.choose_stock_3));
+	}
+	
+	private TextWatcher textWatcher = new TextWatcher() {
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+			
+		}
+		
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+			
+		}
+		
+		@Override
+		public void afterTextChanged(Editable s) {
+			/*if(!isAuto) return;
+			int value = Integer.parseInt(s.toString().matches("^[0-9]+$")?s.toString():0+"");
+			if(value < roomXiang.roombean.conft * 10000 || value > roomXiang.roombean.confs * 10000){
+				Toast.makeText(ChooseActivity.this, "输入值太小或者太大", Toast.LENGTH_LONG).show();
+			}*/
+			
+			if(!isAuto || gameBean == null) return;
+			int value = Integer.parseInt(s.toString().matches("^[0-9]+$")?s.toString():0+"");
+			if(value < gameBean.conft * 10000 || value > gameBean.confs * 10000){
+				Toast.makeText(ChooseActivity.this, "输入值太小或者太大", Toast.LENGTH_LONG).show();
+			}
+
+		}
+	};
+	
+	/*private CommunicationResultListener stockListener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			if(result == CommunicationManager.SUCCEED && token > 0){
+				Message msg = mHandler.obtainMessage();
+				msg.what = result;
+				msg.arg1 = 0;
+				msg.obj = resultData;
+				mHandler.sendMessage(msg);
+			}
+		};
+	};*/
+	
+	Handler mHandler = new Handler(){
+		
+		public void handleMessage(android.os.Message msg) {
+			if(msg.what == CommunicationManager.SUCCEED) {
+				switch (msg.arg1) {
+				case ROOM_XIANG:
+					roomXiang = (RoomXiangBean) msg.obj;
+					stockList = roomXiang.roombean.stockList;
+					for (int i = 0; i < stockViewList.size() && i < stockList.size(); i++) {
+						View view = stockViewList.get(i);
+						StockInfoBean stock = stockList.get(i);
+						TextView name = (TextView) view.findViewById(R.id.choose_stock_name);
+						TextView code = (TextView) view.findViewById(R.id.choose_stock_code);
+						TextView price = (TextView) view.findViewById(R.id.choose_stock_price);
+						TextView zdlv = (TextView) view.findViewById(R.id.choose_stock_zhangdielv);
+						name.setText(stock.sname);
+						code.setText(stock.stklabel);
+						price.setText(stock.nowprice + "");
+						zdlv.setText(stock.zhangfu + "%");
+					}
+					button1.setText(roomXiang.roombean.goldf + "万" + zijinStr);
+					button2.setText(roomXiang.roombean.golds + "万" + zijinStr);
+					button3.setText(roomXiang.roombean.goldt + "万" + zijinStr);
+					break;
+					
+				case GAME_XIANG:
+					if(msg.obj instanceof RoomBean){
+						gameBean = (RoomBean) msg.obj;
+						gameList = gameBean.gameList;
+						for (int i = 0; i < stockViewList.size() && i < gameList.size(); i++) {
+							View view = stockViewList.get(i);
+							GameStockBean stock = gameList.get(i);
+							TextView name = (TextView) view.findViewById(R.id.choose_stock_name);
+							TextView code = (TextView) view.findViewById(R.id.choose_stock_code);
+							TextView price = (TextView) view.findViewById(R.id.choose_stock_price);
+							TextView zdlv = (TextView) view.findViewById(R.id.choose_stock_zhangdielv);
+							name.setText(stock.ssname);
+							code.setText(stock.code);
+							price.setText(stock.nowprice + "");
+							zdlv.setText(stock.zhangdie + "%");
+						}
+
+						button1.setText(gameBean.goldf + "万" + zijinStr);
+						button2.setText(gameBean.golds + "万" + zijinStr);
+						button3.setText(gameBean.goldt + "万" + zijinStr);
+					}
+					break;
+				}
+				
+			} else {
+			
+			}
+		};
+	};
+	
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.choose_check1:
+			chooseBtn1.setImageResource(R.drawable.circle);
+			chooseBtn2.setImageResource(R.color.transparent);
+			chooseBtn3.setImageResource(R.color.transparent);
+//			chooseStock = stockList.get(0);
+			chooseGameStock = gameList.get(0);
+			break;
+		case R.id.choose_check2:
+			chooseBtn2.setImageResource(R.drawable.circle);
+			chooseBtn1.setImageResource(R.color.transparent);
+			chooseBtn3.setImageResource(R.color.transparent);
+//			chooseStock = stockList.get(1);
+			chooseGameStock = gameList.get(1);
+			break;
+		case R.id.choose_check3:
+			chooseBtn3.setImageResource(R.drawable.circle);
+			chooseBtn2.setImageResource(R.color.transparent);
+			chooseBtn1.setImageResource(R.color.transparent);
+//			chooseStock = stockList.get(2);
+			chooseGameStock = gameList.get(2);
+			break;
+		case R.id.guess_set_button1:
+			isAuto = false;
+//			setAuto.setText(roomXiang.roombean.goldf * 10000 + "");
+			setAuto.setText(gameBean.goldf * 10000 + "");
+			break;
+		case R.id.guess_set_button2:
+			isAuto = false;
+//			setAuto.setText(roomXiang.roombean.golds * 10000 + "");
+			setAuto.setText(gameBean.golds * 10000 + "");
+			break;
+		case R.id.guess_set_button3:
+			isAuto = false;
+//			setAuto.setText(roomXiang.roombean.goldt * 10000 + "");
+			setAuto.setText(gameBean.goldt * 10000 + "");
+			break;
+		case R.id.guess_set_confirm:
+			showDialog(DIALOG);
+			break;
+		}
+	}
+	
+	@Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+        case DIALOG:
+        	String string = setAuto.getText().toString();
+        	if(string != null && string.matches("^[0-9.]+$")){
+        		value = Integer.parseInt(string);
+        	}
+   			View view = LayoutInflater.from(this).inflate(R.layout.guess_dialog_munu, null);
+   			TextView tx1 = (TextView) view.findViewById(R.id.textView2);
+   			TextView tx2 = (TextView) view.findViewById(R.id.textView3);
+   			Button button = (Button) view.findViewById(R.id.guess_confirm);
+   			Button chongzhi = (Button) view.findViewById(R.id.guess_chongzhi);
+   			button.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					dialog.cancel();
+				}
+			});
+   			UserBean user = UserBean.getInstance();
+   			if(user.fund < value){
+   				chongzhi.setVisibility(View.VISIBLE);
+   				chongzhi.setOnClickListener(new OnClickListener() {
+   					
+   					@Override
+   					public void onClick(View v) {
+   						dialog.cancel();
+   						Toast.makeText(ChooseActivity.this, "尚不能充值！", Toast.LENGTH_LONG).show();
+   					}
+   				});
+   				button.setText("取消");
+   				tx1.setText("您的本金不足");
+   				tx2.setText("您可以充值后继续参加此技能");
+   			}else{
+   				tx1.setText(Html.fromHtml(tx1.getText().toString()));
+   				tx1.setText(String.format(tx1.getText().toString(), ""+value));
+   				tx2.setText(String.format(tx1.getText().toString(), ""+value));
+   			}
+   			
+            dialog = new Dialog(getParent(), R.style.selectorDialog);
+            dialog.setContentView(view);
+            dialog.show();
+            break;
+        }
+        return dialog;
+    }
+}

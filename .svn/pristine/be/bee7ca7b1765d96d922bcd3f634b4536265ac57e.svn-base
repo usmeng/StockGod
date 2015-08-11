@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/friend_guanzhu_list_item"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:orientation="horizontal"
+    android:padding="5dp" >
+
+    <TextView
+        android:id="@+id/friend_guanzhu_textView1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:text="股票达人"
+        android:gravity="center"
+        android:textColor="#6a3837" />
+
+    <TextView
+        android:id="@+id/friend_guanzhu_textView2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.8"
+        android:gravity="center"
+        android:text="20"
+        android:textColor="@color/red" />
+
+    <TextView
+        android:id="@+id/friend_guanzhu_textView3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:gravity="center"
+        android:text="VIP"
+        android:textColor="@color/red" />
+
+    <Button
+        android:id="@+id/friend_guanzhu_button1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="1.5"
+        android:gravity="center"
+        android:padding="0dp"
+        android:background="@drawable/btn_red_selector"
+        android:text="追踪"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/friend_guanzhu_button2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="1.5"
+        android:gravity="center"
+        android:padding="0dp"
+        android:background="@drawable/btn_green_selector"
+        android:text="取消关注"
+        android:textColor="@color/white" />
+
+</LinearLayout>

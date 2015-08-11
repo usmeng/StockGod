@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:background="@drawable/main_circle_bg" >
+
+    <TextView
+        android:id="@+id/found_pass_textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_vertical"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/black"
+        android:text="输入你的用户名和邮箱地址，您的密码我们会以邮件的形式发送到您的邮箱" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/found_pass_textView1"
+        android:background="@drawable/line1" />
+
+    <EditText
+        android:id="@+id/found_pass_editText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/found_pass_editText2"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/found_pass_textView1"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/edit_bg"
+        android:ems="10"
+        android:hint="请输入用户名" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/found_pass_editText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/found_pass_editText1"
+        android:layout_marginTop="16dp"
+        android:layout_toRightOf="@+id/found_pass_textView3"
+        android:background="@drawable/edit_bg"
+        android:ems="10"
+        android:hint="请输入您的注册邮箱" />
+    
+	<Button
+        android:id="@+id/found_pass_button1"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/found_pass_editText2"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/white"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/btn_yellow_selector"
+        android:text="提交" />
+	
+    <TextView
+        android:id="@+id/found_pass_textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/found_pass_editText1"
+        android:layout_alignBottom="@+id/found_pass_editText1"
+        android:layout_alignLeft="@+id/found_pass_textView1"
+        style="@style/text_black_normal"
+        android:text="用  户  名：" />
+
+    <TextView
+        android:id="@+id/found_pass_textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/found_pass_editText2"
+        android:layout_alignBottom="@+id/found_pass_editText2"
+        android:layout_alignLeft="@+id/found_pass_textView2"
+        style="@style/text_black_normal"
+        android:text="邮箱地址：" />
+
+    <View
+        android:id="@+id/found_pass_view1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/found_pass_button1"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/line1" />
+
+    <TextView
+        android:id="@+id/found_pass_textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/found_pass_textView3"
+        android:layout_alignRight="@+id/found_pass_textView1"
+        android:layout_below="@+id/found_pass_view1"
+        android:textColor="@color/black"
+        android:layout_marginTop="20dp"
+        android:text="如果您忘了您的用户名和邮箱地址，欢迎联系我们的客服/n客户电话：12345678/n客服邮箱：chinat2t@163.com" />
+
+</RelativeLayout>

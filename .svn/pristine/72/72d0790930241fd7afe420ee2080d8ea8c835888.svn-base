@@ -1,0 +1,364 @@
+package cn.chinat2t.stockgod.activity;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TextView;
+import cn.chinat2t.stockgod.R;
+import cn.chinat2t.stockgod.bean.KLineBean;
+import cn.chinat2t.stockgod.bean.KlineData;
+import cn.chinat2t.stockgod.bean.LineEntity;
+import cn.chinat2t.stockgod.bean.OHLCEntity;
+import cn.chinat2t.stockgod.bean.StickEntity;
+import cn.chinat2t.stockgod.bean.StockInfoBean;
+import cn.chinat2t.stockgod.http.CommunicationManager;
+import cn.chinat2t.stockgod.http.CommunicationResultListener;
+import cn.chinat2t.stockgod.utils.Constant;
+import cn.chinat2t.stockgod.utils.DataUtil;
+import cn.chinat2t.stockgod.views.FenShiView;
+import cn.chinat2t.stockgod.views.MACandleStickChart;
+import cn.chinat2t.stockgod.views.StickChart;
+import cn.chinat2t.stockgod.views.StockSellView;
+
+public class SimulationSubActivity extends Activity implements OnCheckedChangeListener, OnClickListener{
+
+	public static final int KLINE_PARAM_DAY = 0;
+	
+	private MACandleStickChart macandlestickchart;
+	private StickChart stickchart;
+	
+	/**  K线图的布局 */
+	private View kLineView;
+	private ViewBackPressedListener muneListener;
+	private TextView name;
+	private TextView nowprice;
+	private TextView zhangfu;
+	private TextView zhangfuLV;
+	private TextView top;
+	private TextView open;
+	private TextView total;
+	private TextView close;
+	private TextView low;
+	private TextView sum;
+	
+	/**  K线图等的容器 */
+	private LinearLayout contentLayout;
+	
+	private RadioGroup mGroup;
+	private Button upBtn;
+	
+	private Intent intent;
+	private StockInfoBean stockInfoBean;
+	
+	private List<OHLCEntity> ohlc = new ArrayList<OHLCEntity>();
+	private List<StickEntity> vol = new ArrayList<StickEntity>();
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.simulation_kline_layout);
+		intent = getIntent();
+		Serializable serializableExtra = intent.getSerializableExtra(Constant.string.INTENT_SIMULATION_VALUE);
+		if(serializableExtra instanceof StockInfoBean){
+			stockInfoBean = (StockInfoBean) serializableExtra;
+		}
+		initViews();
+		initData();
+	}
+
+	private void initViews(){
+		contentLayout = (LinearLayout) findViewById(R.id.kline_content_layout);
+		mGroup = (RadioGroup) findViewById(R.id.kline_menu_layout);
+		mGroup.setOnCheckedChangeListener(this);
+		View view = findViewById(R.id.kine_stock_info_layout);
+		name = (TextView) view.findViewById(R.id.kline_stock_name);
+		nowprice = (TextView) view.findViewById(R.id.kline_stock_cur);
+		zhangfu = (TextView) view.findViewById(R.id.kline_stock_data1);
+		zhangfuLV = (TextView) view.findViewById(R.id.kline_stock_data2);
+		open = (TextView) view.findViewById(R.id.kline_stock_today2);
+		top = (TextView) view.findViewById(R.id.kline_stock_top2);
+		total = (TextView) view.findViewById(R.id.kline_stock_total2);
+		close = (TextView) view.findViewById(R.id.kline_stock_yesterday2);
+		low = (TextView) view.findViewById(R.id.kline_stock_lowest2);
+		sum = (TextView) view.findViewById(R.id.kline_stock_sum2);
+		
+		initValue();
+	}
+
+	private void initValue() {
+		name.setText(stockInfoBean.sname + " " + stockInfoBean.stklabel);
+		nowprice.setText(String.valueOf(stockInfoBean.nowprice));
+		zhangfu.setText(String.valueOf(stockInfoBean.zhangdie));
+		zhangfuLV.setText(stockInfoBean.zhangfu + "%");
+		open.setText(String.valueOf(stockInfoBean.opens));
+		top.setText(String.valueOf(stockInfoBean.high));
+		total.setText(String.valueOf(stockInfoBean.vol));
+		close.setText(String.valueOf(stockInfoBean.closes));
+		low.setText(String.valueOf(stockInfoBean.low));
+		sum.setText(String.valueOf(stockInfoBean.amount));
+	}
+	
+	private void initData(){
+		onCheckedChanged(mGroup, R.id.kline_radio_button0);
+	}
+	
+	private CommunicationResultListener dayResultListener = new CommunicationResultListener() {
+		
+		// 被JsonParserManager中的parserMonthLine()调用
+		public void resultListener(byte result, Object resultData) {
+			switch (result) {
+			case CommunicationManager.FAIL:
+				break;
+				
+			case CommunicationManager.SUCCEED:
+				break;
+			}
+			if(token > 0){
+				Message msg = mHandler.obtainMessage();
+				msg.what = result;
+				msg.arg1 = KLINE_PARAM_DAY;
+				msg.obj = resultData;
+				mHandler.sendMessage(msg);
+			}
+		};
+	};
+	
+	Handler mHandler = new Handler(){
+		
+		public void handleMessage(android.os.Message msg) {
+			if(msg.what == CommunicationManager.SUCCEED) {
+				KLineBean kLine = (KLineBean) msg.obj;
+				List<KlineData> lineList = kLine.kline;
+				if(lineList == null) return;
+				ohlc.clear();
+				vol.clear();
+				for(KlineData data : lineList){
+					OHLCEntity oh = new OHLCEntity(data.open, data.high, data.low, data.close, data.yearm);
+					ohlc.add(oh);
+					StickEntity stick = new StickEntity(data.shou, 0, data.yearm);
+					vol.add(stick);
+				}
+				int length = ohlc.size() > 20 ? 20 : ohlc.size();
+				macandlestickchart.setMaxCandleSticksNum(length);
+				macandlestickchart.setLatitudeNum(5);
+				// 为chart2增加均线
+				macandlestickchart.setLineData(getLineEntityList());   //  设置MA均线
+				macandlestickchart.setOHLCData(ohlc);    // 蜡烛图样的数值
+				macandlestickchart.invalidate();  // 更新视图
+				
+				length = vol.size() > 20 ? 20 : vol.size();
+				stickchart.setMaxStickDataNum(20);
+				stickchart.setLatitudeNum(2);
+				stickchart.setStickData(vol);
+				stickchart.invalidate();
+			} else {
+			
+			}
+		};
+	};
+	
+	private void initMACandleStickChart(){
+		macandlestickchart = (MACandleStickChart) kLineView.findViewById(R.id.kline_stock_tu1);
+		macandlestickchart.setAxisXColor(Color.LTGRAY);
+		macandlestickchart.setAxisYColor(Color.LTGRAY);
+		macandlestickchart.setLatitudeColor(Color.GRAY);
+		macandlestickchart.setLongitudeColor(Color.GRAY);
+		macandlestickchart.setBorderColor(Color.LTGRAY);
+		macandlestickchart.setLongtitudeFontColor(Color.RED);
+		macandlestickchart.setLatitudeFontColor(Color.RED);
+		macandlestickchart.setPositiveStickBorderColor(Color.rgb(211, 76, 29));
+		macandlestickchart.setNegativeStickFillColor(Color.rgb(211, 76, 29));
+		macandlestickchart.setNegativeStickBorderColor(Color.rgb(52, 129, 1));
+		macandlestickchart.setNegativeStickFillColor(Color.rgb(52, 129, 1));
+		macandlestickchart.setAxisMarginRight(1);
+		macandlestickchart.setDisplayBorder(false);
+
+		macandlestickchart.setDisplayAxisXTitle(false);
+		macandlestickchart.setDisplayAxisYTitle(true);
+		macandlestickchart.setDisplayLatitude(true);
+		macandlestickchart.setDisplayLongitude(false);
+		macandlestickchart.setShowCandleSticks(true);
+		macandlestickchart.setBackgroudColor(Color.TRANSPARENT);
+	}
+
+	private List<LineEntity> getLineEntityList() {
+		List<LineEntity> lines = new ArrayList<LineEntity>();
+
+		// 计算5日均线
+		LineEntity MA5 = new LineEntity();
+		MA5.setTitle("MA5");
+		MA5.setLineColor(Color.rgb(222, 63, 209));
+		MA5.setLineData(DataUtil.initMA(5, ohlc));
+		lines.add(MA5);
+
+		// 计算10日均线
+		LineEntity MA10 = new LineEntity();
+		MA10.setTitle("MA10");
+		MA10.setLineColor(Color.RED);
+		MA10.setLineData(DataUtil.initMA(10, ohlc));
+		lines.add(MA10);
+
+		// 计算25日均线
+		LineEntity MA25 = new LineEntity();
+		MA25.setTitle("MA25");
+		MA25.setLineColor(Color.rgb(52, 129, 1));
+		MA25.setLineData(DataUtil.initMA(25, ohlc));
+		lines.add(MA25);
+		return lines;
+	}
+	
+	private void initStickChart(){
+
+		stickchart = (StickChart) kLineView.findViewById(R.id.kline_stock_tu2);
+
+		stickchart.setAxisXColor(Color.LTGRAY);
+		stickchart.setAxisYColor(Color.LTGRAY);
+		stickchart.setLatitudeColor(Color.GRAY);
+		stickchart.setLongitudeColor(Color.GRAY);
+		stickchart.setBorderColor(Color.LTGRAY);
+		stickchart.setLongtitudeFontColor(Color.GRAY);
+		stickchart.setLatitudeFontColor(Color.GRAY);
+		stickchart.setStickFillColor(Color.RED);
+		stickchart.setAxisMarginTop(5);
+		stickchart.setAxisMarginRight(1);
+		stickchart.setAxisMarginBottom(0);
+
+		stickchart.setDisplayAxisXTitle(true);
+		stickchart.setDisplayAxisYTitle(true);
+		stickchart.setDisplayLatitude(true);
+		stickchart.setDisplayLongitude(false);
+		stickchart.setBackgroudColor(Color.TRANSPARENT);
+		stickchart.setDisplayBorder(false);
+		stickchart.setDisplayAxisXTitle(false);
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			if(muneListener != null && muneListener.isShow()){
+				muneListener.dismiss();
+			}else{
+				CompetitiveGroup.getInstance().onKeyDown(keyCode, event);
+			}
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
+	public void onCheckedChanged(RadioGroup group, int checkedId) {
+		
+		switch (checkedId) {
+		case R.id.kline_radio_button0:
+			kLineView = View.inflate(SimulationSubActivity.this, R.layout.kline_layout, null);
+			if(contentLayout != null){
+				contentLayout.removeAllViews();
+			}
+			contentLayout.addView(kLineView);
+			kLineView.findViewById(R.id.kline_day_btn).setOnClickListener(this);
+			kLineView.findViewById(R.id.kline_week_btn).setOnClickListener(this);
+			kLineView.findViewById(R.id.kline_month_btn).setOnClickListener(this);
+			kLineView.findViewById(R.id.kline_five_btn).setOnClickListener(this);
+			kLineView.findViewById(R.id.kline_30_btn).setOnClickListener(this);
+			kLineView.findViewById(R.id.kline_60_btn).setOnClickListener(this);
+			refreshKline();
+			onClick(kLineView.findViewById(R.id.kline_day_btn));  // 获取数据
+			break;
+			
+		case R.id.kline_radio_button1:
+			//  分时线的View
+			if(contentLayout != null){
+				contentLayout.removeAllViews();
+			}
+			contentLayout.addView(new FenShiView(stockInfoBean, this));
+			break;
+			
+		case R.id.kline_radio_button2:
+			if(contentLayout != null){
+				contentLayout.removeAllViews();
+			}
+			contentLayout.addView(new StockSellView(this, stockInfoBean, StockSellView.STOCK_BUY));
+			break;
+			
+		case R.id.kline_radio_button3:
+			if(contentLayout != null){
+				contentLayout.removeAllViews();
+			}
+			contentLayout.addView(new StockSellView(this, stockInfoBean, StockSellView.STOCK_SELL));
+			break;
+		}
+	}
+
+	private void refreshKline() {
+		initMACandleStickChart();
+		initStickChart();
+		macandlestickchart.addNotify(stickchart);
+	}
+
+	@Override
+	public void onClick(View v) {
+		
+		changeUpButton(v);
+		dayResultListener.setToken(0);
+		CommunicationManager manager = CommunicationManager.getInstance();
+		switch (v.getId()) {
+		case R.id.kline_day_btn:
+			manager.getDayLine(stockInfoBean, dayResultListener);
+			break;
+		case R.id.kline_week_btn:
+			manager.getWeekLine(stockInfoBean, dayResultListener);
+			break;
+		case R.id.kline_month_btn:
+			manager.getMonthLine(stockInfoBean, dayResultListener);
+			break;
+		case R.id.kline_five_btn:
+			manager.get5Line(stockInfoBean, dayResultListener);
+			break;
+		case R.id.kline_30_btn:
+			manager.get30Line(stockInfoBean, dayResultListener);
+			break;
+		case R.id.kline_60_btn:
+			manager.get60Line(stockInfoBean, dayResultListener);
+			break;
+		}
+	}
+	
+	public void setOnViewBackPressedListener(ViewBackPressedListener listener){
+		this.muneListener = listener;
+	}
+	
+	public interface ViewBackPressedListener{
+		public void dismiss();
+		
+		public boolean isShow();
+	}
+
+	public StockInfoBean getStockInfoBean() {
+		return stockInfoBean;
+	}
+	
+	private void changeUpButton(View v) {
+		if(upBtn != null){
+			upBtn.setBackgroundResource(R.drawable.main_tag_default);
+			upBtn.setTextColor(getResources().getColorStateList(R.color.textcolor1));
+		}
+		upBtn = (Button) v;
+		upBtn.setBackgroundResource(R.drawable.main_tag_active);
+		upBtn.setTextColor(getResources().getColorStateList(R.color.white));
+	}
+	
+}

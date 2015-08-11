@@ -1,0 +1,14 @@
+<resources>
+
+    <string name="app_name">StockGod</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">StockGod</string>
+    <string name="tianyan">使用天眼查\n看对手收益</string>
+    <string name="http_lose">请求失败，请重试!</string>
+    <string name="remote_call_failed">Failure calling remote service</string>
+    <string name="confirm_install_hint">"安装提示"</string>
+    <string name="confirm_install">"为保证您的交易安全，需要您安装移动快捷支付，才能进行付款。\n\n点击确定，立即安装。"</string>
+    <string name="check_sign_failed">您的订单信息已被非法篡改。</string>
+
+</resources>

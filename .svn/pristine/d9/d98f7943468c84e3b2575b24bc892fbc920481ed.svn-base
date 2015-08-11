@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp" >
+
+    <RadioGroup
+        android:id="@+id/kline_menu_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="-3dp"
+        android:paddingTop="5dp" >
+
+        <RadioButton
+            android:id="@+id/kline_radio_button0"
+            style="@style/main_tab_bottom"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/check_btn_bg"
+            android:checked="true"
+            android:paddingBottom="1dp"
+            android:paddingTop="1dp"
+            android:text="K线"
+            android:textColor="#6a3837"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/kline_radio_button1"
+            style="@style/main_tab_bottom"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/check_btn_bg"
+            android:paddingBottom="1dp"
+            android:paddingTop="1dp"
+            android:text="分时线"
+            android:textColor="#6a3837"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/kline_radio_button2"
+            style="@style/main_tab_bottom"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/check_btn_bg"
+            android:paddingBottom="1dp"
+            android:paddingTop="1dp"
+            android:text="买入"
+            android:textColor="#6a3837"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/kline_radio_button3"
+            style="@style/main_tab_bottom"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/check_btn_bg"
+            android:paddingBottom="1dp"
+            android:paddingTop="1dp"
+            android:text="卖出"
+            android:textColor="#6a3837"
+            android:textSize="15sp" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/kline_menu_layout"
+        android:background="@drawable/main_circle_bg"
+        android:orientation="vertical" >
+
+        <include
+            android:id="@+id/kine_stock_info_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-5dp"
+            layout="@layout/kine_stock_info" />
+
+        <LinearLayout
+            android:id="@+id/kline_content_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:padding="0dp">
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

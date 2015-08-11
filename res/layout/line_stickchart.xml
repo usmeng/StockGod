@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginTop="4dp"
+    android:orientation="vertical" >
+
+    <cn.chinat2t.stockgod.views.FenShiLineView
+        android:id="@+id/kline_stock_tu1"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+    </cn.chinat2t.stockgod.views.FenShiLineView>
+
+    <cn.chinat2t.stockgod.views.StickChart
+        android:id="@+id/kline_stock_tu2"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2" >
+    </cn.chinat2t.stockgod.views.StickChart>
+
+</LinearLayout>

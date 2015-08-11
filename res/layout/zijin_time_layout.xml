@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    
+	<ListView
+        android:id="@+id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="#00000000"
+        android:divider="@drawable/line3"
+        android:paddingLeft="1dp"
+        android:paddingRight="1dp" >
+    </ListView>
+    
+	<cn.chinat2t.stockgod.views.CircleMapView
+	    android:id="@+id/zijin_tu"
+	    android:layout_margin="10dp"
+	    android:layout_width="match_parent"
+	    android:layout_height="100dp"/>
+</LinearLayout>

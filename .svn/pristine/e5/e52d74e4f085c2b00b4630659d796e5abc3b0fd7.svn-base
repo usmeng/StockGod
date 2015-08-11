@@ -1,0 +1,29 @@
+package cn.chinat2t.stockgod.bean;
+
+import android.graphics.Bitmap;
+
+public class DJBean {
+	public Bitmap bitmap;
+	public String cardName;
+	public String cardDesc;
+	public String price;
+	public String caozuo;
+	
+	public DJBean() {
+	}
+
+	public DJBean(Bitmap bitmap, String cardName, String cardDesc, String price) {
+		this.bitmap = bitmap;
+		this.cardName = cardName;
+		this.cardDesc = cardDesc;
+		this.price = price;
+	}
+	
+	public DJBean(Bitmap bitmap, String cardName, String cardDesc, String price, String caozuo) {
+		this.bitmap = bitmap;
+		this.cardName = cardName;
+		this.cardDesc = cardDesc;
+		this.price = price;
+		this.caozuo = caozuo;
+	}
+}

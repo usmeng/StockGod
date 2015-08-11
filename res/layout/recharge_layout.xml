@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:layout_marginBottom="10dp"
+    android:orientation="vertical" >
+
+    <RadioGroup
+        android:id="@+id/charge_type_radiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp" >
+
+        <RadioButton
+            android:id="@+id/recharge_type_button1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:layout_weight="1"
+            style="@style/tab_item_background_1"
+            android:background="@drawable/check_btn_bg1"
+            android:text="支付宝充值" />
+
+        <RadioButton
+            android:id="@+id/recharge_type_button3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/tab_item_background_1"
+            android:background="@drawable/check_btn_bg1"
+            android:text="银联充值" />
+        
+        <RadioButton
+            android:id="@+id/recharge_type_button2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:layout_weight="1"
+            android:checked="true"
+            style="@style/tab_item_background_1"
+            android:background="@drawable/check_btn_bg1"
+            android:text="手机卡充值" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/recharge_type_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button12"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textColor="@color/white"
+        android:background="@drawable/btn_yellow_selector"
+        android:text="立即支付" />
+
+</LinearLayout>

@@ -1,0 +1,507 @@
+package cn.chinat2t.stockgod.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.TextView;
+import cn.chinat2t.stockgod.MainActivity;
+import cn.chinat2t.stockgod.R;
+import cn.chinat2t.stockgod.bean.ChengJiuBean;
+import cn.chinat2t.stockgod.bean.UserBean;
+import cn.chinat2t.stockgod.bean.UserDaoJu;
+import cn.chinat2t.stockgod.http.CommunicationManager;
+import cn.chinat2t.stockgod.http.CommunicationResultListener;
+
+public class MyInforActivity extends Activity implements OnClickListener{
+	
+	public static final int LIST_INFOR = 0;
+	public static final int LIST_CAIFU = 1;
+	public static final int LIST_SAIGUO = 2;
+	public static final int LIST_SETTING = 3;
+	public static final int LIST_DAOJU = 4;
+	
+	private RadioButton button1;
+	private RadioButton button2;
+	private RadioButton button3;
+	private RadioButton button4;
+	private RadioButton button5;
+	private LinearLayout contentLayout;
+	private View currentButton;
+	private View view;
+	private LayoutInflater inflater;
+	private ListView caiFuList;
+	private ListView saiGuoList;
+	private StockAdapter adapter;
+	private SaiGuoAdapter sAdapter;
+	private DaoJuAdapter dAdapter;
+	private ChengJiuAdapter cAdapter;
+	private ListView daojuList;
+	private ListView imageList;
+	private ImageAdapter iAdapter;
+	private List<UserDaoJu> djList;
+	private List<ChengJiuBean> cList;
+	private UserBean userBean;
+	private ListView chengJiuList;
+	private boolean isSecondView;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.myinfo_layout);
+		
+		inflater = LayoutInflater.from(this);
+		userBean = UserBean.getInstance();
+		
+		button1 = (RadioButton) findViewById(R.id.myinfo_radio_button0);
+		button2 = (RadioButton) findViewById(R.id.myinfo_radio_button1);
+		button3 = (RadioButton) findViewById(R.id.myinfo_radio_button2);
+		button4 = (RadioButton) findViewById(R.id.myinfo_radio_button3);
+		button5 = (RadioButton) findViewById(R.id.myinfo_radio_button4);
+		
+		button1.setOnClickListener(this);
+		button2.setOnClickListener(this);
+		button3.setOnClickListener(this);
+		button4.setOnClickListener(this);
+		button5.setOnClickListener(this);
+		
+		contentLayout = (LinearLayout) findViewById(R.id.myinfo_content_layout);
+		
+		onClick(button1);
+	}
+
+	@Override
+	public void onClick(View v) {
+		
+		if(currentButton != v)
+			contentLayout.removeAllViews();
+		currentButton = v;
+		
+		switch (v.getId()) {
+		case R.id.infor_change_button1:
+			showImageView();
+			break;
+			
+		case R.id.myinfo_radio_button0:
+			if(!isSecondView){
+				showInforView();
+			}else{
+				showImageView();
+			}
+			break;
+
+		case R.id.myinfo_radio_button1:
+			view = inflater.inflate(R.layout.myinfo_caifu_item, null);
+			contentLayout.addView(view, new LinearLayout.LayoutParams(-1, -1));
+			caiFuList = (ListView) view.findViewById(R.id.myinfo_caifu_listview);
+			adapter = new StockAdapter(null);
+			caiFuList.setAdapter(adapter);
+			MainActivity.setTitleName("我的财富");
+			break;
+		case R.id.myinfo_radio_button2:
+			view = inflater.inflate(R.layout.myinfo_saiguo_item, null);
+			saiGuoList = (ListView) view.findViewById(R.id.myinfo_saiguo_listview);
+			sAdapter = new SaiGuoAdapter(null);
+			saiGuoList.setAdapter(sAdapter);
+			contentLayout.addView(view, new LinearLayout.LayoutParams(-1, -1));
+			MainActivity.setTitleName("我的赛果");
+			break;
+		case R.id.myinfo_radio_button3:
+			view = inflater.inflate(R.layout.myinfo_setting_item, null);
+			contentLayout.addView(view, new LinearLayout.LayoutParams(-1, -1));
+			MainActivity.setTitleName("我的设置");
+			break;
+		case R.id.myinfo_radio_button4:
+			view = inflater.inflate(R.layout.myinfo_daoju_item, null);
+			daojuList = (ListView) view.findViewById(R.id.myinfo_daoju_listview);
+			contentLayout.addView(view, new LinearLayout.LayoutParams(-1, -1));
+			MainActivity.setTitleName("我的道具");
+			
+			CommunicationManager.getInstance().getDaoJuList(userBean.uid, getDJListListener);
+			break;
+		}
+	}
+	
+	private void showImageView() {
+		view = inflater.inflate(R.layout.myinfo_image_item, null);
+		contentLayout.addView(view, new LinearLayout.LayoutParams(-1, -1));
+		imageList = (ListView) view.findViewById(R.id.myinfo_image_listView1);
+		iAdapter = new ImageAdapter(null);
+		imageList.setAdapter(iAdapter);
+		MainActivity.setTitleName("我的信息");
+		isSecondView = true;
+	}
+
+	private void showInforView() {
+		view = inflater.inflate(R.layout.myinfo_xiang_item, null);
+		contentLayout.addView(view, new LinearLayout.LayoutParams(-1, -1));
+		view.findViewById(R.id.infor_change_button1).setOnClickListener(this);
+		chengJiuList = (ListView) view.findViewById(R.id.myinfo_item_listView1);
+		cList = new ArrayList<ChengJiuBean>();
+		cList.add(new ChengJiuBean());
+		cList.add(new ChengJiuBean());
+		cList.add(new ChengJiuBean());
+		cList.add(new ChengJiuBean());
+		cList.add(new ChengJiuBean());
+		cAdapter = new ChengJiuAdapter(cList);
+		chengJiuList.setAdapter(cAdapter);
+		MainActivity.setTitleName("我的信息");
+		isSecondView = false;
+	}
+	
+	private CommunicationResultListener getDJListListener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			if(result == CommunicationManager.SUCCEED && token > 0){
+				Message message = handler.obtainMessage();
+				message.arg1 = LIST_DAOJU;
+				message.obj = resultData;
+				handler.sendMessage(message);
+			}
+		};
+	};
+
+	Handler handler = new Handler(new Callback() {
+
+		@Override
+		public boolean handleMessage(Message msg) {
+			switch (msg.arg1) {
+			case LIST_INFOR:
+				break;
+
+			case LIST_CAIFU:
+				
+				break;
+
+			case LIST_SAIGUO:
+				
+				break;
+			case LIST_SETTING:
+				
+				break;
+			case LIST_DAOJU:
+				djList = (List<UserDaoJu>) msg.obj;
+				dAdapter = new DaoJuAdapter(djList);
+				daojuList.setAdapter(dAdapter);
+				break;
+			}
+			return false;
+		}
+	});
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			if(isSecondView){
+				showInforView();
+				isSecondView = false;
+			}else{
+				CompetitiveGroup.getInstance().onKeyDown(keyCode, event);
+			}
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		if(isSecondView){
+			showInforView();
+			isSecondView = false;
+		}else{
+			super.onBackPressed();
+		}
+	}
+	
+	class DaoJuAdapter extends BaseAdapter{
+		
+        List<UserDaoJu> mList;
+        
+        public DaoJuAdapter(List<UserDaoJu> mList) {
+        	this.mList = mList;
+		}
+        
+		@Override
+		public int getCount() {
+			return mList.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return position;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			CaiFuHolder holder = null;
+			if(convertView == null){
+				convertView = inflater.inflate(R.layout.myinfo_caifu_list_item, null);
+				holder = new CaiFuHolder();
+				holder.tv1 = (TextView) convertView.findViewById(R.id.myinfo_caifu_textView1);
+				holder.tv2 = (TextView) convertView.findViewById(R.id.myinfo_caifu_textView2);
+				holder.tv3 = (TextView) convertView.findViewById(R.id.myinfo_caifu_textView3);
+				holder.tv4 = (TextView) convertView.findViewById(R.id.myinfo_caifu_textView4);
+				convertView.findViewById(R.id.myinfo_caifu_textView5).setVisibility(View.GONE);
+				convertView.findViewById(R.id.myinfo_caifu_textView6).setVisibility(View.GONE);
+				holder.btn = (Button) convertView.findViewById(R.id.myinfo_caifu_button1);
+				convertView.setTag(holder);
+			} else {
+				holder = (CaiFuHolder) convertView.getTag();
+			}
+			UserDaoJu bean = mList.get(position);
+			if(position % 2 == 0) convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor0));
+			else convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor1));
+			holder.btn.setText("使用");
+			holder.tv1.setText((bean.cardName != null && bean.cardName.length() > 0)?bean.cardName:"道具" + position);
+			holder.tv2.setText(bean.shuliang + "");
+			holder.tv3.setText((6 * position) + ""); // TODO:计算失效时间
+			holder.tv4.setText("简介");
+			
+			holder.btn.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO 使用道具
+				}
+			});
+			return convertView;
+		}
+		
+	}
+	
+	class ChengJiuAdapter extends BaseAdapter{
+		
+        List<ChengJiuBean> mList;
+        
+        public ChengJiuAdapter(List<ChengJiuBean> mList) {
+        	this.mList = mList;
+		}
+        
+		@Override
+		public int getCount() {
+			return 5;
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return position;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			CaiFuHolder holder = null;
+			if(convertView == null){
+				convertView = inflater.inflate(R.layout.myinfo_caifu_list_item, null);
+				holder = new CaiFuHolder();
+				holder.tv1 = (TextView) convertView.findViewById(R.id.myinfo_caifu_textView1);
+				holder.tv2 = (TextView) convertView.findViewById(R.id.myinfo_caifu_textView2);
+				holder.tv3 = (TextView) convertView.findViewById(R.id.myinfo_caifu_textView3);
+				convertView.findViewById(R.id.myinfo_caifu_textView4).setVisibility(View.GONE);
+				convertView.findViewById(R.id.myinfo_caifu_textView5).setVisibility(View.GONE);
+				convertView.findViewById(R.id.myinfo_caifu_textView6).setVisibility(View.GONE);
+				holder.btn = (Button) convertView.findViewById(R.id.myinfo_caifu_button1);
+				convertView.setTag(holder);
+			} else {
+				holder = (CaiFuHolder) convertView.getTag();
+			}
+			ChengJiuBean jiuBean = cList.get(position);
+			if(position % 2 == 0) convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor0));
+			else convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor1));
+			holder.tv1.setText("".equals(jiuBean.name)?"略有小成":jiuBean.name);
+			holder.tv2.setText("".equals(jiuBean.tianJian)?"玩家到10级":jiuBean.tianJian);
+			holder.tv3.setText("".equals(jiuBean.jiangLi)?"100资金":jiuBean.jiangLi);
+			holder.btn.setText("获得");
+			holder.btn.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// TODO 获得成就
+				}
+			});
+			return convertView;
+		}
+		
+	}
+	
+	class SaiGuoHolder{
+		TextView  tv;
+		ImageView img;
+		Button    btn;
+	}
+	
+	class ImageAdapter extends BaseAdapter{
+		
+        List<Object> mList;
+        
+        public ImageAdapter(List<Object> mList) {
+        	this.mList = mList;
+		}
+        
+		@Override
+		public int getCount() {
+			return 5;
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return position;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			ImageHolder holder = null;
+			if(convertView == null){
+				convertView = inflater.inflate(R.layout.myinfo_image_list_item, null);
+				holder = new ImageHolder();
+				holder.tv1 = (TextView) convertView.findViewById(R.id.myinfo_image_textView1);
+				holder.btn = (ImageView) convertView.findViewById(R.id.myinfo_image_imageView1);
+				convertView.setTag(holder);
+			} else {
+				holder = (ImageHolder) convertView.getTag();
+			}
+			if(position % 2 == 0) convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor0));
+			else convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor1));
+			return convertView;
+		}
+		
+	}
+	
+	class ImageHolder{
+		TextView tv1;
+		ImageView   btn;
+	}
+	
+	class SaiGuoAdapter extends BaseAdapter{
+		
+        List<Object> mList;
+        
+        public SaiGuoAdapter(List<Object> mList) {
+        	this.mList = mList;
+		}
+        
+		@Override
+		public int getCount() {
+			return 5;
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return position;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			SaiGuoHolder holder = null;
+			if(convertView == null){
+				convertView = inflater.inflate(R.layout.myinfo_saiguo_list_item, null);
+				holder = new SaiGuoHolder();
+				holder.tv = (TextView) convertView.findViewById(R.id.myinfo_saiguo_textView1);
+				holder.img = (ImageView) convertView.findViewById(R.id.myinfo_saiguo_imageView1);
+				holder.btn = (Button) convertView.findViewById(R.id.myinfo_saiguo_button1);
+				convertView.setTag(holder);
+			} else {
+				holder = (SaiGuoHolder) convertView.getTag();
+			}
+			return convertView;
+		}
+		
+	}
+	
+//	class DaoJuHolder{
+//		TextView tv;
+//		ImageView img;
+//		Button   btn;
+//	}
+	
+	class StockAdapter extends BaseAdapter{
+		
+        List<Object> mList;
+        
+        public StockAdapter(List<Object> mList) {
+        	this.mList = mList;
+		}
+        
+		@Override
+		public int getCount() {
+			return 5;
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return position;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			CaiFuHolder holder = null;
+			if(convertView == null){
+				convertView = inflater.inflate(R.layout.myinfo_caifu_list_item, null);
+				holder = new CaiFuHolder();
+				holder.tv1 = (TextView) convertView.findViewById(R.id.myinfo_caifu_textView1);
+				holder.tv2 = (TextView) convertView.findViewById(R.id.myinfo_caifu_textView2);
+				holder.tv3 = (TextView) convertView.findViewById(R.id.myinfo_caifu_textView3);
+				holder.tv4 = (TextView) convertView.findViewById(R.id.myinfo_caifu_textView4);
+				holder.tv5 = (TextView) convertView.findViewById(R.id.myinfo_caifu_textView5);
+				holder.tv6 = (TextView) convertView.findViewById(R.id.myinfo_caifu_textView6);
+				holder.btn = (Button) convertView.findViewById(R.id.myinfo_caifu_button1);
+				convertView.setTag(holder);
+			} else {
+				holder = (CaiFuHolder) convertView.getTag();
+			}
+			if(position % 2 == 0) convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor0));
+			else convertView.setBackgroundColor(getResources().getColor(R.color.itemcolor1));
+			return convertView;
+		}
+		
+	}
+	
+	class CaiFuHolder{
+		TextView tv1;
+		TextView tv2;
+		TextView tv3;
+		TextView tv4;
+		TextView tv5;
+		TextView tv6;
+		Button   btn;
+	}
+	
+}

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_circle_bg"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp" >
+
+    <ImageView
+        android:id="@+id/reg_imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="20dp"
+        android:src="@drawable/user_men" />
+
+    <TextView
+        android:id="@+id/reg_textView1"
+        style="@style/text_black_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/reg_imageView1"
+        android:layout_marginTop="24dp"
+        android:layout_toLeftOf="@+id/reg_imageView1"
+        android:text="性        别：" />
+
+    <RadioGroup
+        android:id="@+id/reg_sex_radiogroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/reg_editText_username"
+        android:layout_alignTop="@+id/reg_textView1"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/reg_checkBox1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:button="@drawable/check_box_selector"
+            android:checked="true"
+            android:text="男"
+            android:textColor="@color/blue" />
+
+        <RadioButton
+            android:id="@+id/reg_checkBox2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:button="@drawable/check_box_selector"
+            android:text="女"
+            android:textColor="@color/blue" />
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/reg_editText_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/reg_sex_radiogroup"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@+id/reg_textView4"
+        android:background="@drawable/edit_bg"
+        android:ems="10"
+        android:hint="4-10字母或数字"
+        android:inputType="text"
+        android:singleLine="true" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/reg_editText_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/reg_editText_username"
+        android:layout_alignRight="@+id/reg_editText_username"
+        android:layout_below="@+id/reg_editText_username"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edit_bg"
+        android:ems="10"
+        android:hint="6-10字母或数字"
+        android:inputType="textPassword"
+        android:singleLine="true"
+        android:typeface="serif" />
+
+    <EditText
+        android:id="@+id/reg_editText_pass_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/reg_editText_pass"
+        android:layout_alignRight="@+id/reg_editText_pass"
+        android:layout_below="@+id/reg_editText_pass"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edit_bg"
+        android:ems="10"
+        android:hint="与上面是否一致"
+        android:inputType="textPassword"
+        android:singleLine="true"
+        android:typeface="monospace" />
+
+    <EditText
+        android:id="@+id/reg_editText_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/reg_editText_pass_confirm"
+        android:layout_alignRight="@+id/reg_editText_pass_confirm"
+        android:layout_below="@+id/reg_editText_pass_confirm"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edit_bg"
+        android:ems="10"
+        android:hint="格式是否正确"
+        android:inputType="textEmailAddress"
+        android:singleLine="true" />
+
+    <Button
+        android:id="@+id/reg_button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="30dp"
+        android:background="@drawable/btn_yellow_selector"
+        android:text="注册"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/reg_textView4"
+        style="@style/text_black_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/reg_editText_pass_confirm"
+        android:layout_alignBottom="@+id/reg_editText_pass_confirm"
+        android:layout_alignLeft="@+id/reg_textView1"
+        android:text="确认密码：" />
+
+    <TextView
+        android:id="@+id/reg_textView5"
+        style="@style/text_black_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/reg_editText_email"
+        android:layout_alignBottom="@+id/reg_editText_email"
+        android:layout_alignLeft="@+id/reg_textView4"
+        android:text="邮箱地址：" />
+
+    <TextView
+        android:id="@+id/reg_textView3"
+        style="@style/text_black_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/reg_editText_pass"
+        android:layout_alignBottom="@+id/reg_editText_pass"
+        android:layout_alignLeft="@+id/reg_textView4"
+        android:layout_alignRight="@+id/reg_textView4"
+        android:text="密        码：" />
+
+    <TextView
+        android:id="@+id/reg_textView2"
+        style="@style/text_black_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/reg_editText_username"
+        android:layout_alignBottom="@+id/reg_editText_username"
+        android:layout_alignLeft="@+id/reg_textView1"
+        android:layout_alignRight="@+id/reg_textView3"
+        android:text="用  户  名：" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/reg_editText_username"
+        android:layout_below="@+id/reg_editText_username"
+        android:visibility="invisible"
+        android:text="用户名不符合规定" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/reg_editText_pass"
+        android:layout_below="@+id/reg_editText_pass"
+        android:visibility="invisible"
+        android:text="密码不符合规定" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/reg_sex_radiogroup"
+        android:layout_below="@+id/reg_editText_pass_confirm"
+        android:visibility="invisible"
+        android:text="密码前后不一致" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/reg_editText_email"
+        android:layout_below="@+id/reg_editText_email"
+        android:visibility="invisible"
+        android:text="邮箱不符合规定" />
+
+</RelativeLayout>

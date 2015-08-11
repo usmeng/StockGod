@@ -1,0 +1,72 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="AppTheme" parent="android:Theme.Light" />
+    <style name="main_tab_bottom">
+        <item name="android:textSize">12.0dip</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:ellipsize">middle</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">-5dp</item>
+        <item name="android:button">@null</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:layout_weight">1.0</item>
+    </style>
+	<style name="tab_item_background_1">
+        <item name="android:gravity">center</item>  
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:background">@drawable/bg_tab_selector</item>
+        <item name="android:button">@null</item>         
+    </style>
+    <style name="tab_item_background_2">
+        <item name="android:gravity">center</item>  
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/btn_blue_white2_selector</item>
+        <item name="android:button">@null</item>         
+    </style>
+	<style name="chz_item_text_style_1">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+	<style name="chz_item_text_style_2">
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+    <style  
+        name="selectorDialog"  
+        parent="@android:style/Theme.Dialog">  
+        <item name="android:windowFrame">@null</item><!--边框-->  
+        <item name="android:windowIsFloating">true</item><!--是否浮现在activity之上-->  
+        <item name="android:windowIsTranslucent">true</item><!--半透明-->  
+        <item name="android:windowNoTitle">true</item><!--无标题-->
+        <item name="android:windowBackground">@color/transparent</item><!--背景透明-->  
+        <item name="android:backgroundDimEnabled">false</item><!--模糊-->  
+        <item name="android:backgroundDimAmount">0.6</item>  
+    </style>  
+	<style name="text_black_normal">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:singleLine">true</item>
+    </style>
+    <style name="text_white_normal">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:singleLine">true</item>
+    </style>
+    <style name="text_grey_small">
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:singleLine">true</item>
+    </style>
+    <style name="button_white_text">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+</resources>

@@ -1,0 +1,55 @@
+package cn.chinat2t.stockgod.bean;
+
+import java.io.Serializable;
+
+public class StockInfoBean implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+	
+	public int id;
+    public String ver;       //版本号
+    /** stkLabel参数是要请求的股票列表(市场代码+股票编码，SH表示上海，SZ表示深圳，
+                    参考网际风股票软件，返回的价格精度以最后一个代码的精度为准，默认2位小数)。*/
+    
+    public String sid;       //代码
+    public double sprice;
+    public int    member;
+    
+    public String stklabel;  //代码
+    public String code;      //要显示的代码
+    public String sname ;    //名称
+    public String date;      //日期(年月日)
+    public String time;      //时分秒 
+    public String block;     //所属系统板块(如0表示SZZS，参考附录表)
+    public int    precisions;//小数位数
+    public int    shou;      //交易单位(每手多少股)
+    public int    isbuy;     //买卖标记，小于0: 下跌，大于0:上涨， 等于2:平盘且上一笔上涨，等于-2:平盘且上一笔下跌
+    public double opens;     //开盘
+    public double high;      //最高
+    public double low;       //最低
+    public double closes;    //收盘(现价)
+    public int    vol;       //成交量（手）
+    public double amount;    //成交额（万元）
+    public int    nowv;      //现手，即时成交量
+    public double preclose;  //昨收
+    public double avprice;   //均价
+    public double sellvol;   //内盘
+    public double buyvol;    //外盘
+    public double changehand;//换手率(百分数)
+    public double weicha;    //委差（手）
+    public double weibi;     //委比(百分数）
+    public double liangbi;   //量比(百分数)
+    public double zhangdie;  //涨跌
+    public double zhangfu;   //涨幅(百分数)
+    public double zhenfu;    //振幅(百分数)
+    public double shiyinglv; //市盈率(百分数)
+    public double zongguben; //总股本(万股)
+    public double liutonggu; //流通盘(万股)
+//    public double[] pricesell;//卖盘价1、2、3、4、5
+//    public double[] volsell;  //卖盘量1、2、3、4、5
+//    public double[] pricebuy; //买盘价1、2、3、4、5
+//    public double[] volbuy;   //买盘量1、2、3、4、5
+    public double nowprice;   //现价
+    public int    stocktype;  //股票类型
+    public double shizhi;
+}

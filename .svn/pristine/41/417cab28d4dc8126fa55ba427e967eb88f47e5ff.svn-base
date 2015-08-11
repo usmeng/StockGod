@@ -1,0 +1,28 @@
+package cn.chinat2t.stockgod.bean;
+
+public class KlineData {
+	
+	public int id;
+//    public String ver;
+//    public String stklabel;
+//    public String name;
+//    public String stocktime;
+    public double noeprice;  //现价
+    public double navprice;  //均价
+    public double shou;      //成交量（手）
+//    public double amount;    //成交额（万）
+//    public int    isbuy;
+//    public double nowv;
+    public String yearm; //时间（年月）
+    public String dayhour;//时间（时分）
+    public double open;     //开盘
+    public double high;      //最高
+    public double low;       //最低
+    public double close;    //收盘
+//    public int    times;     //次数
+    
+    public int    xianflag;  //线的标志
+    public double jine;      //金额
+    public int    sid;
+    
+}

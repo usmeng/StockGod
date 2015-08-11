@@ -1,0 +1,8 @@
+package cn.chinat2t.stockgod.bean;
+
+import java.util.List;
+
+public class PanKou {
+	public StockInfoBean stock;
+	public List<PanKouBean> mingxiList;
+}

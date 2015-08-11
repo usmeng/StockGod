@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_margin="2dp"
+    android:background="@drawable/main_circle_bg"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/guess_info"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="2dp"
+        android:paddingTop="2dp"
+        android:text="请您押注%s%s是涨是跌？"
+        android:textColor="#6c3938"
+        android:textSize="14sp" />
+
+    <View
+        android:id="@+id/line1"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/under_line" />
+
+    <RelativeLayout
+        android:id="@+id/guess_main_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp">
+
+        <LinearLayout
+            android:id="@+id/guess_main_tu"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <cn.chinat2t.stockgod.views.RectView
+                    android:id="@+id/guess_rise_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true" />
+
+                <TextView
+                    android:id="@+id/guess_rise_wenhao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/wenhao" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:background="@drawable/line5" />
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+
+                <cn.chinat2t.stockgod.views.RectView
+                    android:id="@+id/guess_fall_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center" />
+
+                <TextView
+                    android:id="@+id/guess_fall_wenhao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/wenhao" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/guess_eye_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="使用天眼可以查看押注情况"
+            android:textColor="#6c3938"
+            android:textSize="10sp" />
+
+        <Button
+            android:id="@+id/guess_sky_eye"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/guess_eye_text"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_gold_selector"
+            android:gravity="center"
+            android:paddingBottom="5dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="5dp"
+            android:text="天眼卡"
+            android:textColor="#6c3938"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/under_line" />
+
+    <RadioGroup
+        android:id="@+id/guess_main_action"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_margin="2dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp">
+
+        <RadioButton
+            android:id="@+id/guess_rise_button"
+            style="@style/main_tab_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/btn_guess_raise_selector"
+            android:gravity="center"
+            android:text="涨"
+            android:textColor="@color/custom_purple"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/guess_fall_button"
+            style="@style/main_tab_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/btn_guess_fall_selector"
+            android:gravity="center"
+            android:text="跌"
+            android:textColor="@color/custom_purple"
+            android:textSize="16sp" />
+    </RadioGroup>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line5" />
+
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="1.3"
+        layout="@layout/stock_bet_view" />
+
+</LinearLayout>

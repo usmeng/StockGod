@@ -1,0 +1,14 @@
+package cn.chinat2t.stockgod.activity;
+
+import cn.chinat2t.stockgod.R;
+import android.app.Activity;
+import android.os.Bundle;
+
+public class HelpActivity extends Activity{
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.help_layout);
+	}
+}

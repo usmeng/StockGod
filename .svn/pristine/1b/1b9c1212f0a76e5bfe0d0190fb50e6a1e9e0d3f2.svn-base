@@ -1,0 +1,181 @@
+package cn.chinat2t.stockgod.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TextView;
+import cn.chinat2t.stockgod.MainActivity;
+import cn.chinat2t.stockgod.R;
+
+public class RankActivity extends Activity implements OnCheckedChangeListener {
+
+	private static final int RANK_GAME_JINGJI = 0;
+	private static final int RANK_GAME_MONI = 1;
+	private ListView listView;
+	private List<Object> mList;
+	private RadioGroup gameGroup;
+	private RadioGroup shouyiGroup;
+	private RadioButton gameJingji;
+	private RadioButton gameMoni;
+	private RadioButton shouyiAll;
+	private RadioButton shouyiMonth;
+	private RadioButton shouyiWeek;
+	private RadioButton shouyiDay;
+
+	private int index;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		setContentView(R.layout.rank_layout);
+		
+		gameGroup = ((RadioGroup) this.findViewById(R.id.rank_game_radiogroup));
+		gameGroup.setOnCheckedChangeListener(this);
+		gameJingji = (RadioButton) findViewById(R.id.rank_jingji_game);
+		gameMoni = (RadioButton) findViewById(R.id.rank_moni_game);
+
+		shouyiGroup = ((RadioGroup) this
+				.findViewById(R.id.rank_shouyi_radiogroup));
+		shouyiGroup.setOnCheckedChangeListener(this);
+		shouyiAll = (RadioButton) findViewById(R.id.rank_shouyi_all);
+		shouyiMonth = (RadioButton) findViewById(R.id.rank_shouyi_month);
+		shouyiWeek = (RadioButton) findViewById(R.id.rank_shouyi_week);
+		shouyiDay = (RadioButton) findViewById(R.id.rank_shouyi_day);
+
+		listView = (ListView) findViewById(R.id.rank_listView);
+		RankAdapter adapter = new RankAdapter();
+		adapter.setData(mList);
+		listView.setAdapter(adapter);
+
+		onCheckedChanged(gameGroup, R.id.rank_moni_game);
+		onCheckedChanged(shouyiGroup, R.id.rank_shouyi_all);
+		
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MainActivity.setTitleName("≈≈––∞Ò");
+	};
+
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//		if(keyCode == KeyEvent.KEYCODE_BACK){
+//			CompetitiveGroup.getInstance().onKeyDown(keyCode, event);
+//			return true;
+//		}
+//		return super.onKeyDown(keyCode, event);
+//	}
+	
+	@Override
+	public void onCheckedChanged(RadioGroup group, int checkedId) {
+		switch (checkedId) {
+		case R.id.rank_jingji_game:
+			mList = new ArrayList<Object>();
+			index = RANK_GAME_JINGJI;
+			break;
+
+		case R.id.rank_moni_game:
+			index = RANK_GAME_MONI;
+			break;
+		case R.id.rank_shouyi_all:
+			break;
+		case R.id.rank_shouyi_month:
+			break;
+		case R.id.rank_shouyi_week:
+			break;
+		case R.id.rank_shouyi_day:
+			break;
+		}
+	}
+
+	class RankAdapter extends BaseAdapter {
+
+		private List<Object> mList = new ArrayList<Object>();
+
+		public void setData(List<Object> mList) {
+			this.mList = mList;
+		}
+
+		@Override
+		public int getCount() {
+			return 5;
+		}
+
+		@Override
+		public Object getItem(int arg0) {
+			return arg0;
+		}
+
+		@Override
+		public long getItemId(int arg0) {
+			return arg0;
+		}
+
+		@Override
+		public View getView(final int arg0, View arg1, ViewGroup arg2) {
+			DongTaiHolder holder = null;
+			if (arg1 == null) {
+				arg1 = View.inflate(RankActivity.this,
+						R.layout.rank_shouyi_list_item, null);
+				holder = new DongTaiHolder();
+				holder.linearLayout = (LinearLayout) arg1
+						.findViewById(R.id.rank_shouyi_list_item);
+				// holder.tv1 = (TextView)
+				// arg1.findViewById(R.id.selflistitem_text1);
+				// holder.tv2 = (TextView)
+				// arg1.findViewById(R.id.selflistitem_text2);
+				holder.btn = (Button) arg1.findViewById(R.id.rank_shouyi_zhui);
+				arg1.setTag(holder);
+			} else {
+				holder = (DongTaiHolder) arg1.getTag();
+			}
+			if (arg0 % 2 == 1) {
+				holder.linearLayout.setBackgroundColor(Color
+						.parseColor("#fff4eddd"));
+			} else {
+				holder.linearLayout.setBackgroundColor(Color
+						.parseColor("#ffeee2d1"));
+			}
+			if (arg0 == 0) {
+				holder.btn.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(RankActivity.this,
+								PresentActivity.class);
+						CompetitiveGroup.getInstance().switchActivity(
+								"PresentActivity", intent, -1, -1);
+					}
+				});
+			}
+			return arg1;
+		}
+	}
+
+	class DongTaiHolder {
+		public LinearLayout linearLayout;
+		public TextView tv1;
+		public TextView tv2;
+		public TextView tv3;
+		public ImageView iv;
+		public Button btn;
+	}
+
+}

@@ -1,0 +1,224 @@
+package cn.chinat2t.stockgod.activity;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TextView;
+import android.widget.Toast;
+import cn.chinat2t.stockgod.MainActivity;
+import cn.chinat2t.stockgod.R;
+import cn.chinat2t.stockgod.bean.UserBean;
+import cn.chinat2t.stockgod.http.CommunicationManager;
+import cn.chinat2t.stockgod.http.CommunicationResultListener;
+import cn.chinat2t.stockgod.utils.PreferenceManager;
+import cn.chinat2t.stockgod.utils.StringUtil;
+
+public class RegActivity extends Activity implements OnCheckedChangeListener, OnClickListener{
+	
+	private RadioGroup sexRadioGroup;
+	private EditText userName;
+	private EditText pass;
+	private EditText passCon;
+	private EditText email;
+	private String userNameValue;
+	private String passValue;
+	private String passValue2;
+	private String emailValue;
+	private int sex = 1;
+	private boolean isOK_1;
+	private boolean isOK_2;
+	private boolean isOK_3;
+	private boolean isOK_4;
+	private Button regButton;
+	private TextView toastText1;
+	private TextView toastText2;
+	private TextView toastText3;
+	private TextView toastText4;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.reg_layout);
+		
+		sexRadioGroup = (RadioGroup) findViewById(R.id.reg_sex_radiogroup);
+		sexRadioGroup.setOnCheckedChangeListener(this);
+		
+		userName = (EditText) findViewById(R.id.reg_editText_username);
+		pass = (EditText) findViewById(R.id.reg_editText_pass);
+		passCon = (EditText) findViewById(R.id.reg_editText_pass_confirm);
+		email = (EditText) findViewById(R.id.reg_editText_email);
+		
+		toastText1 = (TextView) findViewById(R.id.textView1);
+		toastText2 = (TextView) findViewById(R.id.textView2);
+		toastText3 = (TextView) findViewById(R.id.textView3);
+		toastText4 = (TextView) findViewById(R.id.textView4);
+		
+		userName.addTextChangedListener(new BaseTextWatcher(R.id.reg_editText_username));
+		pass.addTextChangedListener(new BaseTextWatcher(R.id.reg_editText_pass));
+		passCon.addTextChangedListener(new BaseTextWatcher(R.id.reg_editText_pass_confirm));
+		email.addTextChangedListener(new BaseTextWatcher(R.id.reg_editText_email));
+		
+		regButton = (Button) findViewById(R.id.reg_button1);
+		regButton.setOnClickListener(this);
+		regButton.setEnabled(false);
+		userName.setFocusable(true);
+	}
+
+	@Override
+	public void onCheckedChanged(RadioGroup group, int checkedId) {
+		switch (checkedId) {
+		case R.id.reg_checkBox1:
+			sex = 1;
+			break;
+
+		case R.id.reg_checkBox2:
+			sex = 2;
+			break;
+		}
+	}
+	
+	public class BaseTextWatcher implements TextWatcher{
+		
+		private int id;
+
+		public BaseTextWatcher(int id) {
+			this.id = id;
+		}
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			String str = s.toString();
+			switch (id) {
+			case R.id.reg_editText_username:
+				userNameValue = str;
+				toastText1.setVisibility(View.VISIBLE);
+				if (!StringUtil.isNegUserName(userNameValue)) {
+					toastText1.setText("用户名不符合规定");
+					toastText1.setTextColor(getResources().getColor(R.color.red));
+					isOK_1 = false;
+					return;
+				}
+				toastText1.setText("该用户名可以使用");
+				toastText1.setTextColor(getResources().getColor(R.color.green));
+				isOK_1 = true;
+				break;
+			case R.id.reg_editText_pass:
+				toastText2.setVisibility(View.VISIBLE);
+				passValue = str;
+				if (!StringUtil.isNegPass(passValue)) {
+					toastText2.setText("密码不符合规定");
+					toastText2.setTextColor(getResources().getColor(R.color.red));
+					isOK_2 = false;
+					return;
+				}
+				toastText2.setText("该密码可用");
+				toastText2.setTextColor(getResources().getColor(R.color.green));
+				isOK_2 = true;
+				break;
+			case R.id.reg_editText_pass_confirm:
+				toastText3.setVisibility(View.VISIBLE);
+				passValue2 = str;
+				if (!str.equals(passValue)) {
+					toastText3.setText("密码前后不一致");
+					toastText3.setTextColor(getResources().getColor(R.color.red));
+					isOK_3 = false;
+					return;
+				}
+				toastText3.setText("密码确认正确");
+				toastText3.setTextColor(getResources().getColor(R.color.green));
+				isOK_3 = true;
+				break;
+			case R.id.reg_editText_email:
+				toastText4.setVisibility(View.VISIBLE);
+				emailValue = str;
+				if (!StringUtil.isNegEmail(emailValue)) {
+					toastText4.setText("邮箱输入错误");
+					toastText4.setTextColor(getResources().getColor(R.color.red));
+					isOK_4 = false;
+					return;
+				}
+				toastText4.setText("恭喜，该邮箱可用");
+				toastText4.setTextColor(getResources().getColor(R.color.green));
+				isOK_4 = true;
+				break;
+			}
+			if(isOK_1 && isOK_2 && isOK_3 && isOK_4)
+				regButton.setEnabled(true);
+			else regButton.setEnabled(false);
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+		}
+		
+	}
+
+	@Override
+	public void onClick(View v) {
+		if(isOK_1 && isOK_2 && isOK_3 && isOK_4){
+			CommunicationManager.getInstance().reg(sex, userNameValue, passValue, emailValue, regListener);
+		}
+	}
+	
+	/*public void checkEmail(){
+		CommunicationManager.getInstance().checkEmail(emailValue, checkEmailListener);
+	}*/
+	
+	private static final int REG_CONFIRM = 0;
+	private static final int REG_CHECK_EMAIL = 1;
+	
+	private CommunicationResultListener regListener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			if(result == CommunicationManager.SUCCEED && token > 0){
+				Message message = mHandler.obtainMessage();
+				message.arg1 = REG_CONFIRM;
+				message.obj = resultData;
+				mHandler.sendMessage(message);
+			}
+		};
+	};
+	
+	Handler mHandler = new Handler(){
+		
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.arg1) {
+			case REG_CONFIRM:
+				UserBean user = (UserBean) msg.obj;
+				UserBean.setUser(user);
+				if(user.responsecode == 1){
+					// TODO:保存数据到SharedPreference
+					PreferenceManager preference = new PreferenceManager(RegActivity.this);
+					preference.putName(user.nickname);
+					preference.putUid(user.uid);
+					preference.putPassSecond(user.pwd);
+					preference.putPass(passValue);
+					preference.putType(user.usertype);
+					
+					Intent intent = new Intent(RegActivity.this, MainActivity.class);
+					intent.putExtra(UserBean.USER_OBJECT, user);
+					startActivity(intent);
+					
+					finish();
+				}
+				Toast.makeText(RegActivity.this, user.msg, 0).show();
+				break;
+			}
+		};
+	};
+	
+}

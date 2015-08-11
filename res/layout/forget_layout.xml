@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_circle_bg" >
+
+    <TextView
+        android:id="@+id/found_pass_textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:text="输入你的用户名和邮箱地址，您的密码我们会以邮件的形式发送到您的邮箱"
+        android:textColor="@color/black" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/found_pass_textView1"
+        android:background="@drawable/under_line" />
+
+    <EditText
+        android:id="@+id/found_pass_editText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/found_pass_editText2"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/found_pass_textView1"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/edit_bg"
+        android:ems="10"
+        android:hint="请输入用户名"
+        android:singleLine="true" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/found_pass_editText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/found_pass_editText1"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_toRightOf="@+id/found_pass_textView3"
+        android:background="@drawable/edit_bg"
+        android:ems="10"
+        android:hint="请输入您的注册邮箱"
+        android:singleLine="true" />
+
+    <Button
+        android:id="@+id/found_pass_button1"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/found_pass_editText2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/btn_yellow_selector"
+        android:text="提交"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/found_pass_textView2"
+        style="@style/text_black_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/found_pass_editText1"
+        android:layout_alignBottom="@+id/found_pass_editText1"
+        android:layout_alignLeft="@+id/found_pass_textView1"
+        android:padding="10dp"
+        android:text="用  户  名："
+        android:textColor="@color/custom_purple" />
+
+    <TextView
+        android:id="@+id/found_pass_textView3"
+        style="@style/text_black_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/found_pass_editText2"
+        android:layout_alignBottom="@+id/found_pass_editText2"
+        android:layout_alignLeft="@+id/found_pass_textView2"
+        android:padding="10dp"
+        android:text="邮箱地址："
+        android:textColor="@color/custom_purple" />
+
+    <View
+        android:id="@+id/found_pass_view1"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/found_pass_button1"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/under_line" />
+
+    <TextView
+        android:id="@+id/found_pass_textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/found_pass_textView3"
+        android:layout_alignRight="@+id/found_pass_textView1"
+        android:layout_below="@+id/found_pass_view1"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:text="如果您忘了您的用户名和邮箱地址，欢迎联系我们的客服"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/found_pass_textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/found_pass_textView3"
+        android:layout_alignRight="@+id/found_pass_textView1"
+        android:layout_below="@+id/found_pass_textView4"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:text="客户电话：12345678"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/found_pass_textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/found_pass_textView3"
+        android:layout_alignRight="@+id/found_pass_textView1"
+        android:layout_below="@+id/found_pass_textView5"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="客服邮箱：chinat2t@163.com"
+        android:textColor="@color/black" />
+
+</RelativeLayout>

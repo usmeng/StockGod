@@ -1,0 +1,13 @@
+package cn.chinat2t.stockgod.bean;
+
+public class PanKouBean {
+	public int id;   // "10",
+	public int sid;  //"1",
+	public int type; 
+	public double oldprice;
+	public int bilv;
+	public double sprice;// "125.36",
+	public int slang;    // "126",
+	public String uptime;// "1659863",
+	public int xingzhi;  // "1"
+}

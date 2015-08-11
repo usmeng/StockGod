@@ -1,0 +1,79 @@
+package cn.chinat2t.stockgod.activity;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import cn.chinat2t.stockgod.R;
+
+public class ChongZhiView extends LinearLayout implements OnClickListener{
+	
+	private LinearLayout layout;
+	private LinearLayout rechargeLayout;
+	private LayoutInflater inflater;
+	private RadioButton zhifubaoBtn;
+	private RadioButton yinlianBtn;
+	private RadioButton phoneBtn;
+	private int chargeFlag;
+
+	public ChongZhiView(Context context) {
+		super(context);
+	}
+	
+	public ChongZhiView(Context context, int flag) {
+		super(context);
+		chargeFlag = flag;
+		inflater = LayoutInflater.from(context);
+		layout = (LinearLayout) inflater.inflate(R.layout.recharge_layout, null);
+		addView(layout, new LinearLayout.LayoutParams(-1, -1));
+
+		initView();
+	}
+
+	protected void initView() {
+		rechargeLayout = (LinearLayout) layout.findViewById(R.id.recharge_type_layout);
+		zhifubaoBtn = (RadioButton) layout.findViewById(R.id.recharge_type_button1);
+		phoneBtn = (RadioButton) layout.findViewById(R.id.recharge_type_button2);
+		yinlianBtn = (RadioButton) layout.findViewById(R.id.recharge_type_button3);
+		
+		zhifubaoBtn.setOnClickListener(this);
+		phoneBtn.setOnClickListener(this);
+		yinlianBtn.setOnClickListener(this);
+		
+		onClick(phoneBtn);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.recharge_type_button1:
+			rechargeLayout.removeAllViews();
+			View baoView = inflater.inflate(R.layout.recharge_zhifubao_layou, null);
+			rechargeLayout.addView(baoView, new LinearLayout.LayoutParams(-1, -2));
+			break;
+
+		case R.id.recharge_type_button2:
+			rechargeLayout.removeAllViews();
+			View phoneView = inflater.inflate(R.layout.recharge_shouji_layou, null);
+			rechargeLayout.addView(phoneView, new LinearLayout.LayoutParams(-1, -2));
+			break;
+			
+		case R.id.recharge_type_button3:
+			rechargeLayout.removeAllViews();
+			View lianView = inflater.inflate(R.layout.recharge_yinlian_layou, null);
+			rechargeLayout.addView(lianView, new LinearLayout.LayoutParams(-1, -2));
+			break;
+		}
+	}
+
+	public int getChargeFlag() {
+		return chargeFlag;
+	}
+
+	public void setChargeFlag(int chargeFlag) {
+		this.chargeFlag = chargeFlag;
+	}
+
+}

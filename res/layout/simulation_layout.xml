@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <RadioGroup
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="-2dp"
+            android:paddingTop="4dp"
+            android:visibility="invisible" >
+
+            <RadioButton
+                style="@style/main_tab_bottom"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/check_btn_bg"
+                android:paddingBottom="1dp"
+                android:paddingTop="1dp"
+                android:text="委托"
+                android:textColor="#6a3837"
+                android:textSize="15sp"
+                android:visibility="invisible" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/simulation_account_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@drawable/main_circle_bg"
+            android:orientation="vertical"
+            android:padding="1dp" >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp" >
+
+                <TextView
+                    android:id="@+id/simulation_account_tv1"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="right"
+                    android:text="当前资产:"
+                    android:textColor="#6a3837" />
+
+                <TextView
+                    android:id="@+id/simulation_account_zc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/simulation_account_tv1"
+                    android:text=""
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/simulation_account_tv2"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/simulation_account_tv1"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="right"
+                    android:text="总盈亏:"
+                    android:textColor="#6a3837" />
+
+                <TextView
+                    android:id="@+id/simulation_account_yk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/simulation_account_tv1"
+                    android:layout_toRightOf="@id/simulation_account_tv2"
+                    android:text=""
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/simulation_account_tv3"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/simulation_account_tv2"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="right"
+                    android:text="股票市值:"
+                    android:textColor="#6a3837" />
+
+                <TextView
+                    android:id="@+id/simulation_account_sz"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/simulation_account_tv2"
+                    android:layout_toRightOf="@id/simulation_account_tv3"
+                    android:text=""
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/simulation_account_jy"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
+                    android:gravity="left"
+                    android:text=""
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/simulation_account_jiaoyi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/simulation_account_jy"
+                    android:gravity="right"
+                    android:text="今日剩余可交易次数:"
+                    android:textColor="#6a3837" />
+
+                <Button
+                    android:id="@+id/account_follow_niuren"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/simulation_account_sz"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/btn_yellow_selector"
+                    android:text="追踪牛人"
+                    android:textStyle="bold"
+                    android:typeface="monospace"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:textColor="@color/white"
+                    android:gravity="right"/>
+
+                <TextView
+                    android:id="@+id/simulation_account_yingkui"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/account_follow_niuren"
+                    android:layout_alignRight="@+id/simulation_account_jiaoyi"
+                    android:text="收益率:"
+                    android:textColor="#6a3837" />
+
+                <TextView
+                    android:id="@+id/simulation_account_ykl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/simulation_account_sz"
+                    android:layout_alignLeft="@+id/account_follow_niuren"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignRight="@id/simulation_account_yingkui"
+                    android:gravity="right"
+                    android:singleLine="true"
+                    android:textColor="@color/black" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:text="股票名称"
+                    android:textColor="#6a3837"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:text="成本"
+                    android:textColor="#6a3837"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:text="现值"
+                    android:textColor="#6a3837"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:text="涨跌幅"
+                    android:textColor="#6a3837"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:text=""
+                    android:textColor="#6a3837"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="@drawable/under_line" />
+
+            <ListView
+                android:id="@+id/simulation_account_list"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:cacheColorHint="#00000000"
+                android:divider="@drawable/line3"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/simulation_market_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@drawable/main_circle_bg"
+            android:orientation="vertical"
+            android:padding="0dp"
+            android:visibility="gone" >
+
+            <RadioGroup
+                android:id="@+id/kind_stock_market"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:gravity="center"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/simulation_market_radio1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/check_btn_bg1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:paddingBottom="3dp"
+                    android:paddingTop="3dp"
+                    android:text="沪A"
+                    android:textSize="15sp" />
+
+                <RadioButton
+                    android:id="@+id/simulation_market_radio2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/check_btn_bg1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:paddingBottom="3dp"
+                    android:paddingTop="3dp"
+                    android:text="深A"
+                    android:textSize="15sp" />
+
+                <RadioButton
+                    android:id="@+id/simulation_market_radio3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/check_btn_bg1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:paddingBottom="3dp"
+                    android:paddingTop="3dp"
+                    android:text="中小板"
+                    android:textSize="15sp" />
+
+                <RadioButton
+                    android:id="@+id/simulation_market_radio4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/check_btn_bg1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:paddingBottom="3dp"
+                    android:paddingTop="3dp"
+                    android:text="创业板"
+                    android:textSize="15sp" />
+
+                <RadioButton
+                    android:id="@+id/simulation_market_radio5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/check_btn_bg1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:paddingBottom="3dp"
+                    android:paddingTop="3dp"
+                    android:text="B股"
+                    android:textSize="15sp" />
+            </RadioGroup>
+
+            <ListView
+                android:id="@+id/simulation_market_list"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:cacheColorHint="#00000000"
+                android:divider="@drawable/line3"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp" >
+            </ListView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/simulation_weituo_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@drawable/main_circle_bg"
+            android:orientation="vertical"
+            android:padding="1dp"
+            android:visibility="gone" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="4"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:singleLine="true"
+                    android:text="股票名称"
+                    android:textColor="#6a3837"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:singleLine="true"
+                    android:text="代码"
+                    android:visibility="gone"
+                    android:textColor="#6a3837"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:singleLine="true"
+                    android:text="标志"
+                    android:textColor="#6a3837"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:singleLine="true"
+                    android:text="状态"
+                    android:textColor="#6a3837"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:singleLine="true"
+                    android:text="价格"
+                    android:textColor="#6a3837"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:singleLine="true"
+                    android:text="数量"
+                    android:textColor="#6a3837"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:singleLine="true"
+                    android:text="撤单"
+                    android:textColor="#6a3837"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="@drawable/under_line" />
+
+            <ListView
+                android:id="@+id/simulation_weituo_list"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:cacheColorHint="#00000000"
+                android:divider="@drawable/line3"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp" >
+            </ListView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/simulation_self_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@drawable/main_circle_bg"
+            android:orientation="vertical"
+            android:padding="0dp"
+            android:visibility="gone" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="5dp" >
+
+                <EditText
+                    android:id="@+id/self_search_value"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/search_input"
+                    android:hint="股票代码/简称/名称"
+                    android:singleLine="true" />
+
+                <Button
+                    android:id="@+id/self_search_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:background="@drawable/search_btn_bg" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="@drawable/under_line" />
+
+            <ListView
+                android:id="@+id/simulation_self_list"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:cacheColorHint="#00000000"
+                android:divider="@drawable/line3"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp" >
+            </ListView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/simulation_menu_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="-2dp"
+        android:paddingTop="4dp" >
+
+        <RadioButton
+            android:id="@+id/simulation_radio_button0"
+            style="@style/main_tab_bottom"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/check_btn_bg"
+            android:checked="true"
+            android:paddingBottom="1dp"
+            android:paddingTop="1dp"
+            android:text="市场"
+            android:textColor="#6a3837"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/simulation_radio_button1"
+            style="@style/main_tab_bottom"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/check_btn_bg"
+            android:paddingBottom="1dp"
+            android:paddingTop="1dp"
+            android:text="帐户"
+            android:textColor="#6a3837"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/simulation_radio_button2"
+            style="@style/main_tab_bottom"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/check_btn_bg"
+            android:paddingBottom="1dp"
+            android:paddingTop="1dp"
+            android:text="自选"
+            android:textColor="#6a3837"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/simulation_radio_button3"
+            style="@style/main_tab_bottom"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/check_btn_bg"
+            android:paddingBottom="1dp"
+            android:paddingTop="1dp"
+            android:text="委托"
+            android:textColor="#6a3837"
+            android:textSize="15sp" />
+    </RadioGroup>
+
+</RelativeLayout>

@@ -1,0 +1,78 @@
+package cn.chinat2t.stockgod.activity;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.EditText;
+import android.widget.Toast;
+import cn.chinat2t.stockgod.MainActivity;
+import cn.chinat2t.stockgod.R;
+import cn.chinat2t.stockgod.bean.UserBean;
+import cn.chinat2t.stockgod.http.CommunicationManager;
+import cn.chinat2t.stockgod.http.CommunicationResultListener;
+import cn.chinat2t.stockgod.utils.StringUtil;
+
+public class ForgetActivity extends Activity implements OnClickListener{
+
+	private EditText name;
+	private EditText email;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.forget_layout);
+		
+		initView();
+	}
+
+	private void initView() {
+		findViewById(R.id.found_pass_button1).setOnClickListener(this);
+		name = (EditText) findViewById(R.id.found_pass_editText1);
+		email = (EditText) findViewById(R.id.found_pass_editText2);
+	}
+
+	private CommunicationResultListener loginListener = new CommunicationResultListener() {
+	
+		public void resultListener(byte result, Object resultData) {
+			if(result == CommunicationManager.SUCCEED && token > 0){
+				Message message = mHandler.obtainMessage();
+				message.arg1 = 0;
+				message.obj = resultData;
+				mHandler.sendMessage(message);
+			}
+		};
+	};
+	
+	Handler mHandler = new Handler(){
+		
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.arg1) {
+			case 0:
+				UserBean user = (UserBean) msg.obj;
+				if(user.responsecode == 1){
+//					Toast.makeText(ForgetActivity.this, "密码已发至邮箱，请注意查收！", Toast.LENGTH_SHORT).show();
+					finish();
+				}
+				Toast.makeText(ForgetActivity.this, user.msg, 0).show();
+				break;
+			}
+		};
+	};
+	
+	@Override
+	public void onClick(View v) {
+		String nameValue = name.getText().toString();
+		String emailValue = email.getText().toString();
+		if(StringUtil.isNegUserName(nameValue) && StringUtil.isNegEmail(emailValue)){
+			CommunicationManager.getInstance().foundPass(emailValue, nameValue, loginListener);
+			finish();
+		}else{
+			Toast.makeText(this, "用户名或邮箱错误！", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+}

@@ -1,0 +1,354 @@
+package cn.chinat2t.stockgod.activity;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+import cn.chinat2t.stockgod.MainActivity;
+import cn.chinat2t.stockgod.R;
+import cn.chinat2t.stockgod.bean.GuessStock;
+import cn.chinat2t.stockgod.bean.RoomBean;
+import cn.chinat2t.stockgod.bean.UserBean;
+import cn.chinat2t.stockgod.http.CommunicationManager;
+import cn.chinat2t.stockgod.http.CommunicationResultListener;
+import cn.chinat2t.stockgod.views.RectView;
+/**
+ * 猜涨跌
+ * @author Administrator
+ */
+public class GuessActivity extends Activity implements OnClickListener {
+
+	private static final int DIALOG = 0;
+	private static final int ROOM_NUM = 1;
+	private static final int SKY_EYE = 2;
+	private static final int ROOM_XIANG = 3;
+	private static final int GAME_JU = 4;
+	
+//	private RoomXiangBean roomXiang;
+	private GuessStock guessStock;
+	private RoomBean gameBean;
+	private EditText setAuto;
+	private TextView riseWenHao;
+	private TextView fallWenHao;
+	private TextView guessTitle;
+	private RectView riseImage;
+	private RectView fallImage;	
+	private Dialog dialog = null;
+	private Button button1;
+	private Button button2;
+	private Button button3;
+	private Button skyEyeButton;
+	private View eyeText;
+	private String zijinStr;
+	
+	private boolean hasSkyEye = true;
+	private int value;
+	private int roomID;
+	private int saizhiID;
+	private int userID = 1;
+	private int status;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.guess_layout);
+		
+		roomID = getIntent().getIntExtra("roomId", 1);
+		if(roomID == 1){ zijinStr = "资金";
+		}else{ zijinStr = "金币"; }
+		saizhiID = getIntent().getIntExtra("saizhiID", 1);
+		guessTitle = (TextView) findViewById(R.id.guess_info);
+		riseWenHao = (TextView) findViewById(R.id.guess_rise_wenhao);
+		fallWenHao = (TextView) findViewById(R.id.guess_fall_wenhao);
+		riseImage = (RectView) findViewById(R.id.guess_rise_image);
+		fallImage = (RectView) findViewById(R.id.guess_fall_image);
+		setAuto = (EditText) findViewById(R.id.guess_set_auto_value);
+		setAuto.addTextChangedListener(textWatcher);
+		
+		eyeText = findViewById(R.id.guess_eye_text);
+		skyEyeButton = (Button) findViewById(R.id.guess_sky_eye);
+		skyEyeButton.setOnClickListener(this);
+		button1 = (Button) findViewById(R.id.guess_set_button1);
+		button1.setOnClickListener(this);
+		button2 = (Button) findViewById(R.id.guess_set_button2);
+		button2.setOnClickListener(this);
+		button3 = (Button) findViewById(R.id.guess_set_button3);
+		button3.setOnClickListener(this);
+		findViewById(R.id.guess_set_confirm).setOnClickListener(this);
+		
+		MainActivity.setTitleName("猜涨跌");
+//		CommunicationManager.getInstance().getGameXiang(saizhiID, userID, roomID, roomXianglistener);
+		CommunicationManager.getInstance().getGameJu(userID, roomID, saizhiID, gameJulistener);
+	}
+	
+	private TextWatcher textWatcher = new TextWatcher() {
+		
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+			
+		}
+		
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+			
+		}
+		
+		@Override
+		public void afterTextChanged(Editable s) {
+			int value = Integer.parseInt(s.toString().matches("^[0-9]+$")?s.toString():0+"");
+			if(value< gameBean.conft * 10000 || value/10000 > gameBean.confs * 10000){
+				Toast.makeText(GuessActivity.this, "输入值太小或者太大", Toast.LENGTH_LONG).show();
+			}
+		}
+	};
+	
+	private CommunicationResultListener roomXianglistener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			if(result == CommunicationManager.SUCCEED){
+				Message message = mHandler.obtainMessage();
+				message.arg1 = ROOM_XIANG;
+				message.obj = resultData;
+				mHandler.sendMessage(message);
+			}
+		};
+	};
+	
+	private CommunicationResultListener gameJulistener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			if(result == CommunicationManager.SUCCEED){
+				Message message = mHandler.obtainMessage();
+				message.arg1 = GAME_JU;
+				message.obj = resultData;
+				mHandler.sendMessage(message);
+			}
+		};
+	};
+	
+	private CommunicationResultListener hasEyeListener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			if(result == CommunicationManager.SUCCEED){
+				Message message = mHandler.obtainMessage();
+				message.arg1 = SKY_EYE;
+				message.obj = resultData;
+				mHandler.sendMessage(message);
+			}
+		};
+	};
+	
+	private CommunicationResultListener guessNumListener = new CommunicationResultListener() {
+		
+		public void resultListener(byte result, Object resultData) {
+			if(result == CommunicationManager.SUCCEED){
+				Message message = mHandler.obtainMessage();
+				message.arg1 = ROOM_NUM;
+				message.obj = resultData;
+				mHandler.sendMessage(message);
+			}
+		};
+	};
+	
+	Handler mHandler = new Handler(){
+
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.arg1) {
+			case ROOM_XIANG:
+				/*if(msg.obj instanceof RoomXiangBean){
+					roomXiang = (RoomXiangBean) msg.obj;
+					hasSkyEye = roomXiang.skyEye.useflag == 1;
+					String string = guessTitle.getText().toString();
+					String time = roomXiang.roombean.day == 1?"明天":roomXiang.roombean.day +"天后";
+					guessTitle.setText(String.format(string, roomXiang.sname, time));
+
+					button1.setText(roomXiang.roombean.goldf + "万资金");
+					button2.setText(roomXiang.roombean.golds + "万资金");
+					button3.setText(roomXiang.roombean.goldt + "万资金");
+				}*/
+				break;
+			case GAME_JU:
+				if(msg.obj instanceof RoomBean){
+					gameBean = (RoomBean) msg.obj;
+//					hasSkyEye = true;
+					String string = guessTitle.getText().toString();
+					String time = gameBean.day == 1?"明天":gameBean.day +"天后";
+					if(gameBean.gameList != null && gameBean.gameList.size() > 0)
+					guessTitle.setText(String.format(string, gameBean.gameList.get(0).ssname, time));
+					button1.setText(gameBean.goldf + "万" + zijinStr);
+					button2.setText(gameBean.golds + "万" + zijinStr);
+					button3.setText(gameBean.goldt + "万" + zijinStr);
+				}
+				
+				CommunicationManager.getInstance().getHasSkyEye(1, hasEyeListener);
+				CommunicationManager.getInstance().getGuessNumber(1, roomID, guessNumListener);
+				break;
+				
+			case SKY_EYE:
+				if(msg.obj instanceof Boolean){
+					hasSkyEye = (Boolean) msg.obj;
+				}
+				break;
+				
+			case ROOM_NUM:
+				if(msg.obj instanceof GuessStock){
+					guessStock = (GuessStock) msg.obj;
+				}
+				break;
+			}
+			
+		}
+	};
+	
+	@Override
+	public void onClick(View v) {
+		if(gameBean == null) return;
+		switch (v.getId()) {
+		case R.id.guess_sky_eye:
+			if(hasSkyEye){
+				viewRoomNum();
+			}else{
+				Toast.makeText(GuessActivity.this, "你没有天眼卡", 0).show();
+			}
+			break;
+		case R.id.guess_set_button1:
+//			setAuto.setText(roomXiang.roombean.goldf * 10000 + "");
+			setAuto.setText(gameBean.goldf * 10000 + "");
+			break;
+		case R.id.guess_set_button2:
+//			setAuto.setText(roomXiang.roombean.golds * 10000 + "");
+			setAuto.setText(gameBean.golds * 10000 + "");
+			break;
+		case R.id.guess_set_button3:
+//			setAuto.setText(roomXiang.roombean.goldt * 10000 + "");
+			setAuto.setText(gameBean.goldt * 10000 + "");
+			break;
+		case R.id.guess_set_confirm:
+			showDialog(DIALOG);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private void viewRoomNum() {
+		int maxValue = 0;
+		guessStock.guess_rise = 400;
+		guessStock.guess_fall = 35;
+		if(guessStock.guess_rise > guessStock.guess_fall){
+			maxValue = guessStock.guess_rise;
+		}else {
+			maxValue = guessStock.guess_fall;
+		}
+		riseImage.setMaxValue(maxValue);
+		fallImage.setMaxValue(maxValue);
+		
+		riseWenHao.setVisibility(View.INVISIBLE);
+		riseImage.setVisibility(View.VISIBLE);
+		riseImage.setRegHeight(guessStock.guess_rise);
+		riseImage.setColor(getResources().getColor(R.color.red));
+		riseImage.setTitle(String.valueOf(guessStock.guess_rise));
+		riseImage.invalidate();
+		
+		fallWenHao.setVisibility(View.INVISIBLE);
+		fallImage.setVisibility(View.VISIBLE);
+		fallImage.setColor(getResources().getColor(R.color.green));
+		fallImage.setRegHeight(guessStock.guess_fall);
+		fallImage.setTitle(String.valueOf(guessStock.guess_fall));
+		fallImage.invalidate();
+		
+		skyEyeButton.setVisibility(View.INVISIBLE);
+		eyeText.setVisibility(View.INVISIBLE);
+	}
+	
+	/*private void viewRoomNum2() {
+		int maxValue = 0;
+		roomXiang.renshu.guess_rise = 400;
+		roomXiang.renshu.guess_fall = 35;
+		if(roomXiang.renshu.guess_rise > roomXiang.renshu.guess_fall){
+			maxValue = roomXiang.renshu.guess_rise;
+		}else {
+			maxValue = roomXiang.renshu.guess_fall;
+		}
+		riseImage.setMaxValue(maxValue);
+		fallImage.setMaxValue(maxValue);
+		
+		riseWenHao.setVisibility(View.INVISIBLE);
+		riseImage.setVisibility(View.VISIBLE);
+		riseImage.setRegHeight(roomXiang.renshu.guess_rise);
+		riseImage.setColor(getResources().getColor(R.color.red));
+		riseImage.setTitle(String.valueOf(roomXiang.renshu.guess_rise));
+		riseImage.invalidate();
+		
+		fallWenHao.setVisibility(View.INVISIBLE);
+		fallImage.setVisibility(View.VISIBLE);
+		fallImage.setColor(getResources().getColor(R.color.green));
+		fallImage.setRegHeight(roomXiang.renshu.guess_fall);
+		fallImage.setTitle(String.valueOf(roomXiang.renshu.guess_fall));
+		fallImage.invalidate();
+		
+		skyEyeButton.setVisibility(View.INVISIBLE);
+		eyeText.setVisibility(View.INVISIBLE);
+	}*/
+
+	@Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+        case DIALOG:
+        	String string = setAuto.getText().toString();
+        	if(string != null && string.matches("^[0-9.]+$")){
+        		value = Integer.parseInt(string);
+        	}
+   			View view = LayoutInflater.from(this).inflate(R.layout.guess_dialog_munu, null);
+   			TextView tx1 = (TextView) view.findViewById(R.id.textView2);
+   			TextView tx2 = (TextView) view.findViewById(R.id.textView3);
+   			Button button = (Button) view.findViewById(R.id.guess_confirm);
+   			Button chongzhi = (Button) view.findViewById(R.id.guess_chongzhi);
+   			button.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					dialog.cancel();
+				}
+			});
+   			UserBean user = UserBean.getInstance();
+   			if(user.fund < value){
+   				chongzhi.setVisibility(View.VISIBLE);
+   				chongzhi.setOnClickListener(new OnClickListener() {
+   					
+   					@Override
+   					public void onClick(View v) {
+   						dialog.cancel();
+   						Toast.makeText(GuessActivity.this, "尚不能充值！", Toast.LENGTH_LONG).show();
+   					}
+   				});
+   				button.setText("取消");
+   				tx1.setText("您的本金不足");
+   				tx2.setText("您可以充值后继续参加此技能");
+   			}else{
+   				tx1.setText(Html.fromHtml(tx1.getText().toString()));
+   				tx1.setText(String.format(tx1.getText().toString(), ""+value));
+   				tx2.setText(String.format(tx1.getText().toString(), ""+value));
+   			}
+   			
+            dialog = new Dialog(getParent(), R.style.selectorDialog);
+            dialog.setContentView(view);
+            dialog.show();
+            break;
+        }
+        return dialog;
+    }
+
+}

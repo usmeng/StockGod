@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/kline_stock_menu"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" >
+
+        <Button
+            android:id="@+id/kline_time_btn1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg1"
+            android:text="分时"
+            android:textColor="#6a3837" />
+
+        <Button
+            android:id="@+id/kline_time_btn2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg1"
+            android:text="盘口"
+            android:textColor="#6a3837" />
+
+        <Button
+            android:id="@+id/kline_time_btn3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg1"
+            android:text="明细"
+            android:textColor="#6a3837" />
+
+        <Button
+            android:id="@+id/kline_time_btn4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg1"
+            android:text="分价"
+            android:textColor="#6a3837" />
+
+        <Button
+            android:id="@+id/kline_time_btn5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg1"
+            android:text="大单"
+            android:textColor="#6a3837" />
+
+        <Button
+            android:id="@+id/kline_time_btn6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_btn_bg1"
+            android:text="资金"
+            android:textColor="#6a3837" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line3" />
+
+    <LinearLayout
+        android:id="@+id/time_line_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="0dp"
+        android:orientation="vertical" >
+    </LinearLayout>
+ 
+</LinearLayout>
